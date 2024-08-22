@@ -32,8 +32,9 @@ void MyTcpServer::slotServerRead()
     while (mTcpSocket->bytesAvailable() > 0)
     {
         QByteArray array = mTcpSocket->readAll();
+        qDebug() << array;
 
-        mTcpSocket->write(array);
+       // mTcpSocket->write(array); Эхо эффект с отправкой принятого обратно сокету
     }
 }
 
