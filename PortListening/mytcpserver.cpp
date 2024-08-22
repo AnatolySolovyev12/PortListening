@@ -8,7 +8,8 @@ MyTcpServer::MyTcpServer(QObject* parent) : QObject(parent)
 
     connect(mTcpServer, &QTcpServer::newConnection, this, &MyTcpServer::slotNewConnection);
 
-    if (!mTcpServer->listen(QHostAddress::Any, 6000)) {
+    if (!mTcpServer->listen(QHostAddress::Any, 6000)) // слушаем с любого адреса на порт 6000. Можно указать определённый host для прослушивания
+    {
         qDebug() << "server is not started";
     }
     else {
@@ -18,12 +19,12 @@ MyTcpServer::MyTcpServer(QObject* parent) : QObject(parent)
 
 void MyTcpServer::slotNewConnection()
 {
-    mTcpSocket = mTcpServer->nextPendingConnection();
+    mTcpSocket = mTcpServer->nextPendingConnection(); // возвращает объект QTcpSocket для текущего соединения. Вернёт nullptr если вызвать эту функцию без наличия соединения. Лучше потом удалять QTcpSocket указатель и по итогу занулять.
 
     mTcpSocket->write("Hello, World!!! I am echo server!\r\n");
 
-    connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead);
-    connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected);
+    connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); // если есть что читать (библиотечный сигнал) сработает слот
+    connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected); // если сокет отсоединился (библиотечный сигнал) сработает слот
 }
 
 void MyTcpServer::slotServerRead()
@@ -38,5 +39,7 @@ void MyTcpServer::slotServerRead()
 
 void MyTcpServer::slotClientDisconnected()
 {
-    mTcpSocket->close();
+    mTcpSocket->close(); // создлаёт сигнал void QIODevice::aboutToClose() а затем устанавливает для OpenMode состояние NotOpen.
+    delete mTcpSocket;
+    mTcpSocket = nullptr;
 }
