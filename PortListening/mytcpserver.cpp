@@ -38,6 +38,7 @@ void MyTcpServer::slotServerRead()
     while (mTcpSocket->bytesAvailable() > 0)
     {
         QByteArray array = mTcpSocket->readAll();
+        
 
         if (array == "35")
             continue;
@@ -47,11 +48,13 @@ void MyTcpServer::slotServerRead()
 
         qDebug() << curDate.toString() << " " << curTime.toString() << "\n";
 
-        qDebug() << array;
+        qDebug() << array << "\n";
 
         // mTcpSocket->write(array); Эхо эффект с отправкой принятого обратно сокету
 
-        QString str = array;
+        QString str = array.toHex();
+
+        qDebug() << str << "\n";
 
         QString temporary;
 
@@ -63,6 +66,8 @@ void MyTcpServer::slotServerRead()
 
         bool ok;
 
+
+        /*
         for (QChar val : str)
         {
             if (val == 'x')
@@ -71,12 +76,12 @@ void MyTcpServer::slotServerRead()
                 counter = 2;
                 continue;
             }
-
+            
             if (val == '\\')
             {
                 continue;
             }
-
+            
             if (counter > 0)
             {
                 temporary += val;
@@ -102,11 +107,25 @@ void MyTcpServer::slotServerRead()
 
         temporary = "";
 
-
+        */
         QList <QString> myList;
 
-        for (auto val : middleString)
+        for (auto val : str)
         {
+            ++counter;
+
+            temporary += val;
+
+            if (counter == 2)
+            {
+                myList.append(temporary);
+                temporary = "";
+                counter = 0;
+            }
+        }
+
+
+            /*
             if (val.isSpace() && temporary != "")
             {
                 myList.append(temporary);
@@ -118,24 +137,16 @@ void MyTcpServer::slotServerRead()
                 continue;
 
             temporary += val;
-        }
+            */
+        
 
-        for (auto& val : myList)
-        {
-            
-            if (val.size() == 2)
-            {
-                uint valTrans = val.toUInt(&ok, 16);
-                translate += temporary.setNum(valTrans);
+		for (auto val : myList)
+		{
 
-            }
-            else
-                translate += val;
+			uint valTrans = val.toUInt(&ok, 16);
+			translate += middleString.setNum(valTrans) + " ";
 
-            translate += " ";
-            
-        }
-
+		}
         qDebug() << translate << "\n";
     }
 }
