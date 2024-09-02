@@ -26,7 +26,7 @@ void MyTcpServer::slotNewConnection()
 {
     mTcpSocket = mTcpServer->nextPendingConnection(); // возвращает объект QTcpSocket для текущего соединения. Вернёт nullptr если вызвать эту функцию без наличия соединения. Лучше потом удалять QTcpSocket указатель и по итогу занулять.
 
-    mTcpSocket->write("Hello, World!!! I am echo server!\r\n");
+  //  mTcpSocket->write("Hello, World!!! I am echo server!\r\n");
 
     connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); // если есть что читать (библиотечный сигнал) сработает слот
     connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected); // если сокет отсоединился (библиотечный сигнал) сработает слот
@@ -34,7 +34,7 @@ void MyTcpServer::slotNewConnection()
 
 void MyTcpServer::slotServerRead()
 {
-
+    
     while (mTcpSocket->bytesAvailable() > 0)
     {
         QByteArray array = mTcpSocket->readAll();
@@ -67,47 +67,6 @@ void MyTcpServer::slotServerRead()
         bool ok;
 
 
-        /*
-        for (QChar val : str)
-        {
-            if (val == 'x')
-            {
-                temporary += " ";
-                counter = 2;
-                continue;
-            }
-            
-            if (val == '\\')
-            {
-                continue;
-            }
-            
-            if (counter > 0)
-            {
-                temporary += val;
-
-                if (counter == 1)
-                    temporary += " ";
-
-                --counter;
-
-                continue;
-            }
-
-            if (counter == 0)
-            {
-                temporary += val;
-            }
-        }
-
-        qDebug() << temporary;
-        middleString = temporary;
-
-        middleString.remove(0,0);
-
-        temporary = "";
-
-        */
         QList <QString> myList;
 
         for (auto val : str)
@@ -124,31 +83,63 @@ void MyTcpServer::slotServerRead()
             }
         }
 
+        QString numberStr;
 
-            /*
-            if (val.isSpace() && temporary != "")
+        for (int counter = 3; counter >= 0; counter--)
+        {
+
+            numberStr += myList[counter];
+
+        }
+
+        uint valTrans = numberStr.toUInt(&ok, 16);
+        qDebug() << "Number - " << valTrans;
+
+        QString first;
+        QString two;
+        QString three;
+        QString four;
+
+        for (int counter = 94; counter >= 79; --counter)
+        {
+            if (counter >= 91)
             {
-                myList.append(temporary);
-                temporary = "";
+                four += myList[counter];
                 continue;
             }
 
-            if (val.isSpace() && temporary == "")
+            if (counter >= 87)
+            {
+                three += myList[counter];
                 continue;
+            }
 
-            temporary += val;
-            */
-        
+            if (counter >= 83)
+            {
+                two += myList[counter];
+                continue;
+            }
 
-		for (auto val : myList)
-		{
+            if (counter >= 79)
+            {
+                first += myList[counter];
+                continue;
+            }
+        }
 
-			uint valTrans = val.toUInt(&ok, 16);
-			translate += middleString.setNum(valTrans) + " ";
+         valTrans = first.toUInt(&ok, 16);
+        qDebug() << "first - " << valTrans;
 
-		}
-        qDebug() << translate << "\n";
-    }
+         valTrans = two.toUInt(&ok, 16);
+        qDebug() << "two - " << valTrans;
+
+         valTrans = three.toUInt(&ok, 16);
+        qDebug() << "Number - " << valTrans;
+
+         valTrans = four.toUInt(&ok, 16);
+        qDebug() << "Number - " << valTrans;
+
+    } 
 }
 
 
