@@ -56,6 +56,9 @@ void MyTcpServer::slotServerRead()
 
         qDebug() << str << "\n";
 
+        if (array.size() < 400) // out-of-array warning
+            continue;
+
         QString temporary;
 
         QString middleString;
