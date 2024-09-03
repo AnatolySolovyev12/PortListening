@@ -1,9 +1,7 @@
 #include "mytcpserver.h"
 #include <QDebug>
 #include <QCoreApplication>
-
 #include <QTime>
-
 
 QTextStream out(stdout);
 
@@ -15,10 +13,10 @@ MyTcpServer::MyTcpServer(QObject* parent) : QObject(parent)
 
     if (!mTcpServer->listen(QHostAddress::Any, 6000)) // слушаем с любого адреса на порт 6000. ћожно указать определЄнный host дл€ прослушивани€
     {
-        qDebug() << "server is not started";
+        qDebug() << "server is not started\n";
     }
     else {
-        qDebug() << "server is started";
+        qDebug() << "server is started\n";
     }
 }
 
@@ -39,7 +37,6 @@ void MyTcpServer::slotServerRead()
     {
         QByteArray array = mTcpSocket->readAll();
         
-
         if (array == "35")
             continue;
 
@@ -56,7 +53,9 @@ void MyTcpServer::slotServerRead()
 
         qDebug() << str << "\n";
 
-        if (array.size() < 400) // out-of-array warning
+        qDebug() << "Str size = " << str.size() << "\n";
+
+        if (str.size() < 200) // out-of-array warning
             continue;
 
         QString temporary;
@@ -68,7 +67,6 @@ void MyTcpServer::slotServerRead()
         int counter = 0;
 
         bool ok;
-
 
         QList <QString> myList;
 
@@ -102,7 +100,7 @@ void MyTcpServer::slotServerRead()
         QString two;
         QString three;
         QString four;
-
+        
         for (int counter = 94; counter >= 79; --counter)
         {
             if (counter >= 91)
@@ -129,7 +127,7 @@ void MyTcpServer::slotServerRead()
                 continue;
             }
         }
-
+        
          valTrans = first.toUInt(&ok, 16);
         qDebug() << "first - " << valTrans;
 
@@ -137,14 +135,12 @@ void MyTcpServer::slotServerRead()
         qDebug() << "two - " << valTrans;
 
          valTrans = three.toUInt(&ok, 16);
-        qDebug() << "Number - " << valTrans;
+        qDebug() << "three - " << valTrans;
 
          valTrans = four.toUInt(&ok, 16);
-        qDebug() << "Number - " << valTrans;
-
+        qDebug() << "four - " << valTrans << "\n";
     } 
 }
-
 
 void MyTcpServer::slotClientDisconnected()
 {
