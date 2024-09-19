@@ -5,6 +5,9 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
+
+#include <SQLiteDB.h>
+
 class MyTcpServer : public QObject
 {
     Q_OBJECT

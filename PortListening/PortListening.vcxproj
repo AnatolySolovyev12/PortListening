@@ -94,9 +94,13 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mytcpserver.cpp" />
+    <ClCompile Include="SQLiteDB.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mytcpserver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="SQLiteDB.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
