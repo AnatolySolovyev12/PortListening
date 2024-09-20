@@ -22,6 +22,7 @@ public slots:
 private:
     QTcpServer* mTcpServer = nullptr;
     QTcpSocket* mTcpSocket = nullptr;
+    SQLiteDB* dataWrite = nullptr;
 };
 
 #endif // MYTCPSERVER_H
