@@ -9,6 +9,8 @@ MyTcpServer::MyTcpServer(QObject* parent) : QObject(parent)
 {
     mTcpServer = new QTcpServer(this);
 
+    dataWrite = new SQLiteDB();
+
     connect(mTcpServer, &QTcpServer::newConnection, this, &MyTcpServer::slotNewConnection);
 
     if (!mTcpServer->listen(QHostAddress::Any, 6000)) // слушаем с любого адреса на порт 6000. Можно указать определённый host для прослушивания
@@ -18,6 +20,7 @@ MyTcpServer::MyTcpServer(QObject* parent) : QObject(parent)
     else {
         qDebug() << "server is started\n";
     }
+
 }
 
 void MyTcpServer::slotNewConnection()
@@ -40,8 +43,12 @@ void MyTcpServer::slotServerRead()
         if (array == "35")
             continue;
 
+        
+       // curDate.toString("yyyy-MM-dd")
         QDate curDate = QDate::currentDate();
         QTime curTime = QTime::currentTime();
+
+        qDebug() << curDate.toString("dd-MM-yyyy");
 
         qDebug() << curDate.toString() << " " << curTime.toString() << "\n";
 
@@ -139,7 +146,19 @@ void MyTcpServer::slotServerRead()
 
          valTrans = four.toUInt(&ok, 16);
         qDebug() << "four - " << valTrans << "\n";
-    } 
+
+        
+		// INSERT + VALUES - определяет одинокую строку со значениями описанными в VALUES. INTO позволяет указать в какую именно таблицу произвести запись
+		QString str_t = QString("INSERT INTO channelTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - определяет те значения которые будут записаниы в строку
+			.arg(numberStr.toUInt(&ok, 16))
+            .arg(curDate.toString("dd-MM-yyyy"))
+			.arg(first.toUInt(&ok, 16))
+			.arg(two.toUInt(&ok, 16))
+			.arg(three.toUInt(&ok, 16))
+			.arg(four.toUInt(&ok, 16));
+
+		dataWrite->writeData(str_t);
+	}
 }
 
 void MyTcpServer::slotClientDisconnected()
