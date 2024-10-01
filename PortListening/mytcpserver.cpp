@@ -48,17 +48,17 @@ void MyTcpServer::slotServerRead()
         QDate curDate = QDate::currentDate();
         QTime curTime = QTime::currentTime();
 
-        qDebug() << curDate.toString("dd-MM-yyyy");
+       // qDebug() << curDate.toString("dd-MM-yyyy");
 
         qDebug() << curDate.toString() << " " << curTime.toString() << "\n";
 
-        qDebug() << array << "\n";
+        // qDebug() << array << "\n";
 
         // mTcpSocket->write(array); Эхо эффект с отправкой принятого обратно сокету
 
         QString str = array.toHex();
 
-        qDebug() << str << "\n";
+       // qDebug() << str << "\n";
 
         qDebug() << "Str size = " << str.size() << "\n";
 
