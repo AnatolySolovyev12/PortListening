@@ -1,6 +1,6 @@
 #include "SQLiteDB.h"
-
 #include <QtDebug>
+
 
 SQLiteDB::SQLiteDB(QObject* parent)
 	: QObject(parent)
@@ -33,6 +33,7 @@ SQLiteDB::SQLiteDB(QObject* parent)
 	}
 }
 
+
 SQLiteDB::~SQLiteDB()
 {
 	mw_db.removeDatabase("DataBaseMilanRF"); // удаляет соединение с БД с именем из скобок.
@@ -58,10 +59,11 @@ bool SQLiteDB::connectDB()
 }
 
 
-
 void SQLiteDB::writeData(QString some)
 {
 	QSqlQuery query;
+
+	/*
 	QSqlRecord rec;
 	// SELECT - оператор запроса. Пример запроса определённых столбцов (name, age) из таблицы (employees): "SELECT name, age FROM employees;".
 	// Для выбора всех столбцов используется оператор *: "SELECT * FROM employees;"
@@ -92,10 +94,11 @@ void SQLiteDB::writeData(QString some)
 
 
 	user_counter++;
+	*/
 
 	db_input = some;
 
-	qDebug() << db_input;
+	//qDebug() << db_input;
 
 	if (!query.exec(db_input))
 	{
