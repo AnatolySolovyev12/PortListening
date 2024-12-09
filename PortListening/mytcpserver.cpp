@@ -52,13 +52,13 @@ void MyTcpServer::slotServerRead()
 
         qDebug() << curDate.toString() << " " << curTime.toString() << "\n";
 
-        // qDebug() << array << "\n";
+         qDebug() << array << "\n";
 
-        // mTcpSocket->write(array); Эхо эффект с отправкой принятого обратно сокету
+        // mTcpSocket->write(array); // Эхо эффект с отправкой принятого обратно сокету
 
         QString str = array.toHex();
 
-       // qDebug() << str << "\n";
+        qDebug() << str << "\n";
 
         qDebug() << "Str size = " << str.size() << "\n";
 
