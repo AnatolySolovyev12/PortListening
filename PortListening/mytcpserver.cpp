@@ -43,6 +43,7 @@ void MyTcpServer::slotServerRead()
         if (array == "35")
             continue;
 
+       // qDebug() << QByteArray::fromHex(array);
         
        // curDate.toString("yyyy-MM-dd")
         QDate curDate = QDate::currentDate();
@@ -52,13 +53,13 @@ void MyTcpServer::slotServerRead()
 
         qDebug() << curDate.toString() << " " << curTime.toString() << "\n";
 
-         qDebug() << array << "\n";
+       //  qDebug() << array << "\n";
 
-        // mTcpSocket->write(array); // Ёхо эффект с отправкой прин€того обратно сокету
+       //  mTcpSocket->write(array); // Ёхо эффект с отправкой прин€того обратно сокету
 
         QString str = array.toHex();
 
-        qDebug() << str << "\n";
+       // qDebug() << str << "\n";
 
         qDebug() << "Str size = " << str.size() << "\n";
 
@@ -148,7 +149,6 @@ void MyTcpServer::slotServerRead()
         qDebug() << "four - " << valTrans << "\n";
 
         
-		// INSERT + VALUES - определ€ет одинокую строку со значени€ми описанными в VALUES. INTO позвол€ет указать в какую именно таблицу произвести запись
 		QString str_t = QString("INSERT INTO channelTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - определ€ет те значени€ которые будут записаниы в строку
 			.arg(numberStr.toUInt(&ok, 16))
             .arg(curDate.toString("yyyy-MM-dd"))
