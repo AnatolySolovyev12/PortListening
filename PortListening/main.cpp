@@ -36,6 +36,5 @@ int main(int argc, char* argv[])
 	// mainWindow.hide();
 
 
-
 	return app.exec();
 }
