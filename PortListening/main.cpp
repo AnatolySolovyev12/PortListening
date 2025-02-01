@@ -18,7 +18,9 @@ int main(int argc, char* argv[])
 	QApplication app(argc, argv);
 
 	MainWindow mainWindow;
-	mainWindow.resize(400, 300);
+	mainWindow.setWindowIcon(QIcon("icon.png"));
+	mainWindow.setWindowTitle("PortListening by Solovev");
+	mainWindow.resize(700, 300);
 	mainWindow.show();
 
 
