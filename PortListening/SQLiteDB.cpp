@@ -14,7 +14,7 @@ SQLiteDB::SQLiteDB(QObject* parent)
 
 	// запрос на создание таблицы c именем userlist
 	// создаЄм столбец с именем number. PRIMARY KEY (первичный ключ) всегда уникален. «апись в этом поле не должна быть пустой. ¬ одной таблице только один ключ.
-	db_input = "CREATE TABLE channelTable ( "
+	db_input = "CREATE TABLE channelTable IF NOT EXIST( "
 		"number VARCHAR(20), " // NOT NULL - значение в таблице не может быть пустым. ≈сли поставить NULL то можно будет оставл€ть пустым.   
 		"date VARCHAR(20), " // NOT NULL - значение в таблице не может быть пустым. ≈сли поставить NULL то можно будет оставл€ть пустым.    
 		"channelFirst VARCHAR(20), " // VARCHAR - символьный тип данных с длиной строки указанной в скобках в байтах.
