@@ -29,6 +29,7 @@ private:
     QTcpServer* mTcpServer = nullptr;
     QTcpSocket* mTcpSocket = nullptr;
     SQLiteDB* dataWrite = nullptr;
+    QString temporary;
 };
 
 #endif // MYTCPSERVER_H

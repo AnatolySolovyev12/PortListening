@@ -27,7 +27,7 @@ SQLiteDB::SQLiteDB(QObject* parent)
 
 		if (!query.exec(db_input)) // Выполняем запрос. exec - вернёт true если успешно. Синтаксис должен отвечать запрашиваемой БД.
 		{
-			emit messegeLog("Unable to create a table" + query.lastError().text());
+			emit messegeLog("Unable to create a table. " + query.lastError().text());
 			//	qDebug() << "Unable to create a table" << query.lastError(); // Возвращаем информацию о последней ошибке. При вывзове exec, получая ошибку, она помещается в lastError(). Мы можем её прочитать..
 		}
 		else

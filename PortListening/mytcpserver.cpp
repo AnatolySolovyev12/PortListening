@@ -69,10 +69,12 @@ void MyTcpServer::slotServerRead()
         QString str = array.toHex();
 
        // qDebug() << str << "\n";
+       // temporary = "Str size = " + QString::number(str.size()) + '\n';
+        emit messegeLog("Str size = " + QString::number(str.size()) + '\n');
 
-        emit messegeLog("Str size = " + str.size() + '\n');
+      //  qDebug() << "Str size = " << str.size() << "\n";
 
-       // qDebug() << "Str size = " << str.size() << "\n";
+       // qDebug() << temporary << "\n";
 
         if (str.size() < 250) // out-of-array warning
             continue;
