@@ -7,32 +7,36 @@ SQLiteDB::SQLiteDB(QObject* parent)
 {
 	user_counter = 0;
 
-	connectDB(); // создаём БД и подключение к ней
-	// Видимо QSqlQuery query сразу знает что надо обращаться к той таблице к которой сейчас подключена программа.
+	QTimer::singleShot(500, [this]() {
 
-	QSqlQuery query; // для возможности обращения к БД. Инкапсулирует методы обращения к БД. В SQlite может быть только один оператор в запросе.
+		connectDB(); // создаём БД и подключение к ней
+		// Видимо QSqlQuery query сразу знает что надо обращаться к той таблице к которой сейчас подключена программа.
 
-	// запрос на создание таблицы c именем userlist
-	// создаём столбец с именем number. PRIMARY KEY (первичный ключ) всегда уникален. Запись в этом поле не должна быть пустой. В одной таблице только один ключ.
-	db_input = "CREATE TABLE channelTable ( "
-		"number VARCHAR(20), " // NOT NULL - значение в таблице не может быть пустым. Если поставить NULL то можно будет оставлять пустым.   
-		"date VARCHAR(20), " // NOT NULL - значение в таблице не может быть пустым. Если поставить NULL то можно будет оставлять пустым.    
-		"channelFirst VARCHAR(20), " // VARCHAR - символьный тип данных с длиной строки указанной в скобках в байтах.
-		"channelSecond VARCHAR(20), "
-		"channelThird VARCHAR(20), " // INTEGER - целочисленный тип данных
-		"channelFour VARCHAR(20));";
+		QSqlQuery query; // для возможности обращения к БД. Инкапсулирует методы обращения к БД. В SQlite может быть только один оператор в запросе.
+
+		// запрос на создание таблицы c именем userlist
+		// создаём столбец с именем number. PRIMARY KEY (первичный ключ) всегда уникален. Запись в этом поле не должна быть пустой. В одной таблице только один ключ.
+		db_input = "CREATE TABLE channelTable ( "
+			"number VARCHAR(20), " // NOT NULL - значение в таблице не может быть пустым. Если поставить NULL то можно будет оставлять пустым.   
+			"date VARCHAR(20), " // NOT NULL - значение в таблице не может быть пустым. Если поставить NULL то можно будет оставлять пустым.    
+			"channelFirst VARCHAR(20), " // VARCHAR - символьный тип данных с длиной строки указанной в скобках в байтах.
+			"channelSecond VARCHAR(20), "
+			"channelThird VARCHAR(20), " // INTEGER - целочисленный тип данных
+			"channelFour VARCHAR(20));";
 
 
-	if (!query.exec(db_input)) // Выполняем запрос. exec - вернёт true если успешно. Синтаксис должен отвечать запрашиваемой БД.
-	{
-		emit messegeLog("Unable to create a table" + query.lastError().text());
-	//	qDebug() << "Unable to create a table" << query.lastError(); // Возвращаем информацию о последней ошибке. При вывзове exec, получая ошибку, она помещается в lastError(). Мы можем её прочитать..
-	}
-	else
-	{
-		emit messegeLog("Table was create!");
-		//qDebug() << "Table was create!";
-	}
+		if (!query.exec(db_input)) // Выполняем запрос. exec - вернёт true если успешно. Синтаксис должен отвечать запрашиваемой БД.
+		{
+			emit messegeLog("Unable to create a table" + query.lastError().text());
+			//	qDebug() << "Unable to create a table" << query.lastError(); // Возвращаем информацию о последней ошибке. При вывзове exec, получая ошибку, она помещается в lastError(). Мы можем её прочитать..
+		}
+		else
+		{
+			emit messegeLog("Table was create!");
+			//qDebug() << "Table was create!";
+		}
+
+		});
 }
 
 

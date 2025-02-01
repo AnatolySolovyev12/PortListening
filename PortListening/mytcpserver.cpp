@@ -13,16 +13,20 @@ MyTcpServer::MyTcpServer(QObject* parent) : QObject(parent)
 
     connect(mTcpServer, &QTcpServer::newConnection, this, &MyTcpServer::slotNewConnection);
 
-    if (!mTcpServer->listen(QHostAddress::Any, 6000)) // слушаем с любого адреса на порт 6000. ћожно указать определЄнный host дл€ прослушивани€
-    {
-        emit messegeLog("server is not started\n");
-       // qDebug() << "server is not started\n";
-    }
-    else 
-    {
-        emit messegeLog("server is started\n");
-        // qDebug() << "server is started\n";
-    }
+    QTimer::singleShot(500, [this]() {
+
+        if (!mTcpServer->listen(QHostAddress::Any, 6000)) // слушаем с любого адреса на порт 6000. ћожно указать определЄнный host дл€ прослушивани€
+        {
+            emit messegeLog("server is not started\n");
+            // qDebug() << "server is not started\n";
+        }
+        else
+        {
+            emit messegeLog("server is started\n");
+            // qDebug() << "server is started\n";
+        }
+
+        });
 
 }
 
