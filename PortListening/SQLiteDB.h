@@ -28,6 +28,8 @@ public:
 
     void writeData(QString some);
 
+signals:
+    void messegeLog(const QString&);
 
 private:
 

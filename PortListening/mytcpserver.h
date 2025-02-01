@@ -14,10 +14,16 @@ class MyTcpServer : public QObject
 public:
     explicit MyTcpServer(QObject* parent = 0);
 
+    SQLiteDB* returnPtrDb();
+
 public slots:
     void slotNewConnection();
     void slotServerRead();
     void slotClientDisconnected();
+
+signals:
+    void messegeLog(const QString&);
+
 
 private:
     QTcpServer* mTcpServer = nullptr;

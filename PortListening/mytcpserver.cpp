@@ -15,10 +15,13 @@ MyTcpServer::MyTcpServer(QObject* parent) : QObject(parent)
 
     if (!mTcpServer->listen(QHostAddress::Any, 6000)) // слушаем с любого адреса на порт 6000. ћожно указать определЄнный host дл€ прослушивани€
     {
-        qDebug() << "server is not started\n";
+        emit messegeLog("server is not started\n");
+       // qDebug() << "server is not started\n";
     }
-    else {
-        qDebug() << "server is started\n";
+    else 
+    {
+        emit messegeLog("server is started\n");
+        // qDebug() << "server is started\n";
     }
 
 }
@@ -51,7 +54,9 @@ void MyTcpServer::slotServerRead()
 
        // qDebug() << curDate.toString("dd-MM-yyyy");
 
-        qDebug() << curDate.toString() << " " << curTime.toString() << "\n";
+        emit messegeLog(curDate.toString() + " " + curTime.toString() + "\n");
+
+       // qDebug() << curDate.toString() << " " << curTime.toString() << "\n";
 
        //  qDebug() << array << "\n";
 
@@ -61,7 +66,9 @@ void MyTcpServer::slotServerRead()
 
        // qDebug() << str << "\n";
 
-        qDebug() << "Str size = " << str.size() << "\n";
+        emit messegeLog("Str size = " + str.size() + '\n');
+
+       // qDebug() << "Str size = " << str.size() << "\n";
 
         if (str.size() < 250) // out-of-array warning
             continue;
@@ -102,7 +109,9 @@ void MyTcpServer::slotServerRead()
         }
 
         uint valTrans = numberStr.toUInt(&ok, 16);
-        qDebug() << "Number - " << valTrans;
+
+        emit messegeLog("Number - " + valTrans);
+        //qDebug() << "Number - " << valTrans;
 
         QString first;
         QString two;
@@ -137,16 +146,20 @@ void MyTcpServer::slotServerRead()
         }
         
          valTrans = first.toUInt(&ok, 16);
-        qDebug() << "first - " << valTrans;
+         emit messegeLog("first - " + valTrans);
+        //qDebug() << "first - " << valTrans;
 
          valTrans = two.toUInt(&ok, 16);
-        qDebug() << "two - " << valTrans;
+         emit messegeLog("two - " + valTrans);
+        //qDebug() << "two - " << valTrans;
 
          valTrans = three.toUInt(&ok, 16);
-        qDebug() << "three - " << valTrans;
+         emit messegeLog("three - " + valTrans);
+        //qDebug() << "three - " << valTrans;
 
          valTrans = four.toUInt(&ok, 16);
-        qDebug() << "four - " << valTrans << "\n";
+         emit messegeLog("four - " + valTrans + '\n');
+        //qDebug() << "four - " << valTrans << "\n";
 
         
 		QString str_t = QString("INSERT INTO channelTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - определ€ет те значени€ которые будут записаниы в строку
@@ -166,4 +179,9 @@ void MyTcpServer::slotClientDisconnected()
     mTcpSocket->close(); // создлаЄт сигнал void QIODevice::aboutToClose() а затем устанавливает дл€ OpenMode состо€ние NotOpen.
     delete mTcpSocket;
     mTcpSocket = nullptr;
+}
+
+SQLiteDB* MyTcpServer::returnPtrDb()
+{
+    return dataWrite;
 }

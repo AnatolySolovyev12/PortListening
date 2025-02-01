@@ -14,7 +14,7 @@ SQLiteDB::SQLiteDB(QObject* parent)
 
 	// запрос на создание таблицы c именем userlist
 	// создаём столбец с именем number. PRIMARY KEY (первичный ключ) всегда уникален. Запись в этом поле не должна быть пустой. В одной таблице только один ключ.
-	db_input = "CREATE TABLE channelTable IF NOT EXIST( "
+	db_input = "CREATE TABLE channelTable ( "
 		"number VARCHAR(20), " // NOT NULL - значение в таблице не может быть пустым. Если поставить NULL то можно будет оставлять пустым.   
 		"date VARCHAR(20), " // NOT NULL - значение в таблице не может быть пустым. Если поставить NULL то можно будет оставлять пустым.    
 		"channelFirst VARCHAR(20), " // VARCHAR - символьный тип данных с длиной строки указанной в скобках в байтах.
@@ -25,11 +25,13 @@ SQLiteDB::SQLiteDB(QObject* parent)
 
 	if (!query.exec(db_input)) // Выполняем запрос. exec - вернёт true если успешно. Синтаксис должен отвечать запрашиваемой БД.
 	{
-		qDebug() << "Unable to create a table" << query.lastError(); // Возвращаем информацию о последней ошибке. При вывзове exec, получая ошибку, она помещается в lastError(). Мы можем её прочитать..
+		emit messegeLog("Unable to create a table" + query.lastError().text());
+	//	qDebug() << "Unable to create a table" << query.lastError(); // Возвращаем информацию о последней ошибке. При вывзове exec, получая ошибку, она помещается в lastError(). Мы можем её прочитать..
 	}
 	else
 	{
-		qDebug() << "Table was create!";
+		emit messegeLog("Table was create!");
+		//qDebug() << "Table was create!";
 	}
 }
 
@@ -38,7 +40,8 @@ SQLiteDB::~SQLiteDB()
 {
 	mw_db.removeDatabase("DataBaseMilanRF"); // удаляет соединение с БД с именем из скобок.
 
-	qDebug() << "Object DB was destroyed";
+	emit messegeLog("Object DB was destroyed");
+	//qDebug() << "Object DB was destroyed";
 
 	exit(0);
 }
@@ -51,7 +54,8 @@ bool SQLiteDB::connectDB()
 
 	if (!mw_db.open()) // открываем БД. Если не открывает то вернёт false
 	{
-		qDebug() << "Cannot open database: " << mw_db.lastError();
+		emit messegeLog("Cannot open database: " + mw_db.lastError().text());
+		//qDebug() << "Cannot open database: " << mw_db.lastError();
 		return false;
 	}
 
@@ -102,7 +106,8 @@ void SQLiteDB::writeData(QString some)
 
 	if (!query.exec(db_input))
 	{
-		qDebug() << "Unable to insert data" << query.lastError() << " : " << query.lastQuery();
+		emit messegeLog("Unable to insert data" + query.lastError().text() + query.lastQuery());
+		//qDebug() << "Unable to insert data" << query.lastError() << " : " << query.lastQuery();
 	}
 }
 
