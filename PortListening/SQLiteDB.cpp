@@ -5,8 +5,6 @@
 SQLiteDB::SQLiteDB(QObject* parent)
 	: QObject(parent)
 {
-	user_counter = 0;
-
 	QTimer::singleShot(500, [this]() {
 
 		connectDB(); 
