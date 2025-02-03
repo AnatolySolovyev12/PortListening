@@ -132,7 +132,7 @@ void MyTcpServer::slotServerRead()
 
 
 
-        if (str.size() < 312) // out-of-array warning
+        if (str.size() < 310) // out-of-array warning
             continue;
         /*
         QString temporary;
