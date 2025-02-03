@@ -34,7 +34,7 @@ void MyTcpServer::slotNewConnection()
 {
     mTcpSocket = mTcpServer->nextPendingConnection(); // возвращает объект QTcpSocket для текущего соединения. Вернёт nullptr если вызвать эту функцию без наличия соединения. Лучше потом удалять QTcpSocket указатель и по итогу занулять.
 
-  //  mTcpSocket->write("Hello, World!!! I am echo server!\r\n");
+  //  mTcpSocket->write("Echo server!\r\n");
 
     connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); // если есть что читать (библиотечный сигнал) сработает слот
     connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected); // если сокет отсоединился (библиотечный сигнал) сработает слот
@@ -59,11 +59,11 @@ void MyTcpServer::slotServerRead()
 
         qDebug() << curDate.toString("dd-MM-yyyy") << " " << curTime.toString();
 
-        qDebug() << QByteArray::fromHex(array);
-        emit messegeLog(QByteArray::fromHex(array));
+       // qDebug() << QByteArray::fromHex(array);
+       // emit messegeLog(QByteArray::fromHex(array));
 
-        emit messegeLog(array);
-         qDebug() << array;
+       // emit messegeLog(array);
+       //  qDebug() << array;
 
        //  mTcpSocket->write(array); // Эхо эффект с отправкой принятого обратно сокету
 
@@ -77,8 +77,8 @@ void MyTcpServer::slotServerRead()
 
 
 
-        if (str.size() < 250) // out-of-array warning
-            continue;
+        
+        ///////////////////////////////////
 
         QString temporary;
 
@@ -106,6 +106,48 @@ void MyTcpServer::slotServerRead()
             }
         }
 
+        for (auto& val : myList)
+            temporary += val + " ";
+
+        emit messegeLog(temporary);
+
+        qDebug() << temporary + '\n';
+
+        ///////////////////////////////////////
+
+
+
+
+        if (str.size() < 310) // out-of-array warning
+        {
+            emit messegeLog("");
+            continue;
+        }
+
+         temporary = "";
+
+         middleString = "";
+
+         translate = "";
+
+         counter = 0;
+/*
+        QList <QString> myList;
+
+        for (auto val : str)
+        {
+            ++counter;
+
+            temporary += val;
+
+            if (counter == 2)
+            {
+                myList.append(temporary);
+                temporary = "";
+                counter = 0;
+            }
+        }
+*/
         QString numberStr;
 
         for (int counter = 3; counter >= 0; counter--)
