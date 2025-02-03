@@ -50,31 +50,32 @@ void MyTcpServer::slotServerRead()
         if (array == "35")
             continue;
 
-       // qDebug() << QByteArray::fromHex(array);
-        
-       // curDate.toString("yyyy-MM-dd")
         QDate curDate = QDate::currentDate();
         QTime curTime = QTime::currentTime();
 
        // qDebug() << curDate.toString("dd-MM-yyyy");
 
-        emit messegeLog(curDate.toString() + " " + curTime.toString() + "\n");
+        emit messegeLog(curDate.toString("dd-MM-yyyy") + " " + curTime.toString());
 
-       // qDebug() << curDate.toString() << " " << curTime.toString() << "\n";
+        qDebug() << curDate.toString("dd-MM-yyyy") << " " << curTime.toString();
 
-       //  qDebug() << array << "\n";
+        qDebug() << QByteArray::fromHex(array);
+        emit messegeLog(QByteArray::fromHex(array));
+
+        emit messegeLog(array);
+         qDebug() << array;
 
        //  mTcpSocket->write(array); // Эхо эффект с отправкой принятого обратно сокету
 
         QString str = array.toHex();
 
        // qDebug() << str << "\n";
-       // temporary = "Str size = " + QString::number(str.size()) + '\n';
-        emit messegeLog("Str size = " + QString::number(str.size()) + '\n');
 
-      //  qDebug() << "Str size = " << str.size() << "\n";
+        emit messegeLog("Str size = " + QString::number(str.size()));
 
-       // qDebug() << temporary << "\n";
+        qDebug() << "Str size = " << str.size();
+
+
 
         if (str.size() < 250) // out-of-array warning
             continue;
@@ -116,7 +117,7 @@ void MyTcpServer::slotServerRead()
 
         uint valTrans = numberStr.toUInt(&ok, 16);
 
-        emit messegeLog("Number - " + valTrans);
+        emit messegeLog("Number - " + QString::number(valTrans));
         //qDebug() << "Number - " << valTrans;
 
         QString first;
@@ -152,19 +153,19 @@ void MyTcpServer::slotServerRead()
         }
         
          valTrans = first.toUInt(&ok, 16);
-         emit messegeLog("first - " + valTrans);
+         emit messegeLog("first - " + QString::number(valTrans));
         //qDebug() << "first - " << valTrans;
 
          valTrans = two.toUInt(&ok, 16);
-         emit messegeLog("two - " + valTrans);
+         emit messegeLog("two - " + QString::number(valTrans));
         //qDebug() << "two - " << valTrans;
 
          valTrans = three.toUInt(&ok, 16);
-         emit messegeLog("three - " + valTrans);
+         emit messegeLog("three - " + QString::number(valTrans));
         //qDebug() << "three - " << valTrans;
 
          valTrans = four.toUInt(&ok, 16);
-         emit messegeLog("four - " + valTrans + '\n');
+         emit messegeLog("four - " + QString::number(valTrans) + '\n');
         //qDebug() << "four - " << valTrans << "\n";
 
         
