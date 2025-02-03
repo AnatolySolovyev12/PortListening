@@ -59,11 +59,11 @@ void MyTcpServer::slotServerRead()
 
         qDebug() << curDate.toString("dd-MM-yyyy") << " " << curTime.toString();
 
-        qDebug() << QByteArray::fromHex(array);
-        emit messegeLog(QByteArray::fromHex(array));
+        //qDebug() << QByteArray::fromHex(array);
+       // emit messegeLog(QByteArray::fromHex(array));
 
-        emit messegeLog(array);
-         qDebug() << array;
+       // emit messegeLog(array);
+       //  qDebug() << array;
 
        //  mTcpSocket->write(array); // Эхо эффект с отправкой принятого обратно сокету
 
@@ -77,8 +77,9 @@ void MyTcpServer::slotServerRead()
 
 
 
-        if (str.size() < 250) // out-of-array warning
-            continue;
+
+        /////////////////////////////////////////////////
+//view list massive in console for analyze
 
         QString temporary;
 
@@ -90,6 +91,60 @@ void MyTcpServer::slotServerRead()
 
         bool ok;
 
+        QList <QString> myListTest;
+
+        for (auto val : str)
+        {
+            ++counter;
+
+            temporary += val;
+
+            if (counter == 2)
+            {
+                myListTest.append(temporary);
+                temporary = "";
+                counter = 0;
+            }
+        }
+
+        temporary = "";
+
+        for (auto& val : myListTest)
+            temporary += val + " ";
+       // out << Qt::endl;
+       // out << Qt::endl;
+
+        emit messegeLog(temporary);
+
+        temporary = "";
+
+        middleString = "";
+
+        translate = "";
+
+        counter = 0;
+        ///////////////////////////////////////////////
+
+
+
+
+
+
+
+
+        if (str.size() < 312) // out-of-array warning
+            continue;
+        /*
+        QString temporary;
+
+        QString middleString;
+
+        QString translate;
+
+        int counter = 0;
+
+        bool ok;
+        */
         QList <QString> myList;
 
         for (auto val : str)
