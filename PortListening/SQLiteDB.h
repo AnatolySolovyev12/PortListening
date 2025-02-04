@@ -1,10 +1,7 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
-
-
 #include <QString>
-
 //#include <QSqlDatabase>
 #include <QtSql/QtSql>
 
@@ -16,13 +13,11 @@ public:
     SQLiteDB(QObject* parent = nullptr);
     ~SQLiteDB();
 
-    bool connectDB(); // прототип метода подключения к БД
+    bool connectDB();
 
-    QString db_input; // строка для отправки запроса к БД
+    QString db_input; 
 
-    QSqlDatabase mw_db; // экземпляр подключения к БД
-
-    int user_counter = 0; // счетчик пользователей
+    QSqlDatabase mw_db;
 
     int myTest = 0;
 
