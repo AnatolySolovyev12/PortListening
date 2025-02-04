@@ -180,7 +180,7 @@ void MyTcpServer::slotServerRead()
         //qDebug() << "three - " << valTrans;
 
          valTrans = four.toUInt(&ok, 16);
-         emit messegeLog("four - " + QString::number(valTrans) + '\n');
+         emit messegeLog("four - " + QString::number(valTrans));
         //qDebug() << "four - " << valTrans << "\n";
 
         
