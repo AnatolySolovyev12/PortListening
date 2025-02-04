@@ -209,6 +209,7 @@ void MyTcpServer::slotServerRead()
 		dataWrite->writeData(str_t);
 	}
 
+    /*
     // ntcnbhetv на проблемы с некорректным использованием указателей
 
     if (mTcpSocket == nullptr) return;
@@ -216,6 +217,7 @@ void MyTcpServer::slotServerRead()
     mTcpSocket->close(); // создлаёт сигнал void QIODevice::aboutToClose() а затем устанавливает для OpenMode состояние NotOpen.
     delete mTcpSocket;
     mTcpSocket = nullptr;
+    */
 }
 
 void MyTcpServer::slotClientDisconnected()
