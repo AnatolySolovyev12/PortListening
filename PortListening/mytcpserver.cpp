@@ -55,9 +55,9 @@ void MyTcpServer::slotServerRead()
 
        // qDebug() << curDate.toString("dd-MM-yyyy");
 
-        emit messegeLog(curDate.toString("dd-MM-yyyy") + " " + curTime.toString());
+        emit messegeLog('\n' + curDate.toString("dd-MM-yyyy") + " " + curTime.toString());
 
-        qDebug() << curDate.toString("dd-MM-yyyy") << " " << curTime.toString();
+       // qDebug() << curDate.toString("dd-MM-yyyy") << " " << curTime.toString();
 
        // qDebug() << QByteArray::fromHex(array);
        // emit messegeLog(QByteArray::fromHex(array));
@@ -73,12 +73,8 @@ void MyTcpServer::slotServerRead()
 
         emit messegeLog("Str size = " + QString::number(str.size()));
 
-        qDebug() << "Str size = " << str.size();
+       // qDebug() << "Str size = " << str.size();
 
-
-
-        
-        ///////////////////////////////////
 
         QString temporary;
 
@@ -90,55 +86,6 @@ void MyTcpServer::slotServerRead()
 
         bool ok;
 
-        QList <QString> myListTest;
-
-        for (auto val : str)
-        {
-            ++counter;
-
-            temporary += val;
-
-            if (counter == 2)
-            {
-                myListTest.append(temporary);
-                temporary = "";
-                counter = 0;
-            }
-        }
-
-        temporary = "";
-
-        for (auto& val : myListTest)
-            temporary += val + " ";
-       // out << Qt::endl;
-       // out << Qt::endl;
-
-        emit messegeLog(temporary);
-
-        temporary = "";
-
-        middleString = "";
-
-        translate = "";
-
-        counter = 0;
-        ///////////////////////////////////////////////
-
-
-
-        if (str.size() != 312) // out-of-array warning
-            continue;
-        /*
-        QString temporary;
-
-        QString middleString;
-
-        QString translate;
-
-        int counter = 0;
-
-        bool ok;
-        */
         QList <QString> myList;
 
         for (auto val : str)
@@ -158,45 +105,22 @@ void MyTcpServer::slotServerRead()
         for (auto& val : myList)
             temporary += val + " ";
 
+       // out << Qt::endl;
+       // out << Qt::endl;
+
         emit messegeLog(temporary);
 
-        qDebug() << temporary + '\n';
+        temporary = "";
 
-        ///////////////////////////////////////
+        middleString = "";
 
+        translate = "";
 
+        counter = 0;
 
-
-        if (str.size() < 310) // out-of-array warning
-        {
-            emit messegeLog("");
+        if (str.size() != 312) // out-of-array warning
             continue;
-        }
 
-         temporary = "";
-
-         middleString = "";
-
-         translate = "";
-
-         counter = 0;
-/*
-        QList <QString> myList;
-
-        for (auto val : str)
-        {
-            ++counter;
-
-            temporary += val;
-
-            if (counter == 2)
-            {
-                myList.append(temporary);
-                temporary = "";
-                counter = 0;
-            }
-        }
-*/
         QString numberStr;
 
         for (int counter = 3; counter >= 0; counter--)

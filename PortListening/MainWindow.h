@@ -50,8 +50,8 @@ private slots:
 		*/
 	}
 
-	void outputMessage(const QString some) {
-
+	void outputMessage(const QString some) 
+	{
 		textEdit->append(some);
 	}
 
