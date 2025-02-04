@@ -47,7 +47,11 @@ void MyTcpServer::slotNewConnection()
 
 void MyTcpServer::slotServerRead()
 {
-    
+    if (!mTcpSocket) {
+        emit messegeLog("Socket is null in start slotServerRead\n");
+        return;
+    }
+
     while (mTcpSocket->bytesAvailable() > 0)
     {
         QByteArray array = mTcpSocket->readAll();
@@ -128,6 +132,11 @@ void MyTcpServer::slotServerRead()
 
         QString numberStr;
 
+        if (myList.size() < 4) {
+            emit messegeLog("Not enough elements in myList");
+            continue;
+        }
+
         for (int counter = 3; counter >= 0; counter--)
         {
 
@@ -199,10 +208,26 @@ void MyTcpServer::slotServerRead()
 
 		dataWrite->writeData(str_t);
 	}
+
+    // ntcnbhetv на проблемы с некорректным использованием указателей
+
+    if (mTcpSocket == nullptr) return;
+
+    mTcpSocket->close(); // создлаёт сигнал void QIODevice::aboutToClose() а затем устанавливает для OpenMode состояние NotOpen.
+    delete mTcpSocket;
+    mTcpSocket = nullptr;
 }
 
 void MyTcpServer::slotClientDisconnected()
 {
+    // ntcnbhetv на проблемы с некорректным использованием указателей
+
+    if (mTcpSocket == nullptr)
+    {
+        emit messegeLog("Was disconnect but mTcpSocket was nullptr\n");
+        return;
+    }
+
     mTcpSocket->close(); // создлаёт сигнал void QIODevice::aboutToClose() а затем устанавливает для OpenMode состояние NotOpen.
     delete mTcpSocket;
     mTcpSocket = nullptr;
