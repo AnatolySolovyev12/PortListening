@@ -34,6 +34,11 @@ void MyTcpServer::slotNewConnection()
 {
     mTcpSocket = mTcpServer->nextPendingConnection(); // возвращает объект QTcpSocket для текущего соединения. Вернёт nullptr если вызвать эту функцию без наличия соединения. Лучше потом удалять QTcpSocket указатель и по итогу занулять.
 
+    if (!mTcpSocket) // проверка на некорректное использование
+    {
+        emit messegeLog("No pending connection\n");
+        return; // Выход из функции, если нет соединения
+    }
   //  mTcpSocket->write("Echo server!\r\n");
 
     connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); // если есть что читать (библиотечный сигнал) сработает слот
