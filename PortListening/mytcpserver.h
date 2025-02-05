@@ -15,6 +15,7 @@ public:
     explicit MyTcpServer(QObject* parent = 0);
 
     SQLiteDB* returnPtrDb();
+    QString converFuncString(QString& any);
 
 public slots:
     void slotNewConnection();
