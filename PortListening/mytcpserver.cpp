@@ -216,27 +216,27 @@ void MyTcpServer::slotServerRead()
 
 		if (str.size() == 202)
 		{
-			for (int counter = 158; counter >= 119; --counter)
+			for (int counter = 168; counter >= 129; --counter)
 			{
-				if (counter >= 151)
+				if (counter >= 161)
 				{
 					four += str[counter];
 					continue;
 				}
 
-				if (counter >= 143)
+				if (counter >= 153)
 				{
 					three += str[counter];
 					continue;
 				}
 
-				if (counter >= 135)
+				if (counter >= 145)
 				{
 					two += str[counter];
 					continue;
 				}
 
-				if (counter >= 127)
+				if (counter >= 137)
 				{
 					first += str[counter];
 					continue;
