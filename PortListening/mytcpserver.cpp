@@ -216,27 +216,27 @@ void MyTcpServer::slotServerRead()
 
 		if (str.size() == 202)
 		{
-			for (int counter = 148; counter >= 109; --counter)
+			for (int counter = 149; counter >= 110; --counter)
 			{
-				if (counter >= 141)
+				if (counter >= 142)
 				{
 					four += str[counter];
 					continue;
 				}
 
-				if (counter >= 133)
+				if (counter >= 134)
 				{
 					three += str[counter];
 					continue;
 				}
 
-				if (counter >= 125)
+				if (counter >= 126)
 				{
 					two += str[counter];
 					continue;
 				}
 
-				if (counter >= 117)
+				if (counter >= 118)
 				{
 					first += str[counter];
 					continue;
@@ -307,9 +307,12 @@ QString MyTcpServer::converFuncString(QString& any)
 
 	any = QString::number(testInt);
 
-	if (any.length() == 2)
+	if (any.length() == 2 || any.length() == 1)
 	{
-		any.push_front("0.");
+		if (any.length() == 2)
+			any.push_front("0.");
+		else
+			any.push_front("0.0");
 
 	}
 	else
