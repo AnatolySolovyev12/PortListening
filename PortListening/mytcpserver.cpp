@@ -5,7 +5,7 @@
 
 QTextStream out(stdout);
 
-MyTcpServer::MyTcpServer(QObject* parent) : QObject(parent)
+MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 {
 	mTcpServer = new QTcpServer(this);
 
@@ -15,19 +15,18 @@ MyTcpServer::MyTcpServer(QObject* parent) : QObject(parent)
 
 	QTimer::singleShot(500, [this]() {
 
-		if (!mTcpServer->listen(QHostAddress::Any, 6000)) // слушаем с любого адреса на порт 6000. ћожно указать определЄнный host дл€ прослушивани€
+		if (!mTcpServer->listen(QHostAddress::Any, port)) // слушаем с любого адреса на порт 6000. ћожно указать определЄнный host дл€ прослушивани€
 		{
-			emit messegeLog("server is not started\n");
+			emit messegeLog("server with port " + QString::number(port) + " is not started\n");
 			// qDebug() << "server is not started\n";
 		}
 		else
 		{
-			emit messegeLog("server is started\n");
+			emit messegeLog("server with port " + QString::number(port) + " is started\n");
 			// qDebug() << "server is started\n";
 		}
 
 		});
-
 }
 
 void MyTcpServer::slotNewConnection()
@@ -64,7 +63,7 @@ void MyTcpServer::slotServerRead()
 
 		// qDebug() << curDate.toString("dd-MM-yyyy");
 
-		emit messegeLog('\n' + curDate.toString("dd-MM-yyyy") + " " + curTime.toString());
+		emit messegeLog('\n' + QString::number(port) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString());
 
 		// qDebug() << curDate.toString("dd-MM-yyyy") << " " << curTime.toString();
 
@@ -83,7 +82,6 @@ void MyTcpServer::slotServerRead()
 		emit messegeLog("Str size = " + QString::number(str.size()));
 
 		// qDebug() << "Str size = " << str.size();
-
 
 		QString temporary;
 
@@ -243,7 +241,6 @@ void MyTcpServer::slotServerRead()
 				}
 			}
 
-
 			emit messegeLog("first - " + converFuncString(first));
 			//qDebug() << "first - " << valTrans;
 
@@ -268,16 +265,6 @@ void MyTcpServer::slotServerRead()
 			dataWrite->writeData(str_t);
 		}
 	}
-
-	/*
-	// проверка на проблемы с некорректным использованием указателей
-
-	if (mTcpSocket == nullptr) return;
-
-	mTcpSocket->close(); // создлаЄт сигнал void QIODevice::aboutToClose() а затем устанавливает дл€ OpenMode состо€ние NotOpen.
-	delete mTcpSocket;
-	mTcpSocket = nullptr;
-	*/
 }
 
 void MyTcpServer::slotClientDisconnected()

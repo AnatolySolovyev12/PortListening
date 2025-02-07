@@ -12,7 +12,7 @@ class MyTcpServer : public QObject
 {
     Q_OBJECT
 public:
-    explicit MyTcpServer(QObject* parent = 0);
+    explicit MyTcpServer(int any, QObject* parent = 0);
 
     SQLiteDB* returnPtrDb();
     QString converFuncString(QString& any);
@@ -30,6 +30,7 @@ private:
     QTcpServer* mTcpServer = nullptr;
     QTcpSocket* mTcpSocket = nullptr;
     SQLiteDB* dataWrite = nullptr;
+    int port;
 };
 
 #endif // MYTCPSERVER_H

@@ -23,6 +23,7 @@ public:
 	//void outputMessage();
 
 	void clearWindow();
+	void readPropertiesFile();
 
 private slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason reason)
@@ -58,7 +59,14 @@ private slots:
 
 private:
 	MyTcpServer* TcpServer = nullptr;
+	MyTcpServer* TcpServerNext = nullptr;
 	SQLiteDB* dbForEmit = nullptr;
+	SQLiteDB* dbForEmitNext = nullptr;
+
+	QList <MyTcpServer*> serverList;
+	QList <SQLiteDB*> dbList;
+	int port = 43000;
+	int counterPorts = 1;
 
 	QSystemTrayIcon* trayIcon = nullptr;
 
