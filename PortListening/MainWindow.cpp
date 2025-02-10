@@ -36,15 +36,6 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(clear, &QPushButton::clicked, this, &MainWindow::clearWindow);
 
 	readPropertiesFile();
-
-	for (int val = 0; val < counterPorts; val++)
-	{
-		serverList.push_back(new MyTcpServer(port + val));
-		connect(serverList[val], SIGNAL(messegeLog(QString)), this, SLOT(outputMessage(QString)));
-
-		dbList.push_back(serverList[val]->returnPtrDb());
-		connect(dbList[val], SIGNAL(messegeLog(QString)), this, SLOT(outputMessage(QString)));
-	}
 }
 
 MainWindow::~MainWindow()
@@ -53,7 +44,7 @@ MainWindow::~MainWindow()
 void MainWindow::clearWindow()
 {
 	textEdit->clear();
-}
+} 
 
 void MainWindow::readPropertiesFile()
 {
@@ -62,6 +53,15 @@ void MainWindow::readPropertiesFile()
 	if (!file.open(QIODevice::ReadOnly))
 	{
 		textEdit->append("Don't find browse file. Used default parameters\n");
+
+		port = 49000;
+
+		serverList.push_back(new MyTcpServer(port));
+		connect(serverList[0], SIGNAL(messegeLog(QString)), this, SLOT(outputMessage(QString)));
+
+		dbList.push_back(serverList[0]->returnPtrDb());
+		connect(dbList[0], SIGNAL(messegeLog(QString)), this, SLOT(outputMessage(QString)));
+
 		return;
 	}
 
@@ -71,20 +71,50 @@ void MainWindow::readPropertiesFile()
 	QString temporary;
 	QString* myLine = new QString();
 	int counter = 0;
+	int counterErr = 1;
+	bool digitErr = false;
 
 	while (out.readLineInto(myLine, 0))
 	{
-		if (counter == 0)
+		if (myLine->length() > 5 || myLine->length() < 4)
 		{
-			counterPorts = myLine->toInt(&ok, 10);
+			textEdit->append("The port on line " + QString::number(counter + counterErr) + " is incorrect\n");
+			counterErr++;
+			continue;
 		}
-	
-		else
+
+		for (auto& val : *myLine)
 		{
-			port = myLine->toInt(&ok, 10);
-			break;
+			if (!val.isDigit())
+			{
+				textEdit->append("The port on line " + QString::number(counter + counterErr) + " is incorrect\n");
+				counterErr++;
+				digitErr = true;
+				continue;
+			}
 		}
-		counter++;
+
+		if (digitErr)
+		{
+			digitErr = false;
+			continue;
+		}
+
+		port = myLine->toInt(&ok, 10);
+
+		serverList.push_back(new MyTcpServer(port));
+		connect(serverList[counter], SIGNAL(messegeLog(QString)), this, SLOT(outputMessage(QString)));
+		dbList.push_back(serverList[counter]->returnPtrDb());
+		connect(dbList[counter], SIGNAL(messegeLog(QString)), this, SLOT(outputMessage(QString)));
+
+		++counter;
 	}
+
+	if (myLine != nullptr)
+	{
+		delete myLine;
+		myLine = nullptr;
+	}
+	
 	file.close();
 }
