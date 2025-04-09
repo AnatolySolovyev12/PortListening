@@ -16,14 +16,10 @@ int main(int argc, char* argv[])
 
 	MainWindow mainWindow;
 
-	QTimer::singleShot(2000,  [&mainWindow]() 
-		{
-			mainWindow.setWindowIcon(QIcon("icon.png"));
-			mainWindow.setWindowTitle("PortListening by Solovev");
-			mainWindow.resize(700, 300);
-			mainWindow.show();
-		});
-
+	mainWindow.setWindowIcon(QIcon("icon.png"));
+	mainWindow.setWindowTitle("PortListening by Solovev");
+	mainWindow.resize(700, 300);
+	mainWindow.show();
 
 	return app.exec();
 }
