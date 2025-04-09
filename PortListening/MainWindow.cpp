@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget* parent)
 
 	connect(clear, &QPushButton::clicked, this, &MainWindow::clearWindow);
 
-	readPropertiesFile();
+	QTimer::singleShot(3000, this, &MainWindow::readPropertiesFile);
 }
 
 MainWindow::~MainWindow()

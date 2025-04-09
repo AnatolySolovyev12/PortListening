@@ -6,7 +6,7 @@
 #include <QWidget>
 
 #include "mytcpserver.h"
-
+#include <QTimer.h>
 #include <QTextEdit>
 #include <QVBoxLayout>
 #include <QPushButton>
