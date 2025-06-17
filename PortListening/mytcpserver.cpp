@@ -42,6 +42,12 @@ void MyTcpServer::slotNewConnection()
 
 	connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); // если есть что читать (библиотечный сигнал) сработает слот
 	connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected); // если сокет отсоединился (библиотечный сигнал) сработает слот
+
+	QDate curDate = QDate::currentDate();
+	QTime curTime = QTime::currentTime();
+
+	QString temp = "\nConnect from host " + mTcpSocket->peerAddress().toString() + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString();
+	emit messegeLog(temp);
 }
 
 void MyTcpServer::slotServerRead()
@@ -55,8 +61,8 @@ void MyTcpServer::slotServerRead()
 	{
 		QByteArray array = mTcpSocket->readAll();
 
-		if (array == "35")
-			continue;
+		//if (array == "35")
+		//	continue;
 
 		QDate curDate = QDate::currentDate();
 		QTime curTime = QTime::currentTime();
