@@ -38,7 +38,7 @@ void MyTcpServer::slotNewConnection()
 		emit messegeLog("No pending connection\n");
 		return; // Выход из функции, если нет соединения
 	}
-	//  mTcpSocket->write("Echo server!\r\n");
+	 mTcpSocket->write("Echo server!\r\n");
 
 
 
@@ -85,6 +85,8 @@ void MyTcpServer::slotServerRead()
 	while (mTcpSocket->bytesAvailable() > 0)
 	{
 		QByteArray array = mTcpSocket->readAll();
+
+		mTcpSocket->write("messege!!!\r\n");
 
 		if (array == "35")
 		{
