@@ -63,7 +63,22 @@ void MyTcpServer::slotServerRead()
 		QByteArray array = mTcpSocket->readAll();
 
 		if (array == "35")
-			continue;
+		{
+			QString hexValueZero = QString::number(0, 16);
+			QByteArray nullVal = QByteArray::fromHex(hexValueZero.toUtf8());
+
+			//f0 24 01 00 08 01 a3 10
+
+			QByteArray hexValue1 = "\xf0\x24\x01";
+			QByteArray hexValue2 = "\x08\x01\xa3\10";
+
+			QByteArray testArray = hexValue1 + nullVal + hexValue2;
+
+
+			mTcpSocket->write(testArray);
+
+			//continue;
+		}
 
 		QDate curDate = QDate::currentDate();
 		QTime curTime = QTime::currentTime();
