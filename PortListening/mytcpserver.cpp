@@ -49,16 +49,6 @@ void MyTcpServer::slotNewConnection()
 		return; // ¬ыход из функции, если нет соединени€
 	}
 
-
-
-	 mTcpSocket->write("Echo server!\r\n");
-	 mTcpSocket->write(testArray);
-	 mTcpSocket->write(testArray.toHex());
-
-
-
-
-
 	connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); // если есть что читать (библиотечный сигнал) сработает слот
 	connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected); // если сокет отсоединилс€ (библиотечный сигнал) сработает слот
 	
@@ -67,7 +57,6 @@ void MyTcpServer::slotNewConnection()
 
 	QString temp = "\nConnect from host " + mTcpSocket->peerAddress().toString().sliced(7) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString(); // дл€ анализа вход€щих подключений
 	emit messegeLog(temp);
-	
 }
 
 void MyTcpServer::slotServerRead()
@@ -82,11 +71,12 @@ void MyTcpServer::slotServerRead()
 		QByteArray array = mTcpSocket->readAll();
 
 		//mTcpSocket->write("Echo server!\r\n");
-		mTcpSocket->write(testArray);
+		//mTcpSocket->write(testArray);
 		//mTcpSocket->write(testArray.toHex());
 
 		if (array == "35")
 		{
+			continue;
 			/*
 			QString hexValueZero = QString::number(0, 16);
 			QByteArray nullVal = QByteArray::fromHex(hexValueZero.toUtf8());
@@ -314,6 +304,9 @@ void MyTcpServer::slotServerRead()
 			dataWrite->writeData(str_t);
 		}
 	}
+
+	emit messegeLog(testArray.toHex());
+	mTcpSocket->write(testArray);
 }
 
 void MyTcpServer::slotClientDisconnected()
