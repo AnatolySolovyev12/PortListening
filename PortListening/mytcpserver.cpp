@@ -46,7 +46,7 @@ void MyTcpServer::slotNewConnection()
 	QDate curDate = QDate::currentDate();
 	QTime curTime = QTime::currentTime();
 
-	QString temp = "\nConnect from host " + mTcpSocket->peerAddress().toString().sliced(7) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString();
+	QString temp = "\nConnect from host " + mTcpSocket->peerAddress().toString().sliced(7) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString(); // для анализа входящих подключений
 	emit messegeLog(temp);
 	*/
 }
