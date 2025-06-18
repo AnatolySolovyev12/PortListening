@@ -77,6 +77,7 @@ void MyTcpServer::slotServerRead()
 
 			mTcpSocket->write(testArray);
 
+			emit messegeLog(testArray);
 			//continue;
 		}
 
