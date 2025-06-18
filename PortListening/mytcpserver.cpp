@@ -70,7 +70,7 @@ void MyTcpServer::slotServerRead()
 			//f0 24 01 00 08 01 a3 10
 
 			QByteArray hexValue1 = "\xf0\x24\x01";
-			QByteArray hexValue2 = "\x08\x01\xa3\10";
+			QByteArray hexValue2 = "\x08\x01\xa3\10\00";
 
 			QByteArray testArray = hexValue1 + nullVal + hexValue2;
 
