@@ -308,12 +308,11 @@ void MyTcpServer::slotServerRead()
 		}
 	}
 
-	if (testBool)
-	{
+
 		emit messegeLog(testArray.toHex());
 		mTcpSocket->write(testArray);
-		testBool = false;
-	}
+
+	
 }
 
 void MyTcpServer::slotClientDisconnected()

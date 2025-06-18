@@ -34,7 +34,7 @@ private:
 
 
     QByteArray testArray;
-    bool testBool = true;
+
 };
 
 #endif // MYTCPSERVER_H
