@@ -81,7 +81,9 @@ void MyTcpServer::slotServerRead()
 	{
 		QByteArray array = mTcpSocket->readAll();
 
-		mTcpSocket->write("messege!!!\r\n");
+		mTcpSocket->write("Echo server!\r\n");
+		mTcpSocket->write(testArray);
+		mTcpSocket->write(testArray.toHex());
 
 		if (array == "35")
 		{
