@@ -31,6 +31,9 @@ private:
     QTcpSocket* mTcpSocket = nullptr;
     SQLiteDB* dataWrite = nullptr;
     int port;
+
+
+    QByteArray testArray;
 };
 
 #endif // MYTCPSERVER_H

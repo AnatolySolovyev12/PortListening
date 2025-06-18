@@ -27,6 +27,16 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 		}
 
 		});
+
+	QString hexValueZero = QString::number(0, 16);
+	QByteArray nullVal = QByteArray::fromHex(hexValueZero.toUtf8());
+
+	//f0 24 01 00 08 01 a3 10
+
+	QByteArray hexValue1 = "\xf0\x24\x01";
+	QByteArray hexValue2 = "\x08\x01\xa3\x10";
+
+	testArray = hexValue1 + nullVal + hexValue2;
 }
 
 void MyTcpServer::slotNewConnection()
@@ -38,30 +48,15 @@ void MyTcpServer::slotNewConnection()
 		emit messegeLog("No pending connection\n");
 		return; // Выход из функции, если нет соединения
 	}
+
+
+
 	 mTcpSocket->write("Echo server!\r\n");
+	 mTcpSocket->write(testArray);
+	 mTcpSocket->write(testArray.toHex());
 
 
 
-	/////////////////
-	QString hexValueZero = QString::number(0, 16);
-	QByteArray nullVal = QByteArray::fromHex(hexValueZero.toUtf8());
-
-	//f0 24 01 00 08 01 a3 10
-
-	QByteArray hexValue1 = "\xf0\x24\x01";
-	QByteArray hexValue2 = "\x08\x01\xa3\x10";
-
-	QByteArray testArray = hexValue1 + nullVal + hexValue2;
-
-	mTcpSocket->write(testArray);
-	/*
-	QTimer::singleShot(100, [this, testArray]() {
-		
-		});
-
-	emit messegeLog(testArray.toHex());
-	*/
-	/////////////////////////////////
 
 
 	connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); // если есть что читать (библиотечный сигнал) сработает слот
