@@ -77,7 +77,7 @@ void MyTcpServer::slotServerRead()
 
 			mTcpSocket->write(testArray);
 
-			emit messegeLog(testArray);
+			emit messegeLog(testArray.toHex());
 			//continue;
 		}
 
