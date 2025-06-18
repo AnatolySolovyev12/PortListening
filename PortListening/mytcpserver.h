@@ -35,6 +35,7 @@ private:
 
     QByteArray testArray;
 
+    int counter = 1;
 };
 
 #endif // MYTCPSERVER_H
