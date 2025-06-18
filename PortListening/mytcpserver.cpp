@@ -40,6 +40,30 @@ void MyTcpServer::slotNewConnection()
 	}
 	//  mTcpSocket->write("Echo server!\r\n");
 
+
+
+	/////////////////
+	QString hexValueZero = QString::number(0, 16);
+	QByteArray nullVal = QByteArray::fromHex(hexValueZero.toUtf8());
+
+	//f0 24 01 00 08 01 a3 10
+
+	QByteArray hexValue1 = "\xf0\x24\x01";
+	QByteArray hexValue2 = "\x08\x01\xa3\x10";
+
+	QByteArray testArray = hexValue1 + nullVal + hexValue2;
+
+	mTcpSocket->write(testArray);
+	/*
+	QTimer::singleShot(100, [this, testArray]() {
+		
+		});
+
+	emit messegeLog(testArray.toHex());
+	*/
+	/////////////////////////////////
+
+
 	connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); // если есть что читать (библиотечный сигнал) сработает слот
 	connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected); // если сокет отсоединился (библиотечный сигнал) сработает слот
 	
@@ -64,6 +88,7 @@ void MyTcpServer::slotServerRead()
 
 		if (array == "35")
 		{
+			/*
 			QString hexValueZero = QString::number(0, 16);
 			QByteArray nullVal = QByteArray::fromHex(hexValueZero.toUtf8());
 
@@ -74,11 +99,13 @@ void MyTcpServer::slotServerRead()
 
 			QByteArray testArray = hexValue1 + nullVal + hexValue2;
 
-
-			mTcpSocket->write(testArray);
+			QTimer::singleShot(100, [this, testArray]() {
+				mTcpSocket->write(testArray);
+				});
 
 			emit messegeLog(testArray.toHex());
 			//continue;
+			*/
 		}
 
 		QDate curDate = QDate::currentDate();
