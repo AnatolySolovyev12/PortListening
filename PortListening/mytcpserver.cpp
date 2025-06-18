@@ -28,18 +28,6 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 
 		});
 
-	QString hexValueZero = QString::number(0, 16);
-	QByteArray nullVal = QByteArray::fromHex(hexValueZero.toUtf8());
-
-	//f0 24 01 00 10 42 05 00 7a 00 7a 00 91 13
-
-	QByteArray hexValue1 = "\xf0\x24\x01";
-	QByteArray hexValue2 = "\x10\x42\x05";
-	QByteArray hexValue3 = "\x7a";
-	QByteArray hexValue4 = "\x7a";
-	QByteArray hexValue5 = "\x91\x13";
-
-	testArray = hexValue1 + nullVal + hexValue2 + nullVal + hexValue3 + nullVal + hexValue4 + nullVal + hexValue5;
 }
 
 void MyTcpServer::slotNewConnection()
@@ -76,6 +64,8 @@ void MyTcpServer::slotServerRead()
 		//mTcpSocket->write("Echo server!\r\n");
 		//mTcpSocket->write(testArray);
 		//mTcpSocket->write(testArray.toHex());
+
+		continue;
 
 		if (array == "35")
 		{
@@ -308,12 +298,11 @@ void MyTcpServer::slotServerRead()
 		}
 	}
 
-	if (testBool)
-	{
+
 		emit messegeLog(testArray.toHex());
 		mTcpSocket->write(testArray);
-		testBool = false;
-	}
+
+	
 }
 
 void MyTcpServer::slotClientDisconnected()
