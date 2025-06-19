@@ -80,7 +80,7 @@ void MyTcpServer::slotServerRead()
 
 		if (array == "35")
 		{
-			QByteArray testNumber = "74995";
+			QByteArray testNumber = "74998";
 
 			QByteArray data1 = QByteArray::fromHex("0800FFFFFFFFFFFF");
 
@@ -287,12 +287,6 @@ void MyTcpServer::slotServerRead()
 			dataWrite->writeData(str_t);
 		}
 	}
-
-
-		emit messegeLog(testArray.toHex());
-		mTcpSocket->write(testArray);
-
-	
 }
 
 void MyTcpServer::slotClientDisconnected()
