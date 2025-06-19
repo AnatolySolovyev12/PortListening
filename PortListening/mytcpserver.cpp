@@ -27,7 +27,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 		});
 
 	
-	
+	/*
 	
 	QTimer::singleShot(300, [this]() {
 
@@ -42,6 +42,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 		emit messegeLog(data1.toHex().toUpper() + crc1);
 		
 		});	
+		*/
 }
 
 void MyTcpServer::slotNewConnection()
