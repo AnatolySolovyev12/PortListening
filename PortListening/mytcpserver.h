@@ -17,6 +17,9 @@ public:
     SQLiteDB* returnPtrDb();
     QString converFuncString(QString& any);
 
+    QString crc16Modbus(const QByteArray& data);
+    QByteArray serialArrayRotate(QByteArray testNumber);
+
 public slots:
     void slotNewConnection();
     void slotServerRead();

@@ -27,6 +27,23 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 		}
 
 		});
+
+	
+	
+	
+	QTimer::singleShot(300, [this]() {
+
+		QByteArray testNumber = "80537";
+
+		QByteArray data1 = QByteArray::fromHex("0800FFFFFFFFFFFF");
+
+		data1.push_front(QByteArray::fromHex(serialArrayRotate(testNumber)));
+
+		QString crc1 = crc16Modbus(data1);
+
+		emit messegeLog(data1.toHex().toUpper() + crc1);
+		
+		});	
 }
 
 void MyTcpServer::slotNewConnection()
@@ -309,3 +326,58 @@ QString MyTcpServer::converFuncString(QString& any)
 
 	return any;
 }
+
+
+QString MyTcpServer::crc16Modbus(const QByteArray& data) // CRC16MODBUS для определения контрольной суммы в конце пакетов для Милур107
+{
+	quint16 crc = 0xFFFF;
+	for (auto byte : data) {
+		crc ^= static_cast<quint8>(byte);
+		for (int i = 0; i < 8; ++i) {
+			if (crc & 0x0001)
+				crc = (crc >> 1) ^ 0xA001;
+			else
+				crc >>= 1;
+		}
+	}
+
+	QString temp = QString("%1%2")
+		.arg(crc & 0xFF, 2, 16, QChar('0'))
+		.arg((crc >> 8) & 0xFF, 2, 16, QChar('0')).toUpper();
+
+	return temp;
+}
+
+
+QByteArray MyTcpServer::serialArrayRotate(QByteArray testNumber)
+{
+	bool ok = false;
+	int number = testNumber.toInt(&ok);
+
+	QByteArray hexData = QByteArray::number(number, 16).toUpper();
+
+	while (hexData.length() != 8)
+		hexData.push_front("0");
+
+	int count = 0;
+
+	QByteArray tempStr;
+
+	QByteArray arrForByte;
+
+	for (auto& val : hexData)
+	{
+		tempStr += val;
+		count++;
+
+		if (count == 2)
+		{
+			arrForByte.push_front(tempStr);
+			tempStr.clear();
+			count = 0;
+		}
+	}
+
+	return arrForByte;
+}
+
