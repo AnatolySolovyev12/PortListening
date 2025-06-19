@@ -18,12 +18,10 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 		if (!mTcpServer->listen(QHostAddress::Any, port)) // слушаем с любого адреса на порт 6000. Можно указать определённый host для прослушивания
 		{
 			emit messegeLog("server with port " + QString::number(port) + " is not started\n");
-			// qDebug() << "server is not started\n";
 		}
 		else
 		{
 			emit messegeLog("server with port " + QString::number(port) + " is started\n");
-			// qDebug() << "server is started\n";
 		}
 
 		});
@@ -78,27 +76,13 @@ void MyTcpServer::slotServerRead()
 		QDate curDate = QDate::currentDate();
 		QTime curTime = QTime::currentTime();
 
-		// qDebug() << curDate.toString("dd-MM-yyyy");
-
 		emit messegeLog('\n' + QString::number(port) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString());
-
-		// qDebug() << curDate.toString("dd-MM-yyyy") << " " << curTime.toString();
-
-		// qDebug() << QByteArray::fromHex(array);
-		// emit messegeLog(QByteArray::fromHex(array));
-
-		// emit messegeLog(array);
-		//  qDebug() << array;
 
 		//  mTcpSocket->write(array); // Эхо эффект с отправкой принятого обратно сокету
 
 		QString str = array.toHex();
 
-		// qDebug() << str << "\n";
-
 		emit messegeLog("Str size = " + QString::number(str.size()));
-
-		// qDebug() << "Str size = " << str.size();
 
 		QString temporary;
 
@@ -128,9 +112,6 @@ void MyTcpServer::slotServerRead()
 
 		for (auto& val : myList)
 			temporary += val + " ";
-
-		// out << Qt::endl;
-		// out << Qt::endl;
 
 		emit messegeLog(temporary);
 
@@ -165,7 +146,6 @@ void MyTcpServer::slotServerRead()
 		uint valTrans = numberStr.toUInt(&ok, 16);
 
 		emit messegeLog("Number - " + QString::number(valTrans));
-		//qDebug() << "Number - " << valTrans;
 
 		QString first;
 		QString two;
