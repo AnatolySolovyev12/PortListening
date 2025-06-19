@@ -27,11 +27,11 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 		});
 
 	
-	
+	/*
 	
 	QTimer::singleShot(300, [this]() {
 
-		QByteArray testNumber = "80537";
+		QByteArray testNumber = "74995";
 
 		QByteArray data1 = QByteArray::fromHex("0800FFFFFFFFFFFF");
 
@@ -40,8 +40,11 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 		QString crc1 = crc16Modbus(data1);
 
 		emit messegeLog(data1.toHex().toUpper() + crc1);
+
 		
 		});	
+
+		*/
 }
 
 void MyTcpServer::slotNewConnection()
@@ -75,33 +78,24 @@ void MyTcpServer::slotServerRead()
 	{
 		QByteArray array = mTcpSocket->readAll();
 
-		//mTcpSocket->write("Echo server!\r\n");
-		//mTcpSocket->write(testArray);
-		//mTcpSocket->write(testArray.toHex());
-
-		continue;
-
 		if (array == "35")
 		{
-			continue;
-			/*
-			QString hexValueZero = QString::number(0, 16);
-			QByteArray nullVal = QByteArray::fromHex(hexValueZero.toUtf8());
+			QByteArray testNumber = "74995";
 
-			//f0 24 01 00 08 01 a3 10
+			QByteArray data1 = QByteArray::fromHex("0800FFFFFFFFFFFF");
 
-			QByteArray hexValue1 = "\xf0\x24\x01";
-			QByteArray hexValue2 = "\x08\x01\xa3\x10";
+			data1.push_front(QByteArray::fromHex(serialArrayRotate(testNumber)));
 
-			QByteArray testArray = hexValue1 + nullVal + hexValue2;
+			QString crc1 = crc16Modbus(data1);
 
-			QTimer::singleShot(100, [this, testArray]() {
-				mTcpSocket->write(testArray);
+			data1 += QByteArray::fromHex(crc1.toUtf8());
+
+			QTimer::singleShot(100, [this, data1]() {
+				mTcpSocket->write(data1);
 				});
 
-			emit messegeLog(testArray.toHex());
-			//continue;
-			*/
+
+			
 		}
 
 		QDate curDate = QDate::currentDate();
