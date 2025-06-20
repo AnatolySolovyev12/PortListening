@@ -271,7 +271,7 @@ void MyTcpServer::slotServerRead()
 
 				for (int tempVal = 14; tempVal <= 21; tempVal++)
 				{
-					answerListMilur.push_back(myList[tempVal]);
+					answerListMilur.push_back(str[tempVal]);
 				}
 
 				answerListMilur += strZero;
@@ -301,6 +301,7 @@ void MyTcpServer::slotServerRead()
 
 				continue;
 			}
+
 			emit messegeLog(str);////////////////////////
 		}
 
