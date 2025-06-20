@@ -49,6 +49,7 @@ private:
 
     QList<QString>answerListMilur;
     QList<QString>zeroBuff;
+    QString strZero = QString(176, '0');
 
     QList<QByteArray>serialBuff{"75024", "75001", "74986", "74981", "74995", "74998", "75008", "74980", "75000", "74992"};
 };

@@ -204,35 +204,46 @@ void MyTcpServer::slotServerRead()
 			}
 			case(4):
 			{
+				answerListMilur += zeroBuff;
 
+				for (int tempVal = 4; tempVal <= 7; tempVal++)
+				{
+					answerListMilur.push_back(answerListMilur[tempVal]);
+				}
+
+				for (int tempVal = 4; tempVal <= 7; tempVal++)
+				{
+					answerListMilur.push_back(myList[tempVal]);
+				}
+
+				str += strZero;
 				recall = 0;
 				serialBuffPosition++;
 				countMessege = 0;
 				oldMessege = false;
 				listen = false;
+			}
+
+			}
+
+			if (str.length() != 202)
+			{
+
+				data1.push_front(QByteArray::fromHex(serialArrayRotate(testNumber)));
+
+				QString crc1 = crc16Modbus(data1);
+
+				data1 += QByteArray::fromHex(crc1.toUtf8());
+
+				emit messegeLog(data1.toHex());
+
+				mTcpSocket->write(data1);
+
+				oldMessege = false;
+
 				continue;
 			}
-
-			}
-
-
-			data1.push_front(QByteArray::fromHex(serialArrayRotate(testNumber)));
-
-			QString crc1 = crc16Modbus(data1);
-
-			data1 += QByteArray::fromHex(crc1.toUtf8());
-
-			emit messegeLog(data1.toHex());
-
-			mTcpSocket->write(data1);
-
-			oldMessege = false;
-
-
-			continue;
 		}
-
-
 
 
 
