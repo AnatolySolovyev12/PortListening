@@ -146,7 +146,7 @@ void MyTcpServer::slotServerRead()
 					recall = 0;
 					serialBuffPosition++;
 					countMessege--;
-
+					continue;
 				}
 				countMessege--;
 				recall++;

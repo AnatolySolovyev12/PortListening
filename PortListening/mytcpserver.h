@@ -46,7 +46,7 @@ private:
     int countMessege = 0;
     int serialBuffPosition = 0;
 
-    QList<QByteArray>serialBuff{"74992", "75001", "74986", "74981", "74995", "74998", "75008", "75024", "74980", "75000"};
+    QList<QByteArray>serialBuff{"75001", "74986", "74981", "74995", "74998", "75008", "75024", "74980", "75000", "74992"};
 };
 
 #endif // MYTCPSERVER_H
