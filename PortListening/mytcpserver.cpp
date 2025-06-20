@@ -145,14 +145,16 @@ void MyTcpServer::slotServerRead()
 				{
 					recall = 0;
 					serialBuffPosition++;
-					countMessege--;
-					countMessege--;
+					countMessege = 0;
 					oldMessege = false;
-					continue;
+					listen = false;
 				}
-				countMessege--;
-				recall++;
-				oldMessege = true;
+				if (listen)
+				{
+					countMessege--;
+					recall++;
+					oldMessege = true;
+				}
 			}
 
 			if (serialBuffPosition + 1 > serialBuff.length())
