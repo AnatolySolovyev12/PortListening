@@ -38,7 +38,13 @@ private:
 
     QByteArray testArray;
 
-    int counter = 1;
+    int counter = 0;
+
+    bool startSession = false;
+    bool listen = false;
+    int countMessege = 0;
+
+
 };
 
 #endif // MYTCPSERVER_H

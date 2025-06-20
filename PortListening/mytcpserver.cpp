@@ -26,9 +26,9 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 
 		});
 
-	
+
 	/*
-	
+
 	QTimer::singleShot(300, [this]() {
 
 		QByteArray testNumber = "74995";
@@ -41,8 +41,8 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 
 		emit messegeLog(data1.toHex().toUpper() + crc1);
 
-		
-		});	
+
+		});
 
 		*/
 }
@@ -59,7 +59,7 @@ void MyTcpServer::slotNewConnection()
 
 	connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); // если есть что читать (библиотечный сигнал) сработает слот
 	connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected); // если сокет отсоединился (библиотечный сигнал) сработает слот
-	
+
 	QDate curDate = QDate::currentDate();
 	QTime curTime = QTime::currentTime();
 
@@ -78,11 +78,39 @@ void MyTcpServer::slotServerRead()
 	{
 		QByteArray array = mTcpSocket->readAll();
 
-		if (array == "35")
+		if (array == "35" && !listen)
 		{
-			QByteArray testNumber = "74998";
+			QByteArray testNumber = "75001";
 
-			QByteArray data1 = QByteArray::fromHex("0800FFFFFFFFFFFF");
+			startSession = true;
+
+			counter++;
+
+			QByteArray data1;
+
+			switch (counter)
+			{
+			case(1):
+			{
+				data1 = QByteArray::fromHex("0800FFFFFFFFFFFF");
+				listen = true;
+				break;
+			}
+			case(2):
+			{
+				data1 = QByteArray::fromHex("0105");
+				listen = true;
+				break;
+			}
+			case(3):
+			{
+				data1 = QByteArray::fromHex("0106");
+				listen = true;
+				break;
+			}
+
+			}
+
 
 			data1.push_front(QByteArray::fromHex(serialArrayRotate(testNumber)));
 
@@ -90,13 +118,17 @@ void MyTcpServer::slotServerRead()
 
 			data1 += QByteArray::fromHex(crc1.toUtf8());
 
+			emit messegeLog(data1.toHex());
+
 			QTimer::singleShot(100, [this, data1]() {
 				mTcpSocket->write(data1);
 				});
 
 
-			
+			continue;
 		}
+
+		
 
 		QDate curDate = QDate::currentDate();
 		QTime curTime = QTime::currentTime();
@@ -286,8 +318,19 @@ void MyTcpServer::slotServerRead()
 
 			dataWrite->writeData(str_t);
 		}
+
+		if (str.size() == 16 && listen)
+		{
+			listen = false;
+		}
 	}
 }
+
+
+
+
+
+
 
 void MyTcpServer::slotClientDisconnected()
 {
