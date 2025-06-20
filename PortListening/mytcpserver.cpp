@@ -137,24 +137,34 @@ void MyTcpServer::slotServerRead()
 		*/
 
 
-		if ((str.size() == 4) || (str.size() == 50 && listen) || (str.size() == 16 && listen) )
+		if ((str.size() == 4) || (str.size() == 50 && listen) || (str.size() == 16 && listen) || (str.size() == 26 && listen))
 		{
-			if (str.size() == 4 && listen)
+			if ((str.size() == 4 && listen) || (str.size() == 26 && listen))
 			{
-				if (recall == 4)
+				if (recall == 4 || (str.size() == 26 && listen && countMessege == 4))
 				{
 					recall = 0;
 					serialBuffPosition++;
 					countMessege--;
+					countMessege--;
+					oldMessege = false;
 					continue;
 				}
 				countMessege--;
 				recall++;
+				oldMessege = true;
 			}
 
 			QByteArray testNumber = serialBuff[serialBuffPosition];
 
-			countMessege++;
+			if (oldMessege)
+				countMessege++;
+			else
+			{
+				countMessege++;
+				recall = 0;
+			}
+
 
 			QByteArray data1;
 
@@ -197,7 +207,9 @@ void MyTcpServer::slotServerRead()
 			emit messegeLog(data1.toHex());
 
 			mTcpSocket->write(data1);
-			
+
+			oldMessege = false;
+
 			//QTimer::singleShot(100, [this, data1]() {
 			//	});
 
