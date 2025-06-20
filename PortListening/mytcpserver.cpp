@@ -38,13 +38,42 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 			emit messegeLog("server with port " + QString::number(port) + " is started\n");
 		}
 
+
+		/*
+		QString testString;
+		QString myList{ "f824010001060415954200a74e" };
+
+		QString answerListMilur = myList;
+
+		answerListMilur += zeroBuff;
+
+		for (int tempVal = 14; tempVal <= 21; tempVal++)
+		{
+			answerListMilur.push_back(answerListMilur[tempVal]);
+		}
+
+		for (int tempVal = 14; tempVal <= 21; tempVal++)
+		{
+			answerListMilur.push_back(myList[tempVal]);
+		}
+
+		answerListMilur += strZero;
+		testString = answerListMilur;
+
+
+		emit messegeLog(testString);
+		emit messegeLog(QString::number(testString.length()));
+		QString ttt = testString[154];
+		ttt += testString[155];
+		ttt += testString[156];
+		ttt += testString[157];
+		emit messegeLog(ttt);
+
+		*/
+
+
+
 		});
-
-	for (int val = 0; val <= 44; val++)
-	{
-		zeroBuff.push_back("00");
-	}
-
 
 	/*
 
@@ -64,6 +93,21 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 		});
 
 		*/
+
+
+
+
+
+
+	
+
+
+	
+
+
+
+
+
 }
 
 void MyTcpServer::slotNewConnection()
@@ -211,7 +255,7 @@ void MyTcpServer::slotServerRead()
 			}
 			case(3):
 			{
-				answerListMilur += myList;
+				answerListMilur += str;
 				data1 = QByteArray::fromHex("0106");
 				listen = true;
 				break;
@@ -220,17 +264,18 @@ void MyTcpServer::slotServerRead()
 			{
 				answerListMilur += zeroBuff;
 
-				for (int tempVal = 4; tempVal <= 7; tempVal++)
+				for (int tempVal = 14; tempVal <= 21; tempVal++)
 				{
 					answerListMilur.push_back(answerListMilur[tempVal]);
 				}
 
-				for (int tempVal = 4; tempVal <= 7; tempVal++)
+				for (int tempVal = 14; tempVal <= 21; tempVal++)
 				{
 					answerListMilur.push_back(myList[tempVal]);
 				}
 
-				str += strZero;
+				answerListMilur += strZero;
+				str = answerListMilur;
 				recall = 0;
 				serialBuffPosition++;
 				countMessege = 0;
@@ -242,7 +287,7 @@ void MyTcpServer::slotServerRead()
 
 			if (str.length() != 202)
 			{
-
+				emit messegeLog(str);////////////////////////
 				data1.push_front(QByteArray::fromHex(serialArrayRotate(testNumber)));
 
 				QString crc1 = crc16Modbus(data1);

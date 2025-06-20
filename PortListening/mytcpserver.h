@@ -47,9 +47,9 @@ private:
     int serialBuffPosition = 0;
     bool oldMessege = false;
 
-    QList<QString>answerListMilur;
-    QList<QString>zeroBuff;
-    QString strZero = QString(176, '0');
+    QString answerListMilur;
+    QString zeroBuff = QString(118, '0');
+    QString strZero = QString(42, '0');
 
     QList<QByteArray>serialBuff;
 };
