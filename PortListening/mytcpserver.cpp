@@ -78,58 +78,6 @@ void MyTcpServer::slotServerRead()
 	{
 		QByteArray array = mTcpSocket->readAll();
 
-		if (array == "35" && !listen)
-		{
-			QByteArray testNumber = "75001";
-
-			startSession = true;
-
-			counter++;
-
-			QByteArray data1;
-
-			switch (counter)
-			{
-			case(1):
-			{
-				data1 = QByteArray::fromHex("0800FFFFFFFFFFFF");
-				listen = true;
-				break;
-			}
-			case(2):
-			{
-				data1 = QByteArray::fromHex("0105");
-				listen = true;
-				break;
-			}
-			case(3):
-			{
-				data1 = QByteArray::fromHex("0106");
-				listen = true;
-				break;
-			}
-
-			}
-
-
-			data1.push_front(QByteArray::fromHex(serialArrayRotate(testNumber)));
-
-			QString crc1 = crc16Modbus(data1);
-
-			data1 += QByteArray::fromHex(crc1.toUtf8());
-
-			emit messegeLog(data1.toHex());
-
-			QTimer::singleShot(100, [this, data1]() {
-				mTcpSocket->write(data1);
-				});
-
-
-			continue;
-		}
-
-		
-
 		QDate curDate = QDate::currentDate();
 		QTime curTime = QTime::currentTime();
 
@@ -179,6 +127,87 @@ void MyTcpServer::slotServerRead()
 		translate = "";
 
 		counter = 0;
+
+
+		/*
+		if (array == "35" && listen)
+		{
+			counter--;
+		}
+		*/
+
+
+		if ((str.size() == 4) || (str.size() == 50 && listen) || (str.size() == 16 && listen) )
+		{
+			if (str.size() == 4 && listen)
+			{
+				if (recall == 4)
+				{
+					recall = 0;
+					serialBuffPosition++;
+					countMessege--;
+
+				}
+				countMessege--;
+				recall++;
+			}
+
+			QByteArray testNumber = serialBuff[serialBuffPosition];
+
+			countMessege++;
+
+			QByteArray data1;
+
+			switch (countMessege)
+			{
+			case(1):
+			{
+				data1 = QByteArray::fromHex("0800FFFFFFFFFFFF");
+				listen = true;
+				break;
+			}
+			case(2):
+			{
+				data1 = QByteArray::fromHex("0120");
+				listen = true;
+				break;
+			}
+			case(3):
+			{
+				data1 = QByteArray::fromHex("0105");
+				listen = true;
+				break;
+			}
+			case(4):
+			{
+				data1 = QByteArray::fromHex("0106");
+				listen = true;
+				break;
+			}
+
+			}
+
+
+			data1.push_front(QByteArray::fromHex(serialArrayRotate(testNumber)));
+
+			QString crc1 = crc16Modbus(data1);
+
+			data1 += QByteArray::fromHex(crc1.toUtf8());
+
+			emit messegeLog(data1.toHex());
+
+			mTcpSocket->write(data1);
+			
+			//QTimer::singleShot(100, [this, data1]() {
+			//	});
+
+
+			continue;
+		}
+
+
+
+
 
 		if (str.size() == 312 || str.size() == 202) // out-of-array warning
 		{
@@ -317,11 +346,6 @@ void MyTcpServer::slotServerRead()
 				.arg(four);
 
 			dataWrite->writeData(str_t);
-		}
-
-		if (str.size() == 16 && listen)
-		{
-			listen = false;
 		}
 	}
 }

@@ -40,11 +40,13 @@ private:
 
     int counter = 0;
 
-    bool startSession = false;
+    int recall = 0;
+
     bool listen = false;
     int countMessege = 0;
+    int serialBuffPosition = 0;
 
-
+    QList<QByteArray>serialBuff{"74992", "75001", "74986", "74981", "74995", "74998", "75008", "75024", "74980", "75000"};
 };
 
 #endif // MYTCPSERVER_H
