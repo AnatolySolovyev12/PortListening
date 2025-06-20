@@ -209,7 +209,7 @@ void MyTcpServer::slotServerRead()
 				countMessege = 0;
 				oldMessege = false;
 				listen = false;
-				break;
+				continue;
 			}
 
 			}
