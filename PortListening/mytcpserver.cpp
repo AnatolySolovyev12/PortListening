@@ -287,7 +287,6 @@ void MyTcpServer::slotServerRead()
 
 			if (str.length() != 202)
 			{
-				emit messegeLog(str);////////////////////////
 				data1.push_front(QByteArray::fromHex(serialArrayRotate(testNumber)));
 
 				QString crc1 = crc16Modbus(data1);
@@ -302,6 +301,7 @@ void MyTcpServer::slotServerRead()
 
 				continue;
 			}
+			emit messegeLog(str);////////////////////////
 		}
 
 
