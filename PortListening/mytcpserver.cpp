@@ -13,15 +13,15 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 
 	connect(mTcpServer, &QTcpServer::newConnection, this, &MyTcpServer::slotNewConnection);
 
-	if (port = 6000)
+	if (port == 6000)
 	{
 		serialBuff = { "75024", "75001", "74986", "74981", "74995", "74998", "75008", "74980", "75000", "74992" };
 	}
-	if (port = 49500)
+	if (port == 49500)
 	{
 		serialBuff = { "74985", "75020", "74987", "74991", "74988", "74982", "74989", "74990"};
 	}
-	if (port = 49501)
+	if (port == 49501)
 	{
 		serialBuff = { "74993", "74984", "74996", "75002", "74983", "75014", "74997", "74994"};
 	}
