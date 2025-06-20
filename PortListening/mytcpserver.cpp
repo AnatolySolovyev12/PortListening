@@ -139,9 +139,9 @@ void MyTcpServer::slotServerRead()
 
 		if ((str.size() == 4) || (str.size() == 50 && listen) || (str.size() == 16 && listen) || (str.size() == 26 && listen))
 		{
-			if ((str.size() == 4 && listen) || (str.size() == 26 && listen))
+			if (str.size() == 4 && listen)
 			{
-				if (recall == 4 || (str.size() == 26 && listen && countMessege == 4))
+				if (recall == 4)
 				{
 					recall = 0;
 					serialBuffPosition++;
@@ -153,6 +153,12 @@ void MyTcpServer::slotServerRead()
 				countMessege--;
 				recall++;
 				oldMessege = true;
+			}
+
+			if (serialBuffPosition + 1 > serialBuff.length())
+			{
+				serialBuffPosition = 0;
+				return;
 			}
 
 			QByteArray testNumber = serialBuff[serialBuffPosition];
@@ -192,6 +198,15 @@ void MyTcpServer::slotServerRead()
 			{
 				data1 = QByteArray::fromHex("0106");
 				listen = true;
+				break;
+			}
+			case(5):
+			{
+				recall = 0;
+				serialBuffPosition++;
+				countMessege = 0;
+				oldMessege = false;
+				listen = false;
 				break;
 			}
 
