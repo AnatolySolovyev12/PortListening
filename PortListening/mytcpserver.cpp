@@ -26,6 +26,11 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 
 		});
 
+	for (int val = 0; val <= 44; val++)
+	{
+		zeroBuff.push_back("00");
+	}
+
 
 	/*
 
@@ -137,7 +142,7 @@ void MyTcpServer::slotServerRead()
 		*/
 
 
-		if ((str.size() == 4) || (str.size() == 50 && listen) || (str.size() == 16 && listen) || (str.size() == 26 && listen))
+		if ((str.size() == 4) || (str.size() == 16 && listen) || (str.size() == 26 && listen))
 		{
 			if (str.size() == 4 && listen)
 			{
@@ -186,24 +191,20 @@ void MyTcpServer::slotServerRead()
 			}
 			case(2):
 			{
-				data1 = QByteArray::fromHex("0120");
+				data1 = QByteArray::fromHex("0105");
 				listen = true;
 				break;
 			}
 			case(3):
 			{
-				data1 = QByteArray::fromHex("0105");
+				answerListMilur += myList;
+				data1 = QByteArray::fromHex("0106");
 				listen = true;
 				break;
 			}
 			case(4):
 			{
-				data1 = QByteArray::fromHex("0106");
-				listen = true;
-				break;
-			}
-			case(5):
-			{
+
 				recall = 0;
 				serialBuffPosition++;
 				countMessege = 0;
@@ -226,9 +227,6 @@ void MyTcpServer::slotServerRead()
 			mTcpSocket->write(data1);
 
 			oldMessege = false;
-
-			//QTimer::singleShot(100, [this, data1]() {
-			//	});
 
 
 			continue;
