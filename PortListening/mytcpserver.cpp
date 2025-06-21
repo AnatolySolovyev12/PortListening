@@ -465,6 +465,7 @@ void MyTcpServer::slotClientDisconnected()
 	}
 
 	mTcpSocket->close(); // создлаёт сигнал void QIODevice::aboutToClose() а затем устанавливает для OpenMode состояние NotOpen.
+	emit messegeLog(QString::number(port) + "socket close\n");
 	delete mTcpSocket;
 	mTcpSocket = nullptr;
 }
