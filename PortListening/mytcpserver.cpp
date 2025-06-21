@@ -302,7 +302,7 @@ void MyTcpServer::slotServerRead()
 				continue;
 			}
 
-			emit messegeLog(str);////////////////////////
+			emit messegeLog(QString::number(str.length()) + " - " + str);////////////////////////
 		}
 
 
