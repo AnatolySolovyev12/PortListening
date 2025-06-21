@@ -480,8 +480,6 @@ void MyTcpServer::slotServerRead()
 
 void MyTcpServer::slotClientDisconnected()
 {
-	// ntcnbhetv íà ïðîáëåìû ñ íåêîððåêòíûì èñïîëüçîâàíèåì óêàçàòåëåé
-
 	if (mTcpSocket == nullptr)
 	{
 		emit messegeLog("Was disconnect but mTcpSocket was nullptr\n");
