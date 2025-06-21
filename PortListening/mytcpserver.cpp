@@ -313,7 +313,23 @@ void MyTcpServer::slotServerRead()
 			emit messegeLog(QString::number(str.length()) + " - " + str);////////////////////////
 		}
 
+		if(str.size() == 206) str.replace(QRegularExpression(pattern), "");
 
+		if(str.size() == 404) str.remove(202, 404);
+
+		if (str.size() == 406)
+		{
+			str.replace(QRegularExpression(pattern), "");
+			str.remove(202, 404);
+		}
+
+		if (str.size() == 606) str.remove(202, 606);
+
+		if (str.size() == 610)
+		{
+			str.replace(QRegularExpression(pattern), "");
+			str.remove(202, 404);
+		}
 
 		if (str.size() == 312 || str.size() == 202) // out-of-array warning
 		{
