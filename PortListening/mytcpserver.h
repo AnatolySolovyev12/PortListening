@@ -34,6 +34,24 @@ private:
     QTcpSocket* mTcpSocket = nullptr;
     SQLiteDB* dataWrite = nullptr;
     int port;
+
+
+    QByteArray testArray;
+
+    int counter = 0;
+
+    int recall = 0;
+
+    bool listen = false;
+    int countMessege = 0;
+    int serialBuffPosition = 0;
+    bool oldMessege = false;
+
+    QString answerListMilur;
+    QString zeroBuff = QString(99, '0');
+    QString strZero = QString(61, '0');
+
+    QList<QByteArray>serialBuff;
 };
 
 #endif // MYTCPSERVER_H
