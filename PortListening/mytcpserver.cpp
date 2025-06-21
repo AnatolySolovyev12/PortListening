@@ -515,6 +515,7 @@ void MyTcpServer::newDayBuffer()
 	{
 		todayDate = QDate::currentDate().toString("dd-MM-yyyy");
 		serialBuff = fullSerialBuffConstant;
+		emit messegeLog("Polling queue restored\n");
 	}
 }
 
