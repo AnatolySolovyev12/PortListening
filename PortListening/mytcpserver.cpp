@@ -293,7 +293,7 @@ void MyTcpServer::slotServerRead()
 
 			}
 
-			if (str.length() != 202)
+			if (listen)
 			{
 				data1.push_front(QByteArray::fromHex(serialArrayRotate(testNumber)));
 
