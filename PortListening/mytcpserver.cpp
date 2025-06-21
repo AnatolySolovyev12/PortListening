@@ -19,7 +19,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 	}
 	if (port == 49500)
 	{
-		serialBuff = { "74985", "75020", "74987", "74991", "74988", "74982", "74989", "74990", "99999", "99999" };
+		serialBuff = { "74985", "75020", "74987", "74991", "74988", "74982", "74989", "74990", "99999" };
 	}
 	if (port == 49501)
 	{
