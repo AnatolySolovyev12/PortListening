@@ -29,7 +29,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 
 	QTimer::singleShot(500, [this]() {
 
-		if (!mTcpServer->listen(QHostAddress::Any, port)) // слушаем с любого адреса на порт 6000. Можно указать определённый host для прослушивания
+		if (!mTcpServer->listen(QHostAddress::Any, port)) // Г±Г«ГіГёГ ГҐГ¬ Г± Г«ГѕГЎГ®ГЈГ® Г Г¤Г°ГҐГ±Г  Г­Г  ГЇГ®Г°ГІ 6000. ГЊГ®Г¦Г­Г® ГіГЄГ Г§Г ГІГј Г®ГЇГ°ГҐГ¤ГҐГ«ВёГ­Г­Г»Г© host Г¤Г«Гї ГЇГ°Г®Г±Г«ГіГёГЁГўГ Г­ГЁГї
 		{
 			emit messegeLog("server with port " + QString::number(port) + " is not started\n");
 		}
@@ -73,10 +73,13 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 
 
 
-		});
 
+
+
+
+	
 	/*
-
+	
 	QTimer::singleShot(300, [this]() {
 
 		QByteArray testNumber = "74995";
@@ -88,6 +91,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 		QString crc1 = crc16Modbus(data1);
 
 		emit messegeLog(data1.toHex().toUpper() + crc1);
+
 
 
 		});
@@ -108,25 +112,29 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 
 
 
+
+		
+
+
 }
 
 void MyTcpServer::slotNewConnection()
 {
-	mTcpSocket = mTcpServer->nextPendingConnection(); // возвращает объект QTcpSocket для текущего соединения. Вернёт nullptr если вызвать эту функцию без наличия соединения. Лучше потом удалять QTcpSocket указатель и по итогу занулять.
+	mTcpSocket = mTcpServer->nextPendingConnection(); // ГўГ®Г§ГўГ°Г Г№Г ГҐГІ Г®ГЎГєГҐГЄГІ QTcpSocket Г¤Г«Гї ГІГҐГЄГіГ№ГҐГЈГ® Г±Г®ГҐГ¤ГЁГ­ГҐГ­ГЁГї. Г‚ГҐГ°Г­ВёГІ nullptr ГҐГ±Г«ГЁ ГўГ»Г§ГўГ ГІГј ГЅГІГі ГґГіГ­ГЄГ¶ГЁГѕ ГЎГҐГ§ Г­Г Г«ГЁГ·ГЁГї Г±Г®ГҐГ¤ГЁГ­ГҐГ­ГЁГї. Г‹ГіГ·ГёГҐ ГЇГ®ГІГ®Г¬ ГіГ¤Г Г«ГїГІГј QTcpSocket ГіГЄГ Г§Г ГІГҐГ«Гј ГЁ ГЇГ® ГЁГІГ®ГЈГі Г§Г Г­ГіГ«ГїГІГј.
 
-	if (!mTcpSocket) // проверка на некорректное использование
+	if (!mTcpSocket) // ГЇГ°Г®ГўГҐГ°ГЄГ  Г­Г  Г­ГҐГЄГ®Г°Г°ГҐГЄГІГ­Г®ГҐ ГЁГ±ГЇГ®Г«ГјГ§Г®ГўГ Г­ГЁГҐ
 	{
 		emit messegeLog("No pending connection\n");
-		return; // Выход из функции, если нет соединения
+		return; // Г‚Г»ГµГ®Г¤ ГЁГ§ ГґГіГ­ГЄГ¶ГЁГЁ, ГҐГ±Г«ГЁ Г­ГҐГІ Г±Г®ГҐГ¤ГЁГ­ГҐГ­ГЁГї
 	}
 
-	connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); // если есть что читать (библиотечный сигнал) сработает слот
-	connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected); // если сокет отсоединился (библиотечный сигнал) сработает слот
+	connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); // ГҐГ±Г«ГЁ ГҐГ±ГІГј Г·ГІГ® Г·ГЁГІГ ГІГј (ГЎГЁГЎГ«ГЁГ®ГІГҐГ·Г­Г»Г© Г±ГЁГЈГ­Г Г«) Г±Г°Г ГЎГ®ГІГ ГҐГІ Г±Г«Г®ГІ
+	connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected); // ГҐГ±Г«ГЁ Г±Г®ГЄГҐГІ Г®ГІГ±Г®ГҐГ¤ГЁГ­ГЁГ«Г±Гї (ГЎГЁГЎГ«ГЁГ®ГІГҐГ·Г­Г»Г© Г±ГЁГЈГ­Г Г«) Г±Г°Г ГЎГ®ГІГ ГҐГІ Г±Г«Г®ГІ
 
 	QDate curDate = QDate::currentDate();
 	QTime curTime = QTime::currentTime();
 
-	QString temp = "\nConnect from host " + mTcpSocket->peerAddress().toString().sliced(7) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString(); // для анализа входящих подключений
+	QString temp = "\nConnect from host " + mTcpSocket->peerAddress().toString().sliced(7) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString(); // Г¤Г«Гї Г Г­Г Г«ГЁГ§Г  ГўГµГ®Г¤ГїГ№ГЁГµ ГЇГ®Г¤ГЄГ«ГѕГ·ГҐГ­ГЁГ©
 	emit messegeLog(temp);
 }
 
@@ -146,7 +154,7 @@ void MyTcpServer::slotServerRead()
 
 		emit messegeLog('\n' + QString::number(port) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString());
 
-		//  mTcpSocket->write(array); // Эхо эффект с отправкой принятого обратно сокету
+		//  mTcpSocket->write(array); // ГќГµГ® ГЅГґГґГҐГЄГІ Г± Г®ГІГЇГ°Г ГўГЄГ®Г© ГЇГ°ГЁГ­ГїГІГ®ГЈГ® Г®ГЎГ°Г ГІГ­Г® Г±Г®ГЄГҐГІГі
 
 		QString str = array.toHex();
 
@@ -382,7 +390,7 @@ void MyTcpServer::slotServerRead()
 			//qDebug() << "four - " << valTrans << "\n";
 
 
-			QString str_t = QString("INSERT INTO channelTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - определяет те значения которые будут записаниы в строку
+			QString str_t = QString("INSERT INTO channelTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - Г®ГЇГ°ГҐГ¤ГҐГ«ГїГҐГІ ГІГҐ Г§Г­Г Г·ГҐГ­ГЁГї ГЄГ®ГІГ®Г°Г»ГҐ ГЎГіГ¤ГіГІ Г§Г ГЇГЁГ±Г Г­ГЁГ» Гў Г±ГІГ°Г®ГЄГі
 				.arg(numberStr.toUInt(&ok, 16))
 				.arg(curDate.toString("yyyy-MM-dd"))
 				.arg(first.toUInt(&ok, 16))
@@ -435,7 +443,7 @@ void MyTcpServer::slotServerRead()
 			//qDebug() << "four - " << valTrans << "\n";
 
 
-			QString str_t = QString("INSERT INTO counterTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - определяет те значения которые будут записаниы в строку
+			QString str_t = QString("INSERT INTO counterTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - Г®ГЇГ°ГҐГ¤ГҐГ«ГїГҐГІ ГІГҐ Г§Г­Г Г·ГҐГ­ГЁГї ГЄГ®ГІГ®Г°Г»ГҐ ГЎГіГ¤ГіГІ Г§Г ГЇГЁГ±Г Г­ГЁГ» Гў Г±ГІГ°Г®ГЄГі
 				.arg(numberStr.toUInt(&ok, 16))
 				.arg(curDate.toString("yyyy-MM-dd"))
 				.arg(first)
@@ -456,7 +464,7 @@ void MyTcpServer::slotServerRead()
 
 void MyTcpServer::slotClientDisconnected()
 {
-	// ntcnbhetv на проблемы с некорректным использованием указателей
+	// ntcnbhetv Г­Г  ГЇГ°Г®ГЎГ«ГҐГ¬Г» Г± Г­ГҐГЄГ®Г°Г°ГҐГЄГІГ­Г»Г¬ ГЁГ±ГЇГ®Г«ГјГ§Г®ГўГ Г­ГЁГҐГ¬ ГіГЄГ Г§Г ГІГҐГ«ГҐГ©
 
 	if (mTcpSocket == nullptr)
 	{
@@ -464,7 +472,7 @@ void MyTcpServer::slotClientDisconnected()
 		return;
 	}
 
-	mTcpSocket->close(); // создлаёт сигнал void QIODevice::aboutToClose() а затем устанавливает для OpenMode состояние NotOpen.
+	mTcpSocket->close(); // Г±Г®Г§Г¤Г«Г ВёГІ Г±ГЁГЈГ­Г Г« void QIODevice::aboutToClose() Г  Г§Г ГІГҐГ¬ ГіГ±ГІГ Г­Г ГўГ«ГЁГўГ ГҐГІ Г¤Г«Гї OpenMode Г±Г®Г±ГІГ®ГїГ­ГЁГҐ NotOpen.
 	emit messegeLog(QString::number(port) + " - " + "socket close\n");
 	delete mTcpSocket;
 	mTcpSocket = nullptr;
@@ -499,7 +507,7 @@ QString MyTcpServer::converFuncString(QString& any)
 }
 
 
-QString MyTcpServer::crc16Modbus(const QByteArray& data) // CRC16MODBUS для определения контрольной суммы в конце пакетов для Милур107
+QString MyTcpServer::crc16Modbus(const QByteArray& data) // CRC16MODBUS Г¤Г«Гї Г®ГЇГ°ГҐГ¤ГҐГ«ГҐГ­ГЁГї ГЄГ®Г­ГІГ°Г®Г«ГјГ­Г®Г© Г±ГіГ¬Г¬Г» Гў ГЄГ®Г­Г¶ГҐ ГЇГ ГЄГҐГІГ®Гў Г¤Г«Гї ГЊГЁГ«ГіГ°107
 {
 	quint16 crc = 0xFFFF;
 	for (auto byte : data) {
