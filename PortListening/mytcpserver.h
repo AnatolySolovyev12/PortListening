@@ -8,6 +8,8 @@
 
 #include "SQLiteDB.h"
 
+#include "qtimer.h"
+
 class MyTcpServer : public QObject
 {
     Q_OBJECT
@@ -19,6 +21,7 @@ public:
 
     QString crc16Modbus(const QByteArray& data);
     QByteArray serialArrayRotate(QByteArray testNumber);
+    void newDayBuffer();
 
 public slots:
     void slotNewConnection();
@@ -52,7 +55,12 @@ private:
     QString strZero = QString(60, '0');
 
     QList<QByteArray>serialBuff;
+    QList<QByteArray>fullSerialBuffConstant;
     QString pattern = "3335";
+
+    QString todayDate;
+
+    QTimer* dateTImer = nullptr;;
 };
 
 #endif // MYTCPSERVER_H

@@ -5,7 +5,7 @@
 
 QTextStream out(stdout);
 
-MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
+MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any), dateTImer(new QTimer)
 {
 	mTcpServer = new QTcpServer(this);
 
@@ -26,6 +26,13 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 		serialBuff = { "74993", "74984", "74996", "75002", "74983", "75014", "74997", "74994"};
 	}
 
+	fullSerialBuffConstant = serialBuff;
+
+	todayDate = QDate::currentDate().toString("dd-MM-yyyy");
+
+	dateTImer->start(600000);
+
+	connect(dateTImer, &QTimer::timeout, this, &MyTcpServer::newDayBuffer);
 
 	QTimer::singleShot(500, [this]() {
 
@@ -37,83 +44,6 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 		{
 			emit messegeLog("server with port " + QString::number(port) + " is started\n");
 		}
-
-
-		/*
-		QString testString;
-		QString myList{ "f824010001060415954200a74e" };
-
-		QString answerListMilur = myList;
-
-		answerListMilur += zeroBuff;
-
-		for (int tempVal = 14; tempVal <= 21; tempVal++)
-		{
-			answerListMilur.push_back(answerListMilur[tempVal]);
-		}
-
-		for (int tempVal = 14; tempVal <= 21; tempVal++)
-		{
-			answerListMilur.push_back(myList[tempVal]);
-		}
-
-		answerListMilur += strZero;
-		testString = answerListMilur;
-
-
-		emit messegeLog(testString);
-		emit messegeLog(QString::number(testString.length()));
-		QString ttt = testString[154];
-		ttt += testString[155];
-		ttt += testString[156];
-		ttt += testString[157];
-		emit messegeLog(ttt);
-
-		*/
-
-
-
-
-
-
-
-	
-	/*
-	
-	QTimer::singleShot(300, [this]() {
-
-		QByteArray testNumber = "74995";
-
-		QByteArray data1 = QByteArray::fromHex("0800FFFFFFFFFFFF");
-
-		data1.push_front(QByteArray::fromHex(serialArrayRotate(testNumber)));
-
-		QString crc1 = crc16Modbus(data1);
-
-		emit messegeLog(data1.toHex().toUpper() + crc1);
-
-
-
-		});
-
-		*/
-
-
-
-
-
-
-	
-
-
-	
-
-
-
-
-
-
-		
 
 		});
 }
@@ -358,6 +288,8 @@ void MyTcpServer::slotServerRead()
 
 		emit messegeLog("Number - " + QString::number(valTrans));
 
+		serialBuff.remove(serialBuff.indexOf(QString::number(valTrans))); // удаляем очереди опроса то что опрошено
+
 		QString first;
 		QString two;
 		QString three;
@@ -575,5 +507,14 @@ QByteArray MyTcpServer::serialArrayRotate(QByteArray testNumber)
 	}
 
 	return arrForByte;
+}
+
+void MyTcpServer::newDayBuffer()
+{
+	if (todayDate != QDate::currentDate().toString("dd-MM-yyyy"))
+	{
+		todayDate = QDate::currentDate().toString("dd-MM-yyyy");
+		serialBuff = fullSerialBuffConstant;
+	}
 }
 
