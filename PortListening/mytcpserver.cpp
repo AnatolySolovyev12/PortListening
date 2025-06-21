@@ -115,7 +115,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 
 		
 
-
+		});
 }
 
 void MyTcpServer::slotNewConnection()
