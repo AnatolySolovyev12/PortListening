@@ -48,8 +48,8 @@ private:
     bool oldMessege = false;
 
     QString answerListMilur;
-    QString zeroBuff = QString(108, '0');
-    QString strZero = QString(52, '0');
+    QString zeroBuff = QString(98, '0');
+    QString strZero = QString(62, '0');
 
     QList<QByteArray>serialBuff;
 };
