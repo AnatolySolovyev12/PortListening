@@ -284,6 +284,7 @@ void MyTcpServer::slotServerRead()
 
 				answerListMilur += strZero;
 				str = answerListMilur;
+				answerListMilur.clear();
 				recall = 0;
 				serialBuffPosition++;
 				countMessege = 0;
