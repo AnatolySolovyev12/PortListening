@@ -288,7 +288,7 @@ void MyTcpServer::slotServerRead()
 
 		emit messegeLog("Number - " + QString::number(valTrans) + " - queue polling = " + QString::number(serialBuff.length()));
 
-		if (serialBuff.indexOf(QString::number(valTrans)))
+		if (serialBuff.indexOf(QString::number(valTrans)) >= 0)
 		{
 			serialBuff.remove(serialBuff.indexOf(QString::number(valTrans))); // удаляем очереди опроса то что опрошено
 		}
