@@ -244,9 +244,9 @@ void MyTcpServer::slotServerRead()
 			emit messegeLog(QString::number(str.length()) + " - " + str);////////////////////////
 		}
 
-		if(str.size() == 206) str.replace(QRegularExpression(pattern), "");
+		if (str.size() == 206) str.replace(QRegularExpression(pattern), "");
 
-		if(str.size() == 404) str.remove(202, 404);
+		if (str.size() == 404) str.remove(202, 404);
 
 		if (str.size() == 406)
 		{
@@ -262,7 +262,7 @@ void MyTcpServer::slotServerRead()
 			str.remove(202, 404);
 		}
 
-		if(str.size() == 286) str = str.sliced(84);
+		if (str.size() == 286) str = str.sliced(84);
 
 		if (str.size() == 312 || str.size() == 202) // out-of-array warning
 		{
@@ -286,9 +286,12 @@ void MyTcpServer::slotServerRead()
 
 		uint valTrans = numberStr.toUInt(&ok, 16);
 
-		emit messegeLog("Number - " + QString::number(valTrans));
+		emit messegeLog("Number - " + QString::number(valTrans) + " - queue polling = " + QString::number(serialBuff.length()));
 
-		serialBuff.remove(serialBuff.indexOf(QString::number(valTrans))); // удаляем очереди опроса то что опрошено
+		if (serialBuff.indexOf(QString::number(valTrans)))
+		{
+			serialBuff.remove(serialBuff.indexOf(QString::number(valTrans))); // удаляем очереди опроса то что опрошено
+		}
 
 		QString first;
 		QString two;
