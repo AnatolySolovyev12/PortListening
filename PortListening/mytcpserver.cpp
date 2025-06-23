@@ -13,18 +13,30 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 
 	connect(mTcpServer, &QTcpServer::newConnection, this, &MyTcpServer::slotNewConnection);
 
-	if (port == 6000)
+
+	if (port == 49500) // 1 под
+	{
+		serialBuff = { "74985", "75020", "74987", "74991", "74988", "74982", "74989", "74990", "75206", "75209" };
+		//serialBuff = { "75206", "75209" }; // ВРУ
+	}
+
+	if (port == 6000) // 2 под
 	{
 		serialBuff = { "75024", "75001", "74986", "74981", "74995", "74998", "75008", "74980", "75000", "74992" };
+
 	}
-	if (port == 49500)
+
+	if (port == 49501) // 3 под
 	{
-		serialBuff = { "74985", "75020", "74987", "74991", "74988", "74982", "74989", "74990" };
+		serialBuff = { "74993", "74984", "74996", "75002", "74983", "75014", "74997", "74994", "87696", "87698", "75204", "75205" };
+		//serialBuff = { "87696", "87698", "75204", "75205" }; // ВРУ
 	}
-	if (port == 49501)
+
+	if (port == 49502) // НЭСКО
 	{
-		serialBuff = { "74993", "74984", "74996", "75002", "74983", "75014", "74997", "74994" };
+		serialBuff = { "75346", "75342", "87694", "87695" }; // ВРУ
 	}
+
 
 	fullSerialBuffConstant = serialBuff;
 
