@@ -17,7 +17,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 	if (port == 49500) // 1 под
 	{
 		serialBuff = { "75206", "75209", "74985", "75020", "74987", "74991", "74988", "74982", "74989", "74990" };
-		threeFazeBuff += { "75206", "75209" }; // ВРУ
+		threeFazeBuff.push_back("75209"); // ВРУ
 	}
 
 	if (port == 6000) // 2 под
