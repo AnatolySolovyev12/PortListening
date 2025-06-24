@@ -56,6 +56,7 @@ private:
 
     QList<QByteArray>serialBuff;
     QList<QByteArray>fullSerialBuffConstant;
+    QList<QByteArray>threeFazeBuff;
     QString pattern = "3335";
 
     QString todayDate;

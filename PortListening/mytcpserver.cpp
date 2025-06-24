@@ -16,8 +16,8 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 
 	if (port == 49500) // 1 под
 	{
-		serialBuff = { "74985", "75020", "74987", "74991", "74988", "74982", "74989", "74990", "75206", "75209" };
-		//serialBuff = { "75206", "75209" }; // ВРУ
+		serialBuff = { "75206", "75209", "74985", "75020", "74987", "74991", "74988", "74982", "74989", "74990" };
+		threeFazeBuff += { "75206", "75209" }; // ВРУ
 	}
 
 	if (port == 6000) // 2 под
@@ -28,13 +28,14 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 
 	if (port == 49501) // 3 под
 	{
-		serialBuff = { "74993", "74984", "74996", "75002", "74983", "75014", "74997", "74994", "87696", "87698", "75204", "75205" };
-		//serialBuff = { "87696", "87698", "75204", "75205" }; // ВРУ
+		serialBuff = { "87696", "87698", "75204", "75205", "74993", "74984", "74996", "75002", "74983", "75014", "74997", "74994" };
+		threeFazeBuff += { "87696", "87698", "75204", "75205" }; // ВРУ
 	}
 
 	if (port == 49502) // НЭСКО
 	{
 		serialBuff = { "75346", "75342", "87694", "87695" }; // ВРУ
+		threeFazeBuff += { "75346", "75342", "87694", "87695" };
 	}
 
 
@@ -199,14 +200,23 @@ void MyTcpServer::slotServerRead()
 			}
 			case(2):
 			{
-				data1 = QByteArray::fromHex("0105");
+				if (threeFazeBuff.indexOf(testNumber) >= 0)
+					data1 = QByteArray::fromHex("0177");
+				else
+					data1 = QByteArray::fromHex("0105");
+
 				listen = true;
 				break;
 			}
 			case(3):
 			{
 				answerListMilur += str;
-				data1 = QByteArray::fromHex("0106");
+
+				if (threeFazeBuff.indexOf(testNumber) >= 0)
+					data1 = QByteArray::fromHex("0178");
+				else
+					data1 = QByteArray::fromHex("0106");
+
 				listen = true;
 				break;
 			}
