@@ -470,7 +470,7 @@ QString MyTcpServer::converFuncString(QString& any)
 
 	any = QString::number(testInt);
 
-	if (treeFazeBool)
+	if (!treeFazeBool)
 	{
 		if (any.length() == 2 || any.length() == 1)
 		{
