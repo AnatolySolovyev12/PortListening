@@ -29,7 +29,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 	if (port == 49501) // 3 под
 	{
 		serialBuff = { "87696", "87698", "75204", "75205", "74993", "74984", "74996", "75002", "74983", "75014", "74997", "74994" };
-		threeFazeBuff += { "87696", "87698", "75204", "75205" }; // ВРУ
+		threeFazeBuff += { "87696", "87698" }; // ВРУ
 	}
 
 	if (port == 49502) // НЭСКО
