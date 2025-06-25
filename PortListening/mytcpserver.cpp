@@ -17,7 +17,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 	if (port == 49500) // 1 под
 	{
 		serialBuff = { "75206", "75209", "74985", "75020", "74987", "74991", "74988", "74982", "74989", "74990" };
-		threeFazeBuff += { "75206", "75209" }; // ВРУ
+		threeFazeBuff.push_back("75209"); // ВРУ
 	}
 
 	if (port == 6000) // 2 под
@@ -29,7 +29,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 	if (port == 49501) // 3 под
 	{
 		serialBuff = { "87696", "87698", "75204", "75205", "74993", "74984", "74996", "75002", "74983", "75014", "74997", "74994" };
-		threeFazeBuff += { "87696", "87698", "75204", "75205" }; // ВРУ
+		threeFazeBuff += { "87696", "87698" }; // ВРУ
 	}
 
 	if (port == 49502) // НЭСКО
@@ -179,6 +179,12 @@ void MyTcpServer::slotServerRead()
 
 			QByteArray testNumber = serialBuff[serialBuffPosition];
 
+			if (threeFazeBuff.indexOf(testNumber) >= 0)
+				treeFazeBool = true;
+			else
+				treeFazeBool = false;
+			
+
 			if (oldMessege)
 				countMessege++;
 			else
@@ -200,7 +206,7 @@ void MyTcpServer::slotServerRead()
 			}
 			case(2):
 			{
-				if (threeFazeBuff.indexOf(testNumber) >= 0)
+				if (treeFazeBool)
 					data1 = QByteArray::fromHex("0177");
 				else
 					data1 = QByteArray::fromHex("0105");
@@ -212,7 +218,7 @@ void MyTcpServer::slotServerRead()
 			{
 				answerListMilur += str;
 
-				if (threeFazeBuff.indexOf(testNumber) >= 0)
+				if (treeFazeBool)
 					data1 = QByteArray::fromHex("0178");
 				else
 					data1 = QByteArray::fromHex("0106");
@@ -464,18 +470,37 @@ QString MyTcpServer::converFuncString(QString& any)
 
 	any = QString::number(testInt);
 
-	if (any.length() == 2 || any.length() == 1)
+	if (!treeFazeBool)
 	{
-		if (any.length() == 2)
-			any.push_front("0.");
-		else
-			any.push_front("0.0");
+		if (any.length() == 2 || any.length() == 1)
+		{
+			if (any.length() == 2)
+				any.push_front("0.");
+			else
+				any.push_front("0.0");
 
+		}
+		else
+		{
+			any.insert((any.length() - 2), '.');
+		}
 	}
 	else
 	{
-		any.insert((any.length() - 2), '.');
+		if (any.length() == 2 || any.length() == 1)
+		{
+			if (any.length() == 2)
+				any.push_front("0.0");
+			else
+				any.push_front("0.00");
+
+		}
+		else
+		{
+			any.insert((any.length() - 3), '.');
+		}
 	}
+
 
 	return any;
 }
