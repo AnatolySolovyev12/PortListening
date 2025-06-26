@@ -1,15 +1,21 @@
+#pragma once
+
 #include <QApplication>
 #include <QSystemTrayIcon>
 #include <QMenu>
 #include <QAction>
 #include <QMainWindow>
 #include <QWidget>
+#include <QObject>
 
-#include "mytcpserver.h"
+
 #include <QTimer.h>
 #include <QTextEdit>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QPushButton>
+#include <QCheckBox.h>
+#include "mytcpserver.h"
 
 class MainWindow : public QMainWindow
 {
@@ -24,6 +30,8 @@ public:
 
 	void clearWindow();
 	void readPropertiesFile();
+	void checkClear();
+	void setTextColour(QColor any);
 
 private slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason reason)
@@ -51,8 +59,9 @@ private slots:
 		*/
 	}
 
-	void outputMessage(const QString some) 
+	void outputMessage(const QString some, QColor any) 
 	{
+		setTextColour(any);
 		textEdit->append(some);
 	}
 
@@ -73,4 +82,8 @@ private:
 	bool windowShow = false;
 
 	QTextEdit* textEdit;
+
+	QTimer* clearTimer = nullptr;
+
+	QString todayDate;
 };

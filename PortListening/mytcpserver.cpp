@@ -5,7 +5,7 @@
 
 QTextStream out(stdout);
 
-MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any), dateTImer(new QTimer)
+MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any), dateTImer(new QTimer(this))
 {
 	mTcpServer = new QTcpServer(this);
 
@@ -49,13 +49,13 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 
 	QTimer::singleShot(500, [this]() {
 
-		if (!mTcpServer->listen(QHostAddress::Any, port)) // ñëóøàåì ñ ëþáîãî àäðåñà íà ïîðò 6000. Ìîæíî óêàçàòü îïðåäåë¸ííûé host äëÿ ïðîñëóøèâàíèÿ
+		if (!mTcpServer->listen(QHostAddress::Any, port)) 
 		{
-			emit messegeLog("server with port " + QString::number(port) + " is not started\n");
+			emit messegeLog("server with port " + QString::number(port) + " is not started\n", QColor(240, 14, 14));
 		}
 		else
 		{
-			emit messegeLog("server with port " + QString::number(port) + " is started\n");
+			emit messegeLog("server with port " + QString::number(port) + " is started\n", QColor(255, 128, 0));
 		}
 
 		});
@@ -63,11 +63,11 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 
 void MyTcpServer::slotNewConnection()
 {
-	mTcpSocket = mTcpServer->nextPendingConnection(); // âîçâðàùàåò îáúåêò QTcpSocket äëÿ òåêóùåãî ñîåäèíåíèÿ. Âåðí¸ò nullptr åñëè âûçâàòü ýòó ôóíêöèþ áåç íàëè÷èÿ ñîåäèíåíèÿ. Ëó÷øå ïîòîì óäàëÿòü QTcpSocket óêàçàòåëü è ïî èòîãó çàíóëÿòü.
+	mTcpSocket = mTcpServer->nextPendingConnection(); 
 
 	if (!mTcpSocket) // ïðîâåðêà íà íåêîððåêòíîå èñïîëüçîâàíèå
 	{
-		emit messegeLog("No pending connection\n");
+		emit messegeLog("No pending connection\n", QColor(240, 14, 14));
 		return; // Âûõîä èç ôóíêöèè, åñëè íåò ñîåäèíåíèÿ
 	}
 
@@ -78,13 +78,13 @@ void MyTcpServer::slotNewConnection()
 	QTime curTime = QTime::currentTime();
 
 	QString temp = "\nConnect from host " + mTcpSocket->peerAddress().toString().sliced(7) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString(); // äëÿ àíàëèçà âõîäÿùèõ ïîäêëþ÷åíèé
-	emit messegeLog(temp);
+	emit messegeLog(temp, QColor(255, 128, 0));
 }
 
 void MyTcpServer::slotServerRead()
 {
 	if (!mTcpSocket) {
-		emit messegeLog("Socket is null in start slotServerRead\n");
+		emit messegeLog("Socket is null in start slotServerRead\n", QColor(240, 14, 14));
 		return;
 	}
 
@@ -95,13 +95,13 @@ void MyTcpServer::slotServerRead()
 		QDate curDate = QDate::currentDate();
 		QTime curTime = QTime::currentTime();
 
-		emit messegeLog('\n' + QString::number(port) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString());
+		emit messegeLog('\n' + QString::number(port) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString(), QColor(240, 218, 15));
 
 		//  mTcpSocket->write(array); // Ýõî ýôôåêò ñ îòïðàâêîé ïðèíÿòîãî îáðàòíî ñîêåòó
 
 		QString str = array.toHex();
 
-		emit messegeLog("Str size = " + QString::number(str.size()));
+		emit messegeLog("Str size = " + QString::number(str.size()), QColor(193, 128, 167));
 
 		QString temporary;
 
@@ -132,7 +132,7 @@ void MyTcpServer::slotServerRead()
 		for (auto& val : myList)
 			temporary += val + " ";
 
-		emit messegeLog(temporary);
+		emit messegeLog("RX - " + temporary, QColor(100, 188, 221));
 
 		temporary = "";
 
@@ -260,7 +260,7 @@ void MyTcpServer::slotServerRead()
 
 				data1 += QByteArray::fromHex(crc1.toUtf8());
 
-				emit messegeLog(data1.toHex());
+				emit messegeLog("TX - " + data1.toHex(), QColor(57, 233, 20));
 
 				mTcpSocket->write(data1);
 
@@ -269,7 +269,7 @@ void MyTcpServer::slotServerRead()
 				continue;
 			}
 
-			emit messegeLog(QString::number(str.length()) + " - " + str);////////////////////////
+			emit messegeLog(QString::number(str.length()) + " - " + str, QColor(57, 233, 20));////////////////////////
 		}
 
 		if (str.size() == 206) str.replace(QRegularExpression(pattern), "");
@@ -301,7 +301,7 @@ void MyTcpServer::slotServerRead()
 		QString numberStr;
 
 		if (myList.size() < 4) {
-			emit messegeLog("Not enough elements in myList");
+			emit messegeLog("Not enough elements in myList", QColor(240, 14, 14));
 			continue;
 		}
 
@@ -314,7 +314,7 @@ void MyTcpServer::slotServerRead()
 
 		uint valTrans = numberStr.toUInt(&ok, 16);
 
-		emit messegeLog("Number - " + QString::number(valTrans) + " - queue polling = " + QString::number(serialBuff.length() - 1));
+		emit messegeLog("Number - " + QString::number(valTrans) + " - queue polling = " + QString::number(serialBuff.length() - 1), QColor(57, 233, 20));
 
 		if (serialBuff.indexOf(QString::number(valTrans)) >= 0)
 		{
@@ -356,19 +356,19 @@ void MyTcpServer::slotServerRead()
 			}
 
 			valTrans = first.toUInt(&ok, 16);
-			emit messegeLog("first - " + QString::number(valTrans));
+			emit messegeLog("first - " + QString::number(valTrans), QColor(57, 233, 20));
 			//qDebug() << "first - " << valTrans;
 
 			valTrans = two.toUInt(&ok, 16);
-			emit messegeLog("two - " + QString::number(valTrans));
+			emit messegeLog("two - " + QString::number(valTrans), QColor(57, 233, 20));
 			//qDebug() << "two - " << valTrans;
 
 			valTrans = three.toUInt(&ok, 16);
-			emit messegeLog("three - " + QString::number(valTrans));
+			emit messegeLog("three - " + QString::number(valTrans), QColor(57, 233, 20));
 			//qDebug() << "three - " << valTrans;
 
 			valTrans = four.toUInt(&ok, 16);
-			emit messegeLog("four - " + QString::number(valTrans));
+			emit messegeLog("four - " + QString::number(valTrans), QColor(57, 233, 20));
 			//qDebug() << "four - " << valTrans << "\n";
 
 
@@ -412,16 +412,16 @@ void MyTcpServer::slotServerRead()
 				}
 			}
 
-			emit messegeLog("first - " + converFuncString(first));
+			emit messegeLog("first - " + converFuncString(first), QColor(57, 233, 20));
 			//qDebug() << "first - " << valTrans;
 
-			emit messegeLog("two - " + converFuncString(two));
+			emit messegeLog("two - " + converFuncString(two), QColor(57, 233, 20));
 			//qDebug() << "two - " << valTrans;
 
-			emit messegeLog("three - " + converFuncString(three));
+			emit messegeLog("three - " + converFuncString(three), QColor(57, 233, 20));
 			//qDebug() << "three - " << valTrans;
 
-			emit messegeLog("four - " + converFuncString(four));
+			emit messegeLog("four - " + converFuncString(four), QColor(57, 233, 20));
 			//qDebug() << "four - " << valTrans << "\n";
 
 
@@ -448,12 +448,12 @@ void MyTcpServer::slotClientDisconnected()
 {
 	if (mTcpSocket == nullptr)
 	{
-		emit messegeLog("Was disconnect but mTcpSocket was nullptr\n");
+		emit messegeLog("Was disconnect but mTcpSocket was nullptr\n", QColor(240, 14, 14));
 		return;
 	}
 
 	mTcpSocket->close(); // ñîçäëà¸ò ñèãíàë void QIODevice::aboutToClose() à çàòåì óñòàíàâëèâàåò äëÿ OpenMode ñîñòîÿíèå NotOpen.
-	emit messegeLog("\n" + QString::number(port) + " - " + "socket close");
+	emit messegeLog("\n" + QString::number(port) + " - " + "socket close", QColor(255, 128, 0));
 	delete mTcpSocket;
 	mTcpSocket = nullptr;
 }
@@ -565,7 +565,7 @@ void MyTcpServer::newDayBuffer()
 	{
 		todayDate = QDate::currentDate().toString("dd-MM-yyyy");
 		serialBuff = fullSerialBuffConstant;
-		emit messegeLog("Polling queue restored\n");
+		emit messegeLog("Polling queue restored\n", QColor(240, 218, 15));
 	}
 }
 

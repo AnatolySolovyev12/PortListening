@@ -19,6 +19,11 @@ int main(int argc, char* argv[])
 	mainWindow.setWindowIcon(QIcon(QCoreApplication::applicationDirPath() + "\\icon.png"));
 	mainWindow.setWindowTitle("PortListening by Solovev");
 	mainWindow.resize(700, 300);
+
+	mainWindow.setStyleSheet(
+		"    background-color: rgb(120, 120, 120);"
+	);
+
 	mainWindow.show();
 
 	return app.exec();

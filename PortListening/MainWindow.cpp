@@ -1,7 +1,7 @@
 #include "MainWindow.h"
 
 MainWindow::MainWindow(QWidget* parent)
-	: QMainWindow(parent)
+	: QMainWindow(parent), clearTimer(new QTimer)
 {
 	trayIcon = new QSystemTrayIcon(this);
 	trayIcon->setIcon(QIcon("icon.png"));
@@ -22,12 +22,52 @@ MainWindow::MainWindow(QWidget* parent)
 
 	textEdit = new QTextEdit(this);
 	textEdit->setReadOnly(true);
+	textEdit->setStyleSheet(
+		"QTextEdit {"
+		"    background-color: rgb(50, 50, 50);" 
+		"}"
+	);
 
 	QPushButton* clear = new QPushButton("Clear", this);
+	clear->setMaximumWidth(80);
+	clear->setStyleSheet(
+		"QPushButton {"
+		"    background-color: #2a9d8f;"
+		"    color: white;"
+		"    border-radius: 5px;"
+		"}"
+		"QPushButton:pressed {"
+		"    background-color: rgb(50, 50, 50);" // в HEX #3cbaa2. Допустимо background-color: #3cbaa2;
+	
+		"}"
+	);
+
+
+	QCheckBox* checkClear = new QCheckBox("  AutoClear", this);
+	checkClear->setMaximumWidth(100);
+	checkClear->setStyleSheet(
+		"QCheckBox{"
+		"    background-color: rgb(50, 50, 50);"
+		"    color: white;"
+		"    border-radius: 5px;"
+
+
+		"}"
+		"QCheckBox:checked {"
+		"    background-color: #2a9d8f;" // в HEX #3cbaa2. Допустимо background-color: #3cbaa2;
+
+		"}"
+	);
+
+	QHBoxLayout* Hlayout = new QHBoxLayout;
+
+	Hlayout->addWidget(clear);
+	Hlayout->addWidget(checkClear);
 
 	QVBoxLayout* layout = new QVBoxLayout;
+	
 	layout->addWidget(textEdit);
-	layout->addWidget(clear);
+	layout->addLayout(Hlayout);
 
 	QWidget* centralWidget = new QWidget(this);
 	centralWidget->setLayout(layout);
@@ -36,6 +76,12 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(clear, &QPushButton::clicked, this, &MainWindow::clearWindow);
 
 	QTimer::singleShot(500, this, &MainWindow::readPropertiesFile);
+
+	clearTimer->start(600000);
+	connect(clearTimer, &QTimer::timeout, this, &MainWindow::checkClear);
+
+	todayDate = QDate::currentDate().toString("dd-MM-yyyy");
+	
 }
 
 MainWindow::~MainWindow()
@@ -103,9 +149,9 @@ void MainWindow::readPropertiesFile()
 		port = myLine->toInt(&ok, 10);
 
 		serverList.push_back(new MyTcpServer(port));
-		connect(serverList[counter], SIGNAL(messegeLog(QString)), this, SLOT(outputMessage(QString)));
+		connect(serverList[counter], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
 		dbList.push_back(serverList[counter]->returnPtrDb());
-		connect(dbList[counter], SIGNAL(messegeLog(QString)), this, SLOT(outputMessage(QString)));
+		connect(dbList[counter], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
 
 		++counter;
 	}
@@ -117,4 +163,20 @@ void MainWindow::readPropertiesFile()
 	}
 	
 	file.close();
+}
+
+
+void MainWindow::checkClear()
+{
+	if (todayDate != QDate::currentDate().toString("dd-MM-yyyy"))
+	{
+		todayDate = QDate::currentDate().toString("dd-MM-yyyy");
+
+		clearWindow();
+	}
+}
+
+void MainWindow::setTextColour(QColor any)
+{
+	textEdit->setTextColor(any);
 }

@@ -14,7 +14,7 @@ class MyTcpServer : public QObject
 {
     Q_OBJECT
 public:
-    explicit MyTcpServer(int any, QObject* parent = 0);
+    explicit MyTcpServer(int any, QObject* parent = nullptr);
 
     SQLiteDB* returnPtrDb();
     QString converFuncString(QString& any);
@@ -29,7 +29,7 @@ public slots:
     void slotClientDisconnected();
 
 signals:
-    void messegeLog(const QString&);
+    void messegeLog(const QString&, QColor col);
 
 
 private:
