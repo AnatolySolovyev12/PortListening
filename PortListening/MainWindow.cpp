@@ -147,9 +147,9 @@ void MainWindow::readPropertiesFile()
 		port = myLine->toInt(&ok, 10);
 
 		serverList.push_back(new MyTcpServer(port));
-		connect(serverList[counter], SIGNAL(messegeLog(QString)), this, SLOT(outputMessage(QString)));
+		connect(serverList[counter], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
 		dbList.push_back(serverList[counter]->returnPtrDb());
-		connect(dbList[counter], SIGNAL(messegeLog(QString)), this, SLOT(outputMessage(QString)));
+		connect(dbList[counter], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
 
 		++counter;
 	}

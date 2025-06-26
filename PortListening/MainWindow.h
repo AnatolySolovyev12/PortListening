@@ -59,8 +59,9 @@ private slots:
 		*/
 	}
 
-	void outputMessage(const QString some) 
+	void outputMessage(const QString some, QColor any) 
 	{
+		setTextColour(any);
 		textEdit->append(some);
 	}
 

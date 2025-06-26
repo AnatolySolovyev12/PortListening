@@ -29,7 +29,7 @@ public slots:
     void slotClientDisconnected();
 
 signals:
-    void messegeLog(const QString&);
+    void messegeLog(const QString&, QColor col);
 
 
 private:
