@@ -5,7 +5,7 @@
 
 QTextStream out(stdout);
 
-MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any), dateTImer(new QTimer)
+MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any), dateTImer(new QTimer(this))
 {
 	mTcpServer = new QTcpServer(this);
 

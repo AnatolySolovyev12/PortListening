@@ -22,9 +22,40 @@ MainWindow::MainWindow(QWidget* parent)
 
 	textEdit = new QTextEdit(this);
 	textEdit->setReadOnly(true);
+	textEdit->setStyleSheet(
+		"QTextEdit {"
+		"    background-color: rgb(50, 50, 50);" 
+		"}"
+	);
 
 	QPushButton* clear = new QPushButton("Clear", this);
+	clear->setMaximumWidth(50);
+	clear->setStyleSheet(
+		"QPushButton {"
+		"    background-color: #2a9d8f;"
+		"    color: white;"
+		"    border-radius: 5px;"
+		"}"
+		"QPushButton:pressed {"
+		"    background-color: rgb(50, 50, 50);" // в HEX #3cbaa2. Допустимо background-color: #3cbaa2;
+	
+		"}"
+	);
+
+
 	QCheckBox* checkClear = new QCheckBox("AutoClear", this);
+	checkClear->setMaximumWidth(80);
+	checkClear->setStyleSheet(
+		"QCheckBox{"
+		"    background-color: rgb(50, 50, 50);"
+		"    color: white;"
+		"    border-radius: 5px;"
+		"}"
+		"QCheckBox:checked {"
+		"    background-color: #2a9d8f;" // в HEX #3cbaa2. Допустимо background-color: #3cbaa2;
+
+		"}"
+	);
 
 	QHBoxLayout* Hlayout = new QHBoxLayout;
 
@@ -141,4 +172,9 @@ void MainWindow::checkClear()
 
 		clearWindow();
 	}
+}
+
+void MainWindow::setTextColour(QColor any)
+{
+	textEdit->setTextColor(any);
 }
