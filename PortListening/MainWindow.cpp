@@ -1,7 +1,7 @@
 #include "MainWindow.h"
 
 MainWindow::MainWindow(QWidget* parent)
-	: QMainWindow(parent)
+	: QMainWindow(parent), clearTimer(new QTimer)
 {
 	trayIcon = new QSystemTrayIcon(this);
 	trayIcon->setIcon(QIcon("icon.png"));
@@ -24,10 +24,17 @@ MainWindow::MainWindow(QWidget* parent)
 	textEdit->setReadOnly(true);
 
 	QPushButton* clear = new QPushButton("Clear", this);
+	QCheckBox* checkClear = new QCheckBox("AutoClear", this);
+
+	QHBoxLayout* Hlayout = new QHBoxLayout;
+
+	Hlayout->addWidget(clear);
+	Hlayout->addWidget(checkClear);
 
 	QVBoxLayout* layout = new QVBoxLayout;
+	
 	layout->addWidget(textEdit);
-	layout->addWidget(clear);
+	layout->addLayout(Hlayout);
 
 	QWidget* centralWidget = new QWidget(this);
 	centralWidget->setLayout(layout);
@@ -36,6 +43,12 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(clear, &QPushButton::clicked, this, &MainWindow::clearWindow);
 
 	QTimer::singleShot(500, this, &MainWindow::readPropertiesFile);
+
+	clearTimer->start(600000);
+	connect(clearTimer, &QTimer::timeout, this, &MainWindow::checkClear);
+
+	todayDate = QDate::currentDate().toString("dd-MM-yyyy");
+	
 }
 
 MainWindow::~MainWindow()
@@ -117,4 +130,15 @@ void MainWindow::readPropertiesFile()
 	}
 	
 	file.close();
+}
+
+
+void MainWindow::checkClear()
+{
+	if (todayDate != QDate::currentDate().toString("dd-MM-yyyy"))
+	{
+		todayDate = QDate::currentDate().toString("dd-MM-yyyy");
+
+		clearWindow();
+	}
 }

@@ -9,7 +9,9 @@
 #include <QTimer.h>
 #include <QTextEdit>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QPushButton>
+#include <QCheckBox.h>
 
 class MainWindow : public QMainWindow
 {
@@ -24,6 +26,7 @@ public:
 
 	void clearWindow();
 	void readPropertiesFile();
+	void checkClear();
 
 private slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason reason)
@@ -73,4 +76,8 @@ private:
 	bool windowShow = false;
 
 	QTextEdit* textEdit;
+
+	QTimer* clearTimer = nullptr;
+
+	QString todayDate;
 };
