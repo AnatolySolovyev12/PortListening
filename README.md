@@ -8,5 +8,6 @@ What can:
 5) Outputs a log with some information about the received packets to the widget.
 6) Folding in and out of trey.
 
-![Снимок экрана 2025-02-08 201518](https://github.com/user-attachments/assets/d3102017-936b-4c7a-8398-a48c06d45100)
+![Снимок экрана 2025-06-26 165711](https://github.com/user-attachments/assets/7c3ae6fe-6cbf-4223-847a-a8106811e4c4)
+
 
