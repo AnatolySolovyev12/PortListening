@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget* parent)
 	);
 
 	QPushButton* clear = new QPushButton("Clear", this);
-	clear->setMaximumWidth(50);
+	clear->setMaximumWidth(80);
 	clear->setStyleSheet(
 		"QPushButton {"
 		"    background-color: #2a9d8f;"
@@ -43,13 +43,15 @@ MainWindow::MainWindow(QWidget* parent)
 	);
 
 
-	QCheckBox* checkClear = new QCheckBox("AutoClear", this);
-	checkClear->setMaximumWidth(80);
+	QCheckBox* checkClear = new QCheckBox("  AutoClear", this);
+	checkClear->setMaximumWidth(100);
 	checkClear->setStyleSheet(
 		"QCheckBox{"
 		"    background-color: rgb(50, 50, 50);"
 		"    color: white;"
 		"    border-radius: 5px;"
+
+
 		"}"
 		"QCheckBox:checked {"
 		"    background-color: #2a9d8f;" // в HEX #3cbaa2. Допустимо background-color: #3cbaa2;
