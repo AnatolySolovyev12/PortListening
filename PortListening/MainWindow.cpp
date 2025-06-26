@@ -48,7 +48,7 @@ void MainWindow::clearWindow()
 
 void MainWindow::readPropertiesFile()
 {
-	QFile file("ports.txt");
+	QFile file(QCoreApplication::applicationDirPath() + "\\ports.txt");
 
 	if (!file.open(QIODevice::ReadOnly))
 	{
