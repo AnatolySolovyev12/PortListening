@@ -272,7 +272,7 @@ void MyTcpServer::slotServerRead()
 			emit messegeLog(QString::number(str.length()) + " - " + str, QColor(57, 233, 20));////////////////////////
 		}
 
-		if (str.size() == 206) str.replace(QRegularExpression(pattern), "");
+		if (str.size() == 206 || str.size() == 210 || str.size() == 214 || str.size() == 218) str.replace(QRegularExpression(pattern), "");
 
 		if (str.size() == 404) str.remove(202, 404);
 
@@ -291,6 +291,8 @@ void MyTcpServer::slotServerRead()
 		}
 
 		if (str.size() == 286) str = str.sliced(84);
+
+		if (str.size() == 244) str = str.sliced(42); //front sliced
 
 		if (str.size() == 312 || str.size() == 202) // out-of-array warning
 		{
