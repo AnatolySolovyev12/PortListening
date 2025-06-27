@@ -269,7 +269,7 @@ void MyTcpServer::slotServerRead()
 				continue;
 			}
 
-			emit messegeLog(QString::number(str.length()) + " - " + str, QColor(57, 233, 20));////////////////////////
+			emit messegeLog(QString::number(str.length()) + " - " + str, QColor(57, 233, 20));
 		}
 
 		if (str.size() == 206 || str.size() == 210 || str.size() == 214 || str.size() == 218) str.replace(QRegularExpression(pattern), "");
