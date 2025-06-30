@@ -432,6 +432,7 @@ void MyTcpServer::slotServerRead()
 			emit messegeLog("four - " + converFuncString(four), QColor(57, 233, 20));
 			//qDebug() << "four - " << valTrans << "\n";
 
+			ThreeZero = false;
 
 			QString str_t = QString("INSERT INTO counterTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - îïðåäåëÿåò òå çíà÷åíèÿ êîòîðûå áóäóò çàïèñàíèû â ñòðîêó
 				.arg(numberStr.toUInt(&ok, 16))
@@ -445,11 +446,6 @@ void MyTcpServer::slotServerRead()
 		}
 	}
 }
-
-
-
-
-
 
 
 void MyTcpServer::slotClientDisconnected()
@@ -509,8 +505,6 @@ QString MyTcpServer::converFuncString(QString& any)
 			{
 				any.insert((any.length() - 2), '.');
 			}
-
-			ThreeZero = false;
 		}
 		else
 		{
