@@ -447,11 +447,6 @@ void MyTcpServer::slotServerRead()
 }
 
 
-
-
-
-
-
 void MyTcpServer::slotClientDisconnected()
 {
 	if (mTcpSocket == nullptr)
