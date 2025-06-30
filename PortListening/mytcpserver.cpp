@@ -30,6 +30,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 	{
 		serialBuff = { "87696", "87698", "75204", "75205", "74993", "74984", "74996", "75002", "74983", "75014", "74997", "74994" };
 		threeFazeBuff += { "87696", "87698" }; // ВРУ
+		threeFazeBuffThreeZero += { "75204", "75205" };
 	}
 
 	if (port == 49502) // НЭСКО
@@ -49,7 +50,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 
 	QTimer::singleShot(500, [this]() {
 
-		if (!mTcpServer->listen(QHostAddress::Any, port)) 
+		if (!mTcpServer->listen(QHostAddress::Any, port))
 		{
 			emit messegeLog("server with port " + QString::number(port) + " is not started\n", QColor(240, 14, 14));
 		}
@@ -63,7 +64,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 
 void MyTcpServer::slotNewConnection()
 {
-	mTcpSocket = mTcpServer->nextPendingConnection(); 
+	mTcpSocket = mTcpServer->nextPendingConnection();
 
 	if (!mTcpSocket) // ïðîâåðêà íà íåêîððåêòíîå èñïîëüçîâàíèå
 	{
@@ -179,11 +180,16 @@ void MyTcpServer::slotServerRead()
 
 			QByteArray testNumber = serialBuff[serialBuffPosition];
 
-			if (threeFazeBuff.indexOf(testNumber) >= 0)
+			if (threeFazeBuff.indexOf(testNumber) >= 0 || threeFazeBuffThreeZero.indexOf(testNumber) >= 0)
+			{
 				treeFazeBool = true;
+
+				if (threeFazeBuffThreeZero.indexOf(testNumber) >= 0)
+					ThreeZero = true;
+			}
 			else
 				treeFazeBool = false;
-			
+
 
 			if (oldMessege)
 				countMessege++;
@@ -269,10 +275,10 @@ void MyTcpServer::slotServerRead()
 				continue;
 			}
 
-			emit messegeLog(QString::number(str.length()) + " - " + str, QColor(57, 233, 20));////////////////////////
+			emit messegeLog(QString::number(str.length()) + " - " + str, QColor(57, 233, 20));
 		}
 
-		if (str.size() == 206) str.replace(QRegularExpression(pattern), "");
+		if (str.size() == 206 || str.size() == 210 || str.size() == 214 || str.size() == 218) str.replace(QRegularExpression(pattern), "");
 
 		if (str.size() == 404) str.remove(202, 404);
 
@@ -291,6 +297,8 @@ void MyTcpServer::slotServerRead()
 		}
 
 		if (str.size() == 286) str = str.sliced(84);
+
+		if (str.size() == 244) str = str.sliced(42); //front sliced
 
 		if (str.size() == 312 || str.size() == 202) // out-of-array warning
 		{
@@ -487,20 +495,39 @@ QString MyTcpServer::converFuncString(QString& any)
 	}
 	else
 	{
-		if (any.length() == 2 || any.length() == 1)
+		if (ThreeZero)
 		{
-			if (any.length() == 2)
-				any.push_front("0.0");
-			else
-				any.push_front("0.00");
+			if (any.length() == 2 || any.length() == 1)
+			{
+				if (any.length() == 2)
+					any.push_front("0.");
+				else
+					any.push_front("0.0");
 
+			}
+			else
+			{
+				any.insert((any.length() - 2), '.');
+			}
+
+			ThreeZero = false;
 		}
 		else
 		{
-			any.insert((any.length() - 3), '.');
+			if (any.length() == 2 || any.length() == 1)
+			{
+				if (any.length() == 2)
+					any.push_front("0.0");
+				else
+					any.push_front("0.00");
+
+			}
+			else
+			{
+				any.insert((any.length() - 3), '.');
+			}
 		}
 	}
-
 
 	return any;
 }
