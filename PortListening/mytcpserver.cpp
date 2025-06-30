@@ -163,6 +163,7 @@ void MyTcpServer::slotServerRead()
 					countMessege = 0;
 					oldMessege = false;
 					listen = false;
+					ThreeZero = false;
 				}
 				if (listen)
 				{
@@ -254,6 +255,7 @@ void MyTcpServer::slotServerRead()
 				countMessege = 0;
 				oldMessege = false;
 				listen = false;
+				ThreeZero = false;
 			}
 
 			}
