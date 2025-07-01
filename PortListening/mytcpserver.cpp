@@ -30,7 +30,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 	{
 		serialBuff = { "87696", "87698", "75204", "75205", "74993", "74984", "74996", "75002", "74983", "75014", "74997", "74994" };
 		threeFazeBuff += { "87696", "87698" }; // ВРУ
-		threeFazeBuffThreeZero += { "75204", "75205" };
+		threeFazeBuffTwoZero += { "75204", "75205" };
 	}
 
 	if (port == 49502) // НЭСКО
@@ -163,7 +163,7 @@ void MyTcpServer::slotServerRead()
 					countMessege = 0;
 					oldMessege = false;
 					listen = false;
-					ThreeZero = false;
+					TwoZero = false;
 				}
 				if (listen)
 				{
@@ -181,12 +181,12 @@ void MyTcpServer::slotServerRead()
 
 			QByteArray testNumber = serialBuff[serialBuffPosition];
 
-			if (threeFazeBuff.indexOf(testNumber) >= 0 || threeFazeBuffThreeZero.indexOf(testNumber) >= 0)
+			if (threeFazeBuff.indexOf(testNumber) >= 0 || threeFazeBuffTwoZero.indexOf(testNumber) >= 0)
 			{
 				treeFazeBool = true;
 
-				if (threeFazeBuffThreeZero.indexOf(testNumber) >= 0)
-					ThreeZero = true;
+				if (threeFazeBuffTwoZero.indexOf(testNumber) >= 0)
+					TwoZero = true;
 			}
 			else
 				treeFazeBool = false;
@@ -255,7 +255,6 @@ void MyTcpServer::slotServerRead()
 				countMessege = 0;
 				oldMessege = false;
 				listen = false;
-				ThreeZero = false;
 			}
 
 			}
@@ -434,7 +433,7 @@ void MyTcpServer::slotServerRead()
 			emit messegeLog("four - " + converFuncString(four), QColor(57, 233, 20));
 			//qDebug() << "four - " << valTrans << "\n";
 
-			ThreeZero = false;
+			TwoZero = false;
 
 			QString str_t = QString("INSERT INTO counterTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - îïðåäåëÿåò òå çíà÷åíèÿ êîòîðûå áóäóò çàïèñàíèû â ñòðîêó
 				.arg(numberStr.toUInt(&ok, 16))
@@ -493,7 +492,7 @@ QString MyTcpServer::converFuncString(QString& any)
 	}
 	else
 	{
-		if (ThreeZero)
+		if (TwoZero)
 		{
 			if (any.length() == 2 || any.length() == 1)
 			{

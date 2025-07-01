@@ -57,8 +57,8 @@ private:
     QList<QByteArray>serialBuff;
     QList<QByteArray>fullSerialBuffConstant;
     QList<QByteArray>threeFazeBuff;
-    QList<QByteArray>threeFazeBuffThreeZero;
-    bool ThreeZero = false;
+    QList<QByteArray>threeFazeBuffTwoZero;
+    bool TwoZero = false;
 
 
     bool treeFazeBool = false;
