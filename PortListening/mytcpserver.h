@@ -8,14 +8,20 @@
 
 #include "SQLiteDB.h"
 
+#include "qtimer.h"
+
 class MyTcpServer : public QObject
 {
     Q_OBJECT
 public:
-    explicit MyTcpServer(int any, QObject* parent = 0);
+    explicit MyTcpServer(int any, QObject* parent = nullptr);
 
     SQLiteDB* returnPtrDb();
     QString converFuncString(QString& any);
+
+    QString crc16Modbus(const QByteArray& data);
+    QByteArray serialArrayRotate(QByteArray testNumber);
+    void newDayBuffer();
 
 public slots:
     void slotNewConnection();
@@ -23,7 +29,7 @@ public slots:
     void slotClientDisconnected();
 
 signals:
-    void messegeLog(const QString&);
+    void messegeLog(const QString&, QColor col);
 
 
 private:
@@ -31,6 +37,37 @@ private:
     QTcpSocket* mTcpSocket = nullptr;
     SQLiteDB* dataWrite = nullptr;
     int port;
+
+
+    QByteArray testArray;
+
+    int counter = 0;
+
+    int recall = 0;
+
+    bool listen = false;
+    int countMessege = 0;
+    int serialBuffPosition = 0;
+    bool oldMessege = false;
+
+    QString answerListMilur;
+    QString zeroBuff = QString(100, '0');
+    QString strZero = QString(60, '0');
+
+    QList<QByteArray>serialBuff;
+    QList<QByteArray>fullSerialBuffConstant;
+    QList<QByteArray>threeFazeBuff;
+    QList<QByteArray>threeFazeBuffTwoZero;
+    bool TwoZero = false;
+
+
+    bool treeFazeBool = false;
+
+    QString pattern = "3335";
+
+    QString todayDate;
+
+    QTimer* dateTImer = nullptr;;
 };
 
 #endif // MYTCPSERVER_H
