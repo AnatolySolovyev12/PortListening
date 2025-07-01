@@ -5,7 +5,7 @@
 
 QTextStream out(stdout);
 
-MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
+MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any), dateTImer(new QTimer(this))
 {
 	mTcpServer = new QTcpServer(this);
 
@@ -13,17 +13,50 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 
 	connect(mTcpServer, &QTcpServer::newConnection, this, &MyTcpServer::slotNewConnection);
 
+
+	if (port == 49500) // 1 РїРѕРґ
+	{
+		serialBuff = { "75206", "75209", "74985", "75020", "74987", "74991", "74988", "74982", "74989", "74990" };
+		threeFazeBuff.push_back("75209"); // Р’Р РЈ
+	}
+
+	if (port == 6000) // 2 РїРѕРґ
+	{
+		serialBuff = { "75024", "75001", "74986", "74981", "74995", "74998", "75008", "74980", "75000", "74992" };
+
+	}
+
+	if (port == 49501) // 3 РїРѕРґ
+	{
+		serialBuff = { "87696", "87698", "75204", "75205", "74993", "74984", "74996", "75002", "74983", "75014", "74997", "74994" };
+		threeFazeBuff += { "87696", "87698" }; // Р’Р РЈ
+		threeFazeBuffTwoZero += { "75204", "75205" };
+	}
+
+	if (port == 49502) // РќР­РЎРљРћ
+	{
+		serialBuff = { "75346", "75342", "87694", "87695" }; // Р’Р РЈ
+		threeFazeBuff += { "75346", "75342", "87694", "87695" };
+	}
+
+
+	fullSerialBuffConstant = serialBuff;
+
+	todayDate = QDate::currentDate().toString("dd-MM-yyyy");
+
+	dateTImer->start(600000);
+
+	connect(dateTImer, &QTimer::timeout, this, &MyTcpServer::newDayBuffer);
+
 	QTimer::singleShot(500, [this]() {
 
-		if (!mTcpServer->listen(QHostAddress::Any, port)) // слушаем с любого адреса на порт 6000. Можно указать определённый host для прослушивания
+		if (!mTcpServer->listen(QHostAddress::Any, port))
 		{
-			emit messegeLog("server with port " + QString::number(port) + " is not started\n");
-			// qDebug() << "server is not started\n";
+			emit messegeLog("server with port " + QString::number(port) + " is not started\n", QColor(240, 14, 14));
 		}
 		else
 		{
-			emit messegeLog("server with port " + QString::number(port) + " is started\n");
-			// qDebug() << "server is started\n";
+			emit messegeLog("server with port " + QString::number(port) + " is started\n", QColor(255, 128, 0));
 		}
 
 		});
@@ -31,23 +64,28 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any)
 
 void MyTcpServer::slotNewConnection()
 {
-	mTcpSocket = mTcpServer->nextPendingConnection(); // возвращает объект QTcpSocket для текущего соединения. Вернёт nullptr если вызвать эту функцию без наличия соединения. Лучше потом удалять QTcpSocket указатель и по итогу занулять.
+	mTcpSocket = mTcpServer->nextPendingConnection();
 
-	if (!mTcpSocket) // проверка на некорректное использование
+	if (!mTcpSocket) // ГЇГ°Г®ГўГҐГ°ГЄГ  Г­Г  Г­ГҐГЄГ®Г°Г°ГҐГЄГІГ­Г®ГҐ ГЁГ±ГЇГ®Г«ГјГ§Г®ГўГ Г­ГЁГҐ
 	{
-		emit messegeLog("No pending connection\n");
-		return; // Выход из функции, если нет соединения
+		emit messegeLog("No pending connection\n", QColor(240, 14, 14));
+		return; // Г‚Г»ГµГ®Г¤ ГЁГ§ ГґГіГ­ГЄГ¶ГЁГЁ, ГҐГ±Г«ГЁ Г­ГҐГІ Г±Г®ГҐГ¤ГЁГ­ГҐГ­ГЁГї
 	}
-	//  mTcpSocket->write("Echo server!\r\n");
 
-	connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); // если есть что читать (библиотечный сигнал) сработает слот
-	connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected); // если сокет отсоединился (библиотечный сигнал) сработает слот
+	connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); // ГҐГ±Г«ГЁ ГҐГ±ГІГј Г·ГІГ® Г·ГЁГІГ ГІГј (ГЎГЁГЎГ«ГЁГ®ГІГҐГ·Г­Г»Г© Г±ГЁГЈГ­Г Г«) Г±Г°Г ГЎГ®ГІГ ГҐГІ Г±Г«Г®ГІ
+	connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected); // ГҐГ±Г«ГЁ Г±Г®ГЄГҐГІ Г®ГІГ±Г®ГҐГ¤ГЁГ­ГЁГ«Г±Гї (ГЎГЁГЎГ«ГЁГ®ГІГҐГ·Г­Г»Г© Г±ГЁГЈГ­Г Г«) Г±Г°Г ГЎГ®ГІГ ГҐГІ Г±Г«Г®ГІ
+
+	QDate curDate = QDate::currentDate();
+	QTime curTime = QTime::currentTime();
+
+	QString temp = "\nConnect from host " + mTcpSocket->peerAddress().toString().sliced(7) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString(); // Г¤Г«Гї Г Г­Г Г«ГЁГ§Г  ГўГµГ®Г¤ГїГ№ГЁГµ ГЇГ®Г¤ГЄГ«ГѕГ·ГҐГ­ГЁГ©
+	emit messegeLog(temp, QColor(255, 128, 0));
 }
 
 void MyTcpServer::slotServerRead()
 {
 	if (!mTcpSocket) {
-		emit messegeLog("Socket is null in start slotServerRead\n");
+		emit messegeLog("Socket is null in start slotServerRead\n", QColor(240, 14, 14));
 		return;
 	}
 
@@ -55,33 +93,16 @@ void MyTcpServer::slotServerRead()
 	{
 		QByteArray array = mTcpSocket->readAll();
 
-		if (array == "35")
-			continue;
-
 		QDate curDate = QDate::currentDate();
 		QTime curTime = QTime::currentTime();
 
-		// qDebug() << curDate.toString("dd-MM-yyyy");
+		emit messegeLog('\n' + QString::number(port) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString(), QColor(240, 218, 15));
 
-		emit messegeLog('\n' + QString::number(port) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString());
-
-		// qDebug() << curDate.toString("dd-MM-yyyy") << " " << curTime.toString();
-
-		// qDebug() << QByteArray::fromHex(array);
-		// emit messegeLog(QByteArray::fromHex(array));
-
-		// emit messegeLog(array);
-		//  qDebug() << array;
-
-		//  mTcpSocket->write(array); // Эхо эффект с отправкой принятого обратно сокету
+		//  mTcpSocket->write(array); // ГќГµГ® ГЅГґГґГҐГЄГІ Г± Г®ГІГЇГ°Г ГўГЄГ®Г© ГЇГ°ГЁГ­ГїГІГ®ГЈГ® Г®ГЎГ°Г ГІГ­Г® Г±Г®ГЄГҐГІГі
 
 		QString str = array.toHex();
 
-		// qDebug() << str << "\n";
-
-		emit messegeLog("Str size = " + QString::number(str.size()));
-
-		// qDebug() << "Str size = " << str.size();
+		emit messegeLog("Str size = " + QString::number(str.size()), QColor(193, 128, 167));
 
 		QString temporary;
 
@@ -112,10 +133,7 @@ void MyTcpServer::slotServerRead()
 		for (auto& val : myList)
 			temporary += val + " ";
 
-		// out << Qt::endl;
-		// out << Qt::endl;
-
-		emit messegeLog(temporary);
+		emit messegeLog("RX - " + temporary, QColor(100, 188, 221));
 
 		temporary = "";
 
@@ -124,6 +142,164 @@ void MyTcpServer::slotServerRead()
 		translate = "";
 
 		counter = 0;
+
+
+		/*
+		if (array == "35" && listen)
+		{
+			counter--;
+		}
+		*/
+
+
+		if ((str.size() == 4) || (str.size() == 16 && listen) || (str.size() == 26 && listen))
+		{
+			if (str.size() == 4 && listen)
+			{
+				if (recall == 4)
+				{
+					recall = 0;
+					serialBuffPosition++;
+					countMessege = 0;
+					oldMessege = false;
+					listen = false;
+					TwoZero = false;
+				}
+				if (listen)
+				{
+					countMessege--;
+					recall++;
+					oldMessege = true;
+				}
+			}
+
+			if (serialBuffPosition + 1 > serialBuff.length())
+			{
+				serialBuffPosition = 0;
+				return;
+			}
+
+			QByteArray testNumber = serialBuff[serialBuffPosition];
+
+			if (threeFazeBuff.indexOf(testNumber) >= 0 || threeFazeBuffTwoZero.indexOf(testNumber) >= 0)
+			{
+				treeFazeBool = true;
+
+				if (threeFazeBuffTwoZero.indexOf(testNumber) >= 0)
+					TwoZero = true;
+			}
+			else
+				treeFazeBool = false;
+
+
+			if (oldMessege)
+				countMessege++;
+			else
+			{
+				countMessege++;
+				recall = 0;
+			}
+
+
+			QByteArray data1;
+
+			switch (countMessege)
+			{
+			case(1):
+			{
+				data1 = QByteArray::fromHex("0800FFFFFFFFFFFF");
+				listen = true;
+				break;
+			}
+			case(2):
+			{
+				if (treeFazeBool)
+					data1 = QByteArray::fromHex("0177");
+				else
+					data1 = QByteArray::fromHex("0105");
+
+				listen = true;
+				break;
+			}
+			case(3):
+			{
+				answerListMilur += str;
+
+				if (treeFazeBool)
+					data1 = QByteArray::fromHex("0178");
+				else
+					data1 = QByteArray::fromHex("0106");
+
+				listen = true;
+				break;
+			}
+			case(4):
+			{
+				answerListMilur += zeroBuff;
+
+				for (int tempVal = 14; tempVal <= 21; tempVal++)
+				{
+					answerListMilur.push_back(answerListMilur[tempVal]);
+				}
+
+				for (int tempVal = 14; tempVal <= 21; tempVal++)
+				{
+					answerListMilur.push_back(str[tempVal]);
+				}
+
+				answerListMilur += strZero;
+				str = answerListMilur;
+				answerListMilur.clear();
+				recall = 0;
+				serialBuffPosition++;
+				countMessege = 0;
+				oldMessege = false;
+				listen = false;
+			}
+
+			}
+
+			if (listen)
+			{
+				data1.push_front(QByteArray::fromHex(serialArrayRotate(testNumber)));
+
+				QString crc1 = crc16Modbus(data1);
+
+				data1 += QByteArray::fromHex(crc1.toUtf8());
+
+				emit messegeLog("TX - " + data1.toHex(), QColor(57, 233, 20));
+
+				mTcpSocket->write(data1);
+
+				oldMessege = false;
+
+				continue;
+			}
+
+			emit messegeLog(QString::number(str.length()) + " - " + str, QColor(57, 233, 20));
+		}
+
+		if (str.size() == 206 || str.size() == 210 || str.size() == 214 || str.size() == 218) str.replace(QRegularExpression(pattern), "");
+
+		if (str.size() == 404) str.remove(202, 404);
+
+		if (str.size() == 406)
+		{
+			str.replace(QRegularExpression(pattern), "");
+			str.remove(202, 404);
+		}
+
+		if (str.size() == 606) str.remove(202, 606);
+
+		if (str.size() == 610)
+		{
+			str.replace(QRegularExpression(pattern), "");
+			str.remove(202, 404);
+		}
+
+		if (str.size() == 286) str = str.sliced(84);
+
+		if (str.size() == 244) str = str.sliced(42); //front sliced
 
 		if (str.size() == 312 || str.size() == 202) // out-of-array warning
 		{
@@ -134,7 +310,7 @@ void MyTcpServer::slotServerRead()
 		QString numberStr;
 
 		if (myList.size() < 4) {
-			emit messegeLog("Not enough elements in myList");
+			emit messegeLog("Not enough elements in myList", QColor(240, 14, 14));
 			continue;
 		}
 
@@ -147,8 +323,12 @@ void MyTcpServer::slotServerRead()
 
 		uint valTrans = numberStr.toUInt(&ok, 16);
 
-		emit messegeLog("Number - " + QString::number(valTrans));
-		//qDebug() << "Number - " << valTrans;
+		emit messegeLog("Number - " + QString::number(valTrans) + " - queue polling = " + QString::number(serialBuff.length() - 1), QColor(57, 233, 20));
+
+		if (serialBuff.indexOf(QString::number(valTrans)) >= 0)
+		{
+			serialBuff.remove(serialBuff.indexOf(QString::number(valTrans))); // СѓРґР°Р»СЏРµРј РѕС‡РµСЂРµРґРё РѕРїСЂРѕСЃР° С‚Рѕ С‡С‚Рѕ РѕРїСЂРѕС€РµРЅРѕ
+		}
 
 		QString first;
 		QString two;
@@ -185,23 +365,23 @@ void MyTcpServer::slotServerRead()
 			}
 
 			valTrans = first.toUInt(&ok, 16);
-			emit messegeLog("first - " + QString::number(valTrans));
+			emit messegeLog("first - " + QString::number(valTrans), QColor(57, 233, 20));
 			//qDebug() << "first - " << valTrans;
 
 			valTrans = two.toUInt(&ok, 16);
-			emit messegeLog("two - " + QString::number(valTrans));
+			emit messegeLog("two - " + QString::number(valTrans), QColor(57, 233, 20));
 			//qDebug() << "two - " << valTrans;
 
 			valTrans = three.toUInt(&ok, 16);
-			emit messegeLog("three - " + QString::number(valTrans));
+			emit messegeLog("three - " + QString::number(valTrans), QColor(57, 233, 20));
 			//qDebug() << "three - " << valTrans;
 
 			valTrans = four.toUInt(&ok, 16);
-			emit messegeLog("four - " + QString::number(valTrans));
+			emit messegeLog("four - " + QString::number(valTrans), QColor(57, 233, 20));
 			//qDebug() << "four - " << valTrans << "\n";
 
 
-			QString str_t = QString("INSERT INTO channelTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - определяет те значения которые будут записаниы в строку
+			QString str_t = QString("INSERT INTO channelTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - Г®ГЇГ°ГҐГ¤ГҐГ«ГїГҐГІ ГІГҐ Г§Г­Г Г·ГҐГ­ГЁГї ГЄГ®ГІГ®Г°Г»ГҐ ГЎГіГ¤ГіГІ Г§Г ГЇГЁГ±Г Г­ГЁГ» Гў Г±ГІГ°Г®ГЄГі
 				.arg(numberStr.toUInt(&ok, 16))
 				.arg(curDate.toString("yyyy-MM-dd"))
 				.arg(first.toUInt(&ok, 16))
@@ -241,20 +421,21 @@ void MyTcpServer::slotServerRead()
 				}
 			}
 
-			emit messegeLog("first - " + converFuncString(first));
+			emit messegeLog("first - " + converFuncString(first), QColor(57, 233, 20));
 			//qDebug() << "first - " << valTrans;
 
-			emit messegeLog("two - " + converFuncString(two));
+			emit messegeLog("two - " + converFuncString(two), QColor(57, 233, 20));
 			//qDebug() << "two - " << valTrans;
 
-			emit messegeLog("three - " + converFuncString(three));
+			emit messegeLog("three - " + converFuncString(three), QColor(57, 233, 20));
 			//qDebug() << "three - " << valTrans;
 
-			emit messegeLog("four - " + converFuncString(four));
+			emit messegeLog("four - " + converFuncString(four), QColor(57, 233, 20));
 			//qDebug() << "four - " << valTrans << "\n";
 
+			TwoZero = false;
 
-			QString str_t = QString("INSERT INTO counterTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - определяет те значения которые будут записаниы в строку
+			QString str_t = QString("INSERT INTO counterTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - Г®ГЇГ°ГҐГ¤ГҐГ«ГїГҐГІ ГІГҐ Г§Г­Г Г·ГҐГ­ГЁГї ГЄГ®ГІГ®Г°Г»ГҐ ГЎГіГ¤ГіГІ Г§Г ГЇГЁГ±Г Г­ГЁГ» Гў Г±ГІГ°Г®ГЄГі
 				.arg(numberStr.toUInt(&ok, 16))
 				.arg(curDate.toString("yyyy-MM-dd"))
 				.arg(first)
@@ -267,17 +448,17 @@ void MyTcpServer::slotServerRead()
 	}
 }
 
+
 void MyTcpServer::slotClientDisconnected()
 {
-	// ntcnbhetv на проблемы с некорректным использованием указателей
-
 	if (mTcpSocket == nullptr)
 	{
-		emit messegeLog("Was disconnect but mTcpSocket was nullptr\n");
+		emit messegeLog("Was disconnect but mTcpSocket was nullptr\n", QColor(240, 14, 14));
 		return;
 	}
 
-	mTcpSocket->close(); // создлаёт сигнал void QIODevice::aboutToClose() а затем устанавливает для OpenMode состояние NotOpen.
+	mTcpSocket->close(); // Г±Г®Г§Г¤Г«Г ВёГІ Г±ГЁГЈГ­Г Г« void QIODevice::aboutToClose() Г  Г§Г ГІГҐГ¬ ГіГ±ГІГ Г­Г ГўГ«ГЁГўГ ГҐГІ Г¤Г«Гї OpenMode Г±Г®Г±ГІГ®ГїГ­ГЁГҐ NotOpen.
+	emit messegeLog("\n" + QString::number(port) + " - " + "socket close", QColor(255, 128, 0));
 	delete mTcpSocket;
 	mTcpSocket = nullptr;
 }
@@ -294,18 +475,119 @@ QString MyTcpServer::converFuncString(QString& any)
 
 	any = QString::number(testInt);
 
-	if (any.length() == 2 || any.length() == 1)
+	if (!treeFazeBool)
 	{
-		if (any.length() == 2)
-			any.push_front("0.");
-		else
-			any.push_front("0.0");
+		if (any.length() == 2 || any.length() == 1)
+		{
+			if (any.length() == 2)
+				any.push_front("0.");
+			else
+				any.push_front("0.0");
 
+		}
+		else
+		{
+			any.insert((any.length() - 2), '.');
+		}
 	}
 	else
 	{
-		any.insert((any.length() - 2), '.');
+		if (TwoZero)
+		{
+			if (any.length() == 2 || any.length() == 1)
+			{
+				if (any.length() == 2)
+					any.push_front("0.");
+				else
+					any.push_front("0.0");
+
+			}
+			else
+			{
+				any.insert((any.length() - 2), '.');
+			}
+		}
+		else
+		{
+			if (any.length() == 2 || any.length() == 1)
+			{
+				if (any.length() == 2)
+					any.push_front("0.0");
+				else
+					any.push_front("0.00");
+
+			}
+			else
+			{
+				any.insert((any.length() - 3), '.');
+			}
+		}
 	}
 
 	return any;
 }
+
+
+QString MyTcpServer::crc16Modbus(const QByteArray& data) // CRC16MODBUS Г¤Г«Гї Г®ГЇГ°ГҐГ¤ГҐГ«ГҐГ­ГЁГї ГЄГ®Г­ГІГ°Г®Г«ГјГ­Г®Г© Г±ГіГ¬Г¬Г» Гў ГЄГ®Г­Г¶ГҐ ГЇГ ГЄГҐГІГ®Гў Г¤Г«Гї ГЊГЁГ«ГіГ°107
+{
+	quint16 crc = 0xFFFF;
+	for (auto byte : data) {
+		crc ^= static_cast<quint8>(byte);
+		for (int i = 0; i < 8; ++i) {
+			if (crc & 0x0001)
+				crc = (crc >> 1) ^ 0xA001;
+			else
+				crc >>= 1;
+		}
+	}
+
+	QString temp = QString("%1%2")
+		.arg(crc & 0xFF, 2, 16, QChar('0'))
+		.arg((crc >> 8) & 0xFF, 2, 16, QChar('0')).toUpper();
+
+	return temp;
+}
+
+
+QByteArray MyTcpServer::serialArrayRotate(QByteArray testNumber)
+{
+	bool ok = false;
+	int number = testNumber.toInt(&ok);
+
+	QByteArray hexData = QByteArray::number(number, 16).toUpper();
+
+	while (hexData.length() != 8)
+		hexData.push_front("0");
+
+	int count = 0;
+
+	QByteArray tempStr;
+
+	QByteArray arrForByte;
+
+	for (auto& val : hexData)
+	{
+		tempStr += val;
+		count++;
+
+		if (count == 2)
+		{
+			arrForByte.push_front(tempStr);
+			tempStr.clear();
+			count = 0;
+		}
+	}
+
+	return arrForByte;
+}
+
+void MyTcpServer::newDayBuffer()
+{
+	if (todayDate != QDate::currentDate().toString("dd-MM-yyyy"))
+	{
+		todayDate = QDate::currentDate().toString("dd-MM-yyyy");
+		serialBuff = fullSerialBuffConstant;
+		emit messegeLog("Polling queue restored\n", QColor(240, 218, 15));
+	}
+}
+
