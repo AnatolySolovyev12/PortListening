@@ -22,6 +22,7 @@ public:
     QByteArray serialArrayRotate(QByteArray testNumber);
     void newDayBuffer();
     void readDeviceFile();
+    QString getQueueInfo();
 
 public slots:
     void slotNewConnection();

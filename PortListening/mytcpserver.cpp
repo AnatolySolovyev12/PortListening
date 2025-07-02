@@ -671,3 +671,8 @@ void MyTcpServer::readDeviceFile()
 	file.close();
 }
 
+
+QString MyTcpServer::getQueueInfo()
+{
+	return QString(QString::number(port) + " - queue polling = " + QString::number(serialBuff.length() - 1) + "\n");
+}
