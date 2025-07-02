@@ -24,7 +24,21 @@ MainWindow::MainWindow(QWidget* parent)
 	textEdit->setReadOnly(true);
 	textEdit->setStyleSheet(
 		"QTextEdit {"
-		"    background-color: rgb(50, 50, 50);" 
+		"    background-color: rgb(50, 50, 50);"
+		"}"
+	);
+
+	QPushButton* queue = new QPushButton("Queue", this);
+	queue->setMaximumWidth(80);
+	queue->setStyleSheet(
+		"QPushButton {"
+		"    background-color: #2a9d8f;"
+		"    color: white;"
+		"    border-radius: 5px;"
+		"}"
+		"QPushButton:pressed {"
+		"    background-color: rgb(50, 50, 50);" // в HEX #3cbaa2. Допустимо background-color: #3cbaa2;
+
 		"}"
 	);
 
@@ -38,7 +52,7 @@ MainWindow::MainWindow(QWidget* parent)
 		"}"
 		"QPushButton:pressed {"
 		"    background-color: rgb(50, 50, 50);" // в HEX #3cbaa2. Допустимо background-color: #3cbaa2;
-	
+
 		"}"
 	);
 
@@ -61,19 +75,21 @@ MainWindow::MainWindow(QWidget* parent)
 
 	QHBoxLayout* Hlayout = new QHBoxLayout;
 
+	Hlayout->addWidget(queue);
 	Hlayout->addWidget(clear);
 	Hlayout->addWidget(checkClear);
 
 	QVBoxLayout* layout = new QVBoxLayout;
-	
+
 	layout->addWidget(textEdit);
 	layout->addLayout(Hlayout);
 
 	QWidget* centralWidget = new QWidget(this);
 	centralWidget->setLayout(layout);
 	setCentralWidget(centralWidget);
-
+	
 	connect(clear, &QPushButton::clicked, this, &MainWindow::clearWindow);
+	connect(queue, &QPushButton::clicked, this, &MainWindow::queuePrint);
 
 	QTimer::singleShot(500, this, &MainWindow::readPropertiesFile);
 
@@ -81,16 +97,17 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(clearTimer, &QTimer::timeout, this, &MainWindow::checkClear);
 
 	todayDate = QDate::currentDate().toString("dd-MM-yyyy");
-	
+
 }
 
 MainWindow::~MainWindow()
-{}
+{
+}
 
 void MainWindow::clearWindow()
 {
 	textEdit->clear();
-} 
+}
 
 void MainWindow::readPropertiesFile()
 {
@@ -161,7 +178,7 @@ void MainWindow::readPropertiesFile()
 		delete myLine;
 		myLine = nullptr;
 	}
-	
+
 	file.close();
 }
 
@@ -176,7 +193,21 @@ void MainWindow::checkClear()
 	}
 }
 
+
 void MainWindow::setTextColour(QColor any)
 {
 	textEdit->setTextColor(any);
+}
+
+
+void MainWindow::queuePrint()
+{
+	textEdit->append("\n");
+
+	setTextColour(QColor(255, 128, 0));
+
+	for (int val = 0; val < serverList.length(); val++)
+	{
+		textEdit->append(serverList[val]->getQueueInfo());
+	}
 }
