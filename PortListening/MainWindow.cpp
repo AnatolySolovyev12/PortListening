@@ -204,6 +204,8 @@ void MainWindow::queuePrint()
 {
 	textEdit->append("\n");
 
+	setTextColour(QColor(255, 128, 0));
+
 	for (int val = 0; val < serverList.length(); val++)
 	{
 		textEdit->append(serverList[val]->getQueueInfo());
