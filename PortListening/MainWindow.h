@@ -32,6 +32,7 @@ public:
 	void readPropertiesFile();
 	void checkClear();
 	void setTextColour(QColor any);
+	void queuePrint();
 
 private slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason reason)
