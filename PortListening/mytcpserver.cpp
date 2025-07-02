@@ -13,7 +13,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 
 	connect(mTcpServer, &QTcpServer::newConnection, this, &MyTcpServer::slotNewConnection);
 
-
+	/*
 	if (port == 49500) // 1 под
 	{
 		serialBuff = { "75206", "75209", "74985", "75020", "74987", "74991", "74988", "74982", "74989", "74990" };
@@ -38,9 +38,8 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 		serialBuff = { "75346", "75342", "87694", "87695" }; // ВРУ
 		threeFazeBuff += { "75346", "75342", "87694", "87695" };
 	}
+	*/
 
-
-	fullSerialBuffConstant = serialBuff;
 
 	todayDate = QDate::currentDate().toString("dd-MM-yyyy");
 
@@ -58,6 +57,10 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 		{
 			emit messegeLog("server with port " + QString::number(port) + " is started\n", QColor(255, 128, 0));
 		}
+
+		readDeviceFile();
+
+		fullSerialBuffConstant = serialBuff;
 
 		});
 }
@@ -581,6 +584,7 @@ QByteArray MyTcpServer::serialArrayRotate(QByteArray testNumber)
 	return arrForByte;
 }
 
+
 void MyTcpServer::newDayBuffer()
 {
 	if (todayDate != QDate::currentDate().toString("dd-MM-yyyy"))
@@ -589,5 +593,81 @@ void MyTcpServer::newDayBuffer()
 		serialBuff = fullSerialBuffConstant;
 		emit messegeLog("Polling queue restored\n", QColor(240, 218, 15));
 	}
+}
+
+
+void MyTcpServer::readDeviceFile()
+{
+	QFile file(QCoreApplication::applicationDirPath() + "\\" + QString::number(port) + ".txt");
+
+	if (!file.open(QIODevice::ReadOnly))
+	{
+		emit messegeLog("Don't find file for port " + QString::number(port) + " with devices.\n", QColor(240, 14, 14));
+
+		return;
+	}
+
+	QTextStream out(&file);
+
+	QString* myLine = new (QString);
+	int counter = 0;
+	int counterErr = 1;
+	bool digitErr = false;
+	bool threeFazeInFunc = false;
+	bool twoZeroInFunc = false;
+	
+	while (out.readLineInto(myLine, 0))
+	{
+		if (*myLine == "@")
+		{
+			threeFazeInFunc = true;
+			continue;
+		}
+
+		if (*myLine == "$")
+		{
+			threeFazeInFunc = false;
+			twoZeroInFunc = true;
+			continue;
+		}
+
+		if (myLine->length() > 5 || myLine->length() < 4)
+		{
+			emit messegeLog("The device on line " + QString::number(counter + counterErr) + " is incorrect\n", QColor(240, 14, 14));
+			counterErr++;
+			continue;
+		}
+		
+		for (auto& val : *myLine)
+		{
+			
+			if (!val.isDigit())
+			{
+				emit messegeLog("The device on line " + QString::number(counter + counterErr) + " is incorrect\n", QColor(240, 14, 14));
+				counterErr++;
+				digitErr = true;
+				continue;
+			}
+			
+		}
+		
+		if (digitErr)
+		{
+			digitErr = false;
+			continue;
+		}
+		
+		serialBuff.push_back(myLine->toUtf8());
+		
+		if(threeFazeInFunc)
+			threeFazeBuff.push_back(myLine->toUtf8());
+
+		if(twoZeroInFunc)
+			threeFazeBuffTwoZero.push_back(myLine->toUtf8());
+
+		++counter;
+	}
+
+	file.close();
 }
 

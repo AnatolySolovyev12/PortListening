@@ -5,7 +5,6 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
-
 #include "SQLiteDB.h"
 
 #include "qtimer.h"
@@ -22,6 +21,7 @@ public:
     QString crc16Modbus(const QByteArray& data);
     QByteArray serialArrayRotate(QByteArray testNumber);
     void newDayBuffer();
+    void readDeviceFile();
 
 public slots:
     void slotNewConnection();
