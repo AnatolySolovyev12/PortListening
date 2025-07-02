@@ -657,6 +657,7 @@ void MyTcpServer::readDeviceFile()
 			continue;
 		}
 		
+		if (!threeFazeInFunc && !twoZeroInFunc)
 		serialBuff.push_back(myLine->toUtf8());
 		
 		if(threeFazeInFunc)
@@ -674,5 +675,5 @@ void MyTcpServer::readDeviceFile()
 
 QString MyTcpServer::getQueueInfo()
 {
-	return QString(QString::number(port) + " - queue polling = " + QString::number(serialBuff.length() - 1) + "\n");
+	return QString(QString::number(port) + " - queue polling = " + QString::number(serialBuff.length()) + "\n");
 }
