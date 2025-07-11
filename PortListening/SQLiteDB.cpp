@@ -33,29 +33,6 @@ SQLiteDB::SQLiteDB(QObject* parent)
 			//qDebug() << "Table was create!";
 		}
 
-		db_input = "CREATE TABLE counterTable ( "
-			"number VARCHAR(20), "
-			"date VARCHAR(20), "
-			"channelFirst VARCHAR(20), "
-			"channelSecond VARCHAR(20), "
-			"channelThird VARCHAR(20), "
-			"channelFour VARCHAR(20));";
-
-		if (!query.exec(db_input)) // Выполняем запрос. exec - вернёт true если успешно. Синтаксис должен отвечать запрашиваемой БД.
-		{
-			if (query.lastError().text() != "table counterTable already exists Unable to execute statemen")
-			{
-			}
-			else
-				emit messegeLog("Unable to create a counterTable. " + query.lastError().text() + '\n');
-			//	qDebug() << "Unable to create a table" << query.lastError(); // Возвращаем информацию о последней ошибке. При вывзове exec, получая ошибку, она помещается в lastError(). Мы можем её прочитать..
-		}
-		else
-		{
-			emit messegeLog("counterTable was create!\n");
-			//qDebug() << "Table was create!";
-		}
-
 		});
 }
 
