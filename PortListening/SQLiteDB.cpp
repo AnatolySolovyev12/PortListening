@@ -25,12 +25,10 @@ SQLiteDB::SQLiteDB(QObject* parent)
 			}
 			else
 				emit messegeLog("Unable to create a channelTable. " + query.lastError().text() + '\n');
-			//	qDebug() << "Unable to create a table" << query.lastError(); // Возвращаем информацию о последней ошибке. При вывзове exec, получая ошибку, она помещается в lastError(). Мы можем её прочитать..
 		}
 		else
 		{
 			emit messegeLog("channelTable was create!\n");
-			//qDebug() << "Table was create!";
 		}
 
 		});
@@ -41,7 +39,6 @@ SQLiteDB::~SQLiteDB()
 	mw_db.removeDatabase("DataBaseMilanRF");
 
 	emit messegeLog("\nObject DB was destroyed");
-	//qDebug() << "Object DB was destroyed";
 
 	exit(0);
 }
@@ -54,7 +51,7 @@ bool SQLiteDB::connectDB()
 	if (!mw_db.open())
 	{
 		emit messegeLog("Cannot open database: " + mw_db.lastError().text() + '\n');
-		//qDebug() << "Cannot open database: " << mw_db.lastError();
+
 		return false;
 	}
 
@@ -70,6 +67,5 @@ void SQLiteDB::writeData(QString some)
 	if (!query.exec(db_input))
 	{
 		emit messegeLog("Unable to insert data" + query.lastError().text() + query.lastQuery() + '\n');
-		//qDebug() << "Unable to insert data" << query.lastError() << " : " << query.lastQuery();
 	}
 }
