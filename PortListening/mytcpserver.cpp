@@ -13,34 +13,6 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 
 	connect(mTcpServer, &QTcpServer::newConnection, this, &MyTcpServer::slotNewConnection);
 
-	/*
-	if (port == 49500) // 1 под
-	{
-		serialBuff = { "75206", "75209", "74985", "75020", "74987", "74991", "74988", "74982", "74989", "74990" };
-		threeFazeBuff.push_back("75209"); // ВРУ
-	}
-
-	if (port == 6000) // 2 под
-	{
-		serialBuff = { "75024", "75001", "74986", "74981", "74995", "74998", "75008", "74980", "75000", "74992" };
-
-	}
-
-	if (port == 49501) // 3 под
-	{
-		serialBuff = { "87696", "87698", "75204", "75205", "74993", "74984", "74996", "75002", "74983", "75014", "74997", "74994" };
-		threeFazeBuff += { "87696", "87698" }; // ВРУ
-		threeFazeBuffTwoZero += { "75204", "75205" };
-	}
-
-	if (port == 49502) // НЭСКО
-	{
-		serialBuff = { "75346", "75342", "87694", "87695" }; // ВРУ
-		threeFazeBuff += { "75346", "75342", "87694", "87695" };
-	}
-	*/
-
-
 	todayDate = QDate::currentDate().toString("dd-MM-yyyy");
 
 	dateTImer->start(600000);
@@ -62,6 +34,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 
 		fullSerialBuffConstant = serialBuff;
 
+		checkTodayValues();
 		});
 }
 
@@ -676,4 +649,32 @@ void MyTcpServer::readDeviceFile()
 QString MyTcpServer::getQueueInfo()
 {
 	return QString(QString::number(port) + " - queue polling = " + QString::number(serialBuff.length()) + "\n");
+}
+
+
+void MyTcpServer::checkTodayValues()
+{
+	QDate curDate = QDate::currentDate();
+
+	QString timeInQuery = curDate.toString("yyyy-MM-dd"); // Разворачиваем формат даты так как в БД.
+
+	for (int counter = 0; counter < serialBuff.length(); counter++)
+	{
+		QString temp = dataWrite->readData(serialBuff[counter]);
+			//qDebug() << temp;
+			
+			if (temp != "")
+			{
+				if (dataWrite->readData(serialBuff[counter]) == timeInQuery)
+				{
+					serialBuff.remove(counter); // удаляем очереди опроса то что опрошено
+					if (serialBuff.length() != 0)
+					{
+						counter--;
+					}
+				}
+			}
+	}
+
+	//qDebug() << serialBuff;
 }

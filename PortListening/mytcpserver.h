@@ -24,6 +24,8 @@ public:
     void readDeviceFile();
     QString getQueueInfo();
 
+    void checkTodayValues();
+
 public slots:
     void slotNewConnection();
     void slotServerRead();

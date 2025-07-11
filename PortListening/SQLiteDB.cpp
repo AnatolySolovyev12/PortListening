@@ -4,7 +4,7 @@
 SQLiteDB::SQLiteDB(QObject* parent)
 	: QObject(parent)
 {
-	QTimer::singleShot(500, [this]() {
+	//QTimer::singleShot(500, [this]() {
 
 		connectDB();
 
@@ -31,7 +31,7 @@ SQLiteDB::SQLiteDB(QObject* parent)
 			emit messegeLog("channelTable was create!\n");
 		}
 
-		});
+	//	});
 }
 
 SQLiteDB::~SQLiteDB()
@@ -68,4 +68,27 @@ void SQLiteDB::writeData(QString some)
 	{
 		emit messegeLog("Unable to insert data" + query.lastError().text() + query.lastQuery() + '\n');
 	}
+}
+
+
+QString SQLiteDB::readData(QString any)
+{
+	QSqlQuery query;
+	
+	QString queryString = "select date from counterTable where number = " + any + " order by date desc";
+
+
+	/*
+	query.prepare("select date from counterTable where number = :MeterInfoPrep order by date desc"); // используем подготовленный запрос в начале как хорошую практику от инъекций
+	query.bindValue(":MeterInfoPrep", any);
+	*/
+
+	if (!query.exec(queryString) || !query.next())
+	{
+		qDebug() << "Query failed or no results in current DB: " << query.lastError();
+
+		return "1984-01-01";
+	}
+	else
+		return query.value(0).toString();
 }
