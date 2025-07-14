@@ -30,7 +30,7 @@ public:
 
     QString getPort();
 
-    QList<QByteArray> getSeriallBuff();
+    QList<QByteArray> getfullSerialBuffConstant();
 
 public slots:
     void slotNewConnection();
