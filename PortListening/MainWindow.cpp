@@ -72,6 +72,10 @@ MainWindow::MainWindow(QWidget* parent)
 
 
 
+
+
+
+
 		paramMenu->setMenu(pm);
 
 	}
