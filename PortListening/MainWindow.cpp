@@ -50,24 +50,31 @@ MainWindow::MainWindow(QWidget* parent)
 		"}"
 	);
 
-
-
-
-
 	QPushButton* portsMenu = new QPushButton("Ports", this);
 	QMenu* ports = new QMenu(portsMenu);
 	ports->setTitle("Ports");
 
-	QTimer::singleShot(750, [this, ports, paramMenu, pm](){
+	QTimer::singleShot(750, [this, ports, paramMenu, pm]() {
+
+		pm->addMenu(ports);
 
 		for (int val = 0; val < serverList.length(); val++)
 		{
-			ports->addAction(serverList[val]->getPort(), this, &MainWindow::queuePrint);
+			//ports->addAction(serverList[val]->getPort(), this, &MainWindow::queuePrint);
+
+		//	ports->addAction(serverList[val]->getPort(), this, &MainWindow::queuePrint);
+
+			ports->addMenu(serverList[val]->getPort());
 		}
 
-		paramMenu->setMenu(ports);
+		//paramMenu->setMenu(ports);
 
-		pm->addMenu(ports);
+        //pm->addMenu(ports);
+
+
+
+
+
 
 
 
@@ -78,7 +85,7 @@ MainWindow::MainWindow(QWidget* parent)
 
 		paramMenu->setMenu(pm);
 
-	}
+		}
 	);
 
 
