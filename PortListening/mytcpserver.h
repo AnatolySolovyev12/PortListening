@@ -30,6 +30,8 @@ public:
 
     QString getPort();
 
+    QList<QByteArray> getSeriallBuff();
+
 public slots:
     void slotNewConnection();
     void slotServerRead();
@@ -66,7 +68,6 @@ private:
     QList<QByteArray>threeFazeBuff;
     QList<QByteArray>threeFazeBuffTwoZero;
     bool TwoZero = false;
-
 
     bool treeFazeBool = false;
 

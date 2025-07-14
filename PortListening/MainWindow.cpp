@@ -65,6 +65,16 @@ MainWindow::MainWindow(QWidget* parent)
 		//	ports->addAction(serverList[val]->getPort(), this, &MainWindow::queuePrint);
 
 			ports->addMenu(serverList[val]->getPort());
+
+			QList<QByteArray>tempSerialBuff = serverList[val]->getSerialBuff();
+			
+
+			
+			for (auto& val : tempSerialBuff)
+			{
+				ports->addAction(val, this, &MainWindow::queuePrint);
+			}
+			
 		}
 
 		//paramMenu->setMenu(ports);

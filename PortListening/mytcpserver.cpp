@@ -687,3 +687,9 @@ QString MyTcpServer::getPort()
 {
 	return QString::number(port);
 }
+
+
+QList<QByteArray> MyTcpServer::getSeriallBuff()
+{
+	return serialBuff;
+}
