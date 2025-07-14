@@ -681,3 +681,9 @@ void MyTcpServer::queueRefresh()
 {
 	serialBuff = fullSerialBuffConstant;
 }
+
+
+QString MyTcpServer::getPort()
+{
+	return QString::number(port);
+}

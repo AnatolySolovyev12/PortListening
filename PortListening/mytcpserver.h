@@ -28,6 +28,8 @@ public:
 
     void queueRefresh();
 
+    QString getPort();
+
 public slots:
     void slotNewConnection();
     void slotServerRead();

@@ -29,8 +29,8 @@ MainWindow::MainWindow(QWidget* parent)
 	);
 
 
-	QPushButton *paramMenu = new QPushButton("QueueList", this);
-	
+	QPushButton* paramMenu = new QPushButton("QueueList", this);
+
 	QMenu* pm = new QMenu(paramMenu); // Инициализируем выпадающую кнопку
 
 	pm->addAction("&Show", this, &MainWindow::queuePrint);
@@ -50,24 +50,38 @@ MainWindow::MainWindow(QWidget* parent)
 		"}"
 	);
 
-	paramMenu->setMenu(pm);
 
 
-	/*
-	QPushButton* queue = new QPushButton("Queue", this);
-	queue->setMaximumWidth(80);
-	queue->setStyleSheet(
-		"QPushButton {"
-		"    background-color: #2a9d8f;"
-		"    color: white;"
-		"    border-radius: 5px;"
-		"}"
-		"QPushButton:pressed {"
-		"    background-color: rgb(50, 50, 50);" // в HEX #3cbaa2. Допустимо background-color: #3cbaa2;
 
-		"}"
+
+	QPushButton* portsMenu = new QPushButton("Ports", this);
+	QMenu* ports = new QMenu(portsMenu);
+	ports->setTitle("Ports");
+
+	QTimer::singleShot(750, [this, ports, paramMenu, pm](){
+
+		for (int val = 0; val < serverList.length(); val++)
+		{
+			ports->addAction(serverList[val]->getPort(), this, &MainWindow::queuePrint);
+		}
+
+		paramMenu->setMenu(ports);
+
+		pm->addMenu(ports);
+
+
+
+
+		paramMenu->setMenu(pm);
+
+	}
 	);
-	*/
+
+
+
+
+
+
 	QPushButton* clear = new QPushButton("Clear", this);
 	clear->setMaximumWidth(80);
 	clear->setStyleSheet(
@@ -102,7 +116,6 @@ MainWindow::MainWindow(QWidget* parent)
 	QHBoxLayout* Hlayout = new QHBoxLayout;
 
 	Hlayout->addWidget(paramMenu);
-	//Hlayout->addWidget(queue);
 	Hlayout->addWidget(clear);
 	Hlayout->addWidget(checkClear);
 
@@ -114,9 +127,8 @@ MainWindow::MainWindow(QWidget* parent)
 	QWidget* centralWidget = new QWidget(this);
 	centralWidget->setLayout(layout);
 	setCentralWidget(centralWidget);
-	
+
 	connect(clear, &QPushButton::clicked, this, &MainWindow::clearWindow);
-	//connect(queue, &QPushButton::clicked, this, &MainWindow::queuePrint);
 
 	QTimer::singleShot(500, this, &MainWindow::readPropertiesFile);
 
@@ -250,6 +262,7 @@ void MainWindow::queueRefreshInPorts()
 
 	textEdit->append("\nPolling queue's restored");
 }
+
 
 void MainWindow::actualizationQueue()
 {
