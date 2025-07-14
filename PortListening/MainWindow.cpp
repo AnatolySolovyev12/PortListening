@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget* parent)
 
 	pm->addAction("&Show", this, &MainWindow::queuePrint);
 	pm->addAction("&Reset", this, &MainWindow::queueRefreshInPorts);
+	pm->addAction("&Actualization", this, &MainWindow::actualizationQueue);
 
 	paramMenu->setMaximumWidth(80);
 	paramMenu->setStyleSheet(
@@ -244,4 +245,20 @@ void MainWindow::queueRefreshInPorts()
 	{
 		serverList[val]->queueRefresh();
 	}
+
+	setTextColour(QColor(240, 218, 15));
+
+	textEdit->append("\nPolling queue's restored");
+}
+
+void MainWindow::actualizationQueue()
+{
+	for (int val = 0; val < serverList.length(); val++)
+	{
+		serverList[val]->checkTodayValues();
+	}
+
+	setTextColour(QColor(240, 218, 15));
+
+	textEdit->append("\nPolling queue's actualization");
 }

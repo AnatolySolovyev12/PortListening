@@ -35,6 +35,7 @@ public:
 	void queuePrint();
 
 	void queueRefreshInPorts();
+	void actualizationQueue();
 
 private slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason reason)

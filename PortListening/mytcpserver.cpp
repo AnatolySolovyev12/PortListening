@@ -680,5 +680,4 @@ void MyTcpServer::checkTodayValues()
 void MyTcpServer::queueRefresh()
 {
 	serialBuff = fullSerialBuffConstant;
-	emit messegeLog("\n" + QString::number(port) + " - polling queue restored", QColor(240, 218, 15));
 }
