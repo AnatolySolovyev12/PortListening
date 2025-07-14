@@ -34,6 +34,8 @@ public:
 	void setTextColour(QColor any);
 	void queuePrint();
 
+	void queueRefreshInPorts();
+
 private slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason reason)
 	{

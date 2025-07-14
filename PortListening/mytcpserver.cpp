@@ -23,11 +23,11 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 
 		if (!mTcpServer->listen(QHostAddress::Any, port))
 		{
-			emit messegeLog("server with port " + QString::number(port) + " is not started\n", QColor(240, 14, 14));
+			emit messegeLog("\nserver with port " + QString::number(port) + " is not started", QColor(240, 14, 14));
 		}
 		else
 		{
-			emit messegeLog("server with port " + QString::number(port) + " is started\n", QColor(255, 128, 0));
+			emit messegeLog("\nserver with port " + QString::number(port) + " is started", QColor(255, 128, 0));
 		}
 
 		readDeviceFile();
@@ -564,7 +564,7 @@ void MyTcpServer::newDayBuffer()
 	{
 		todayDate = QDate::currentDate().toString("dd-MM-yyyy");
 		serialBuff = fullSerialBuffConstant;
-		emit messegeLog("Polling queue restored\n", QColor(240, 218, 15));
+		emit messegeLog("Polling queue's restored\n", QColor(240, 218, 15));
 	}
 }
 
@@ -588,7 +588,7 @@ void MyTcpServer::readDeviceFile()
 	bool digitErr = false;
 	bool threeFazeInFunc = false;
 	bool twoZeroInFunc = false;
-	
+
 	while (out.readLineInto(myLine, 0))
 	{
 		if (*myLine == "@")
@@ -610,10 +610,10 @@ void MyTcpServer::readDeviceFile()
 			counterErr++;
 			continue;
 		}
-		
+
 		for (auto& val : *myLine)
 		{
-			
+
 			if (!val.isDigit())
 			{
 				emit messegeLog("The device on line " + QString::number(counter + counterErr) + " is incorrect\n", QColor(240, 14, 14));
@@ -621,22 +621,22 @@ void MyTcpServer::readDeviceFile()
 				digitErr = true;
 				continue;
 			}
-			
+
 		}
-		
+
 		if (digitErr)
 		{
 			digitErr = false;
 			continue;
 		}
-		
+
 		if (!threeFazeInFunc && !twoZeroInFunc)
-		serialBuff.push_back(myLine->toUtf8());
-		
-		if(threeFazeInFunc)
+			serialBuff.push_back(myLine->toUtf8());
+
+		if (threeFazeInFunc)
 			threeFazeBuff.push_back(myLine->toUtf8());
 
-		if(twoZeroInFunc)
+		if (twoZeroInFunc)
 			threeFazeBuffTwoZero.push_back(myLine->toUtf8());
 
 		++counter;
@@ -661,20 +661,24 @@ void MyTcpServer::checkTodayValues()
 	for (int counter = 0; counter < serialBuff.length(); counter++)
 	{
 		QString temp = dataWrite->readData(serialBuff[counter]);
-			//qDebug() << temp;
-			
-			if (temp != "")
+
+		if (temp != "")
+		{
+			if (dataWrite->readData(serialBuff[counter]) == timeInQuery)
 			{
-				if (dataWrite->readData(serialBuff[counter]) == timeInQuery)
+				serialBuff.remove(counter); // удаляем из очереди опроса то что опрошено
+				if (serialBuff.length() != 0)
 				{
-					serialBuff.remove(counter); // удаляем очереди опроса то что опрошено
-					if (serialBuff.length() != 0)
-					{
-						counter--;
-					}
+					counter--;
 				}
 			}
+		}
 	}
+}
 
-	//qDebug() << serialBuff;
+
+void MyTcpServer::queueRefresh()
+{
+	serialBuff = fullSerialBuffConstant;
+	emit messegeLog("\n" + QString::number(port) + " - polling queue restored", QColor(240, 218, 15));
 }

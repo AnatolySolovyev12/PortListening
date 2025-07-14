@@ -28,6 +28,31 @@ MainWindow::MainWindow(QWidget* parent)
 		"}"
 	);
 
+
+	QPushButton *paramMenu = new QPushButton("QueueList", this);
+	
+	QMenu* pm = new QMenu(paramMenu); // Инициализируем выпадающую кнопку
+
+	pm->addAction("&Show", this, &MainWindow::queuePrint);
+	pm->addAction("&Reset", this, &MainWindow::queueRefreshInPorts);
+
+	paramMenu->setMaximumWidth(80);
+	paramMenu->setStyleSheet(
+		"QPushButton {"
+		"    background-color: #2a9d8f;"
+		"    color: white;"
+		"    border-radius: 5px;"
+		"}"
+		"QPushButton:pressed {"
+		"    background-color: rgb(50, 50, 50);" // в HEX #3cbaa2. Допустимо background-color: #3cbaa2;
+
+		"}"
+	);
+
+	paramMenu->setMenu(pm);
+
+
+	/*
 	QPushButton* queue = new QPushButton("Queue", this);
 	queue->setMaximumWidth(80);
 	queue->setStyleSheet(
@@ -41,7 +66,7 @@ MainWindow::MainWindow(QWidget* parent)
 
 		"}"
 	);
-
+	*/
 	QPushButton* clear = new QPushButton("Clear", this);
 	clear->setMaximumWidth(80);
 	clear->setStyleSheet(
@@ -75,7 +100,8 @@ MainWindow::MainWindow(QWidget* parent)
 
 	QHBoxLayout* Hlayout = new QHBoxLayout;
 
-	Hlayout->addWidget(queue);
+	Hlayout->addWidget(paramMenu);
+	//Hlayout->addWidget(queue);
 	Hlayout->addWidget(clear);
 	Hlayout->addWidget(checkClear);
 
@@ -89,7 +115,7 @@ MainWindow::MainWindow(QWidget* parent)
 	setCentralWidget(centralWidget);
 	
 	connect(clear, &QPushButton::clicked, this, &MainWindow::clearWindow);
-	connect(queue, &QPushButton::clicked, this, &MainWindow::queuePrint);
+	//connect(queue, &QPushButton::clicked, this, &MainWindow::queuePrint);
 
 	QTimer::singleShot(500, this, &MainWindow::readPropertiesFile);
 
@@ -97,7 +123,6 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(clearTimer, &QTimer::timeout, this, &MainWindow::checkClear);
 
 	todayDate = QDate::currentDate().toString("dd-MM-yyyy");
-
 }
 
 MainWindow::~MainWindow()
@@ -209,5 +234,14 @@ void MainWindow::queuePrint()
 	for (int val = 0; val < serverList.length(); val++)
 	{
 		textEdit->append(serverList[val]->getQueueInfo());
+	}
+}
+
+
+void MainWindow::queueRefreshInPorts()
+{
+	for (int val = 0; val < serverList.length(); val++)
+	{
+		serverList[val]->queueRefresh();
 	}
 }

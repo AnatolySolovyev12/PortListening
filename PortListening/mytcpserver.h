@@ -26,6 +26,8 @@ public:
 
     void checkTodayValues();
 
+    void queueRefresh();
+
 public slots:
     void slotNewConnection();
     void slotServerRead();
