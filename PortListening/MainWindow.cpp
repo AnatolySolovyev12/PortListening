@@ -20,6 +20,23 @@ MainWindow::MainWindow(QWidget* parent)
 
 	connect(trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
 
+	QString appStyle = R"(
+    QMainWindow {
+        background-color: rgb(120,120,120);
+    }
+    QMenu {
+        background-color: rgb(120,120,120);
+        color: white;      /* Текстовые элементы */
+        border-radius: 6px;
+    }
+    QMenu::item:selected {
+        background-color: #2a9d8f; /* Цвет подсветки пункта */
+        color: white;
+    }
+)";
+
+	qApp->setStyleSheet(appStyle);
+
 	textEdit = new QTextEdit(this);
 	textEdit->setReadOnly(true);
 	textEdit->setStyleSheet(
@@ -28,9 +45,16 @@ MainWindow::MainWindow(QWidget* parent)
 		"}"
 	);
 
-	QPushButton* queue = new QPushButton("Queue", this);
-	queue->setMaximumWidth(80);
-	queue->setStyleSheet(
+	QPushButton* paramMenu = new QPushButton("QueueList", this);
+
+	QMenu* pm = new QMenu(paramMenu); // Инициализируем выпадающую кнопку
+
+	pm->addAction("&Show", this, &MainWindow::queuePrint);
+	pm->addAction("&Reset", this, &MainWindow::queueRefreshInPorts);
+	pm->addAction("&Actualization", this, &MainWindow::actualizationQueue);
+
+	paramMenu->setMaximumWidth(80);
+	paramMenu->setStyleSheet(
 		"QPushButton {"
 		"    background-color: #2a9d8f;"
 		"    color: white;"
@@ -40,6 +64,35 @@ MainWindow::MainWindow(QWidget* parent)
 		"    background-color: rgb(50, 50, 50);" // в HEX #3cbaa2. Допустимо background-color: #3cbaa2;
 
 		"}"
+	);
+
+	QPushButton* portsMenu = new QPushButton("Ports", this);
+	QMenu* ports = new QMenu(portsMenu);
+	ports->setTitle("Ports");
+
+	QTimer::singleShot(1500, [this, ports, paramMenu, pm]() {
+
+		pm->addMenu(ports);
+
+		for (int val = 0; val < serverList.length(); val++)
+		{
+			QMenu* newPort = new QMenu(serverList[val]->getPort());
+
+			ports->addMenu(newPort);
+
+			for (auto& val : serverList[val]->getfullSerialBuffConstant())
+			{
+				newPort->addAction(val, this, [newPort, val, this]() {
+
+					addDeviceFromMenu(newPort->title(), val);
+
+					});
+			}
+		}
+
+		paramMenu->setMenu(pm);
+
+		}
 	);
 
 	QPushButton* clear = new QPushButton("Clear", this);
@@ -56,7 +109,6 @@ MainWindow::MainWindow(QWidget* parent)
 		"}"
 	);
 
-
 	QCheckBox* checkClear = new QCheckBox("  AutoClear", this);
 	checkClear->setMaximumWidth(100);
 	checkClear->setStyleSheet(
@@ -64,8 +116,6 @@ MainWindow::MainWindow(QWidget* parent)
 		"    background-color: rgb(50, 50, 50);"
 		"    color: white;"
 		"    border-radius: 5px;"
-
-
 		"}"
 		"QCheckBox:checked {"
 		"    background-color: #2a9d8f;" // в HEX #3cbaa2. Допустимо background-color: #3cbaa2;
@@ -75,7 +125,7 @@ MainWindow::MainWindow(QWidget* parent)
 
 	QHBoxLayout* Hlayout = new QHBoxLayout;
 
-	Hlayout->addWidget(queue);
+	Hlayout->addWidget(paramMenu);
 	Hlayout->addWidget(clear);
 	Hlayout->addWidget(checkClear);
 
@@ -87,9 +137,8 @@ MainWindow::MainWindow(QWidget* parent)
 	QWidget* centralWidget = new QWidget(this);
 	centralWidget->setLayout(layout);
 	setCentralWidget(centralWidget);
-	
+
 	connect(clear, &QPushButton::clicked, this, &MainWindow::clearWindow);
-	connect(queue, &QPushButton::clicked, this, &MainWindow::queuePrint);
 
 	QTimer::singleShot(500, this, &MainWindow::readPropertiesFile);
 
@@ -97,7 +146,6 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(clearTimer, &QTimer::timeout, this, &MainWindow::checkClear);
 
 	todayDate = QDate::currentDate().toString("dd-MM-yyyy");
-
 }
 
 MainWindow::~MainWindow()
@@ -115,7 +163,7 @@ void MainWindow::readPropertiesFile()
 
 	if (!file.open(QIODevice::ReadOnly))
 	{
-		textEdit->append("Don't find browse file. Used default parameters\n");
+		textEdit->append("\nDon't find browse file. Used default parameters");
 
 		port = 49000;
 
@@ -141,7 +189,7 @@ void MainWindow::readPropertiesFile()
 	{
 		if (myLine->length() > 5 || myLine->length() < 4)
 		{
-			textEdit->append("The port on line " + QString::number(counter + counterErr) + " is incorrect\n");
+			textEdit->append("\nThe port on line " + QString::number(counter + counterErr) + " is incorrect");
 			counterErr++;
 			continue;
 		}
@@ -150,7 +198,7 @@ void MainWindow::readPropertiesFile()
 		{
 			if (!val.isDigit())
 			{
-				textEdit->append("The port on line " + QString::number(counter + counterErr) + " is incorrect\n");
+				textEdit->append("\nThe port on line " + QString::number(counter + counterErr) + " is incorrect");
 				counterErr++;
 				digitErr = true;
 				continue;
@@ -202,8 +250,6 @@ void MainWindow::setTextColour(QColor any)
 
 void MainWindow::queuePrint()
 {
-	textEdit->append("\n");
-
 	setTextColour(QColor(255, 128, 0));
 
 	for (int val = 0; val < serverList.length(); val++)
@@ -211,3 +257,46 @@ void MainWindow::queuePrint()
 		textEdit->append(serverList[val]->getQueueInfo());
 	}
 }
+
+
+void MainWindow::queueRefreshInPorts()
+{
+	for (int val = 0; val < serverList.length(); val++)
+	{
+		serverList[val]->queueRefresh();
+	}
+
+	setTextColour(QColor(240, 218, 15));
+
+	textEdit->append("\nPolling queue's restored");
+}
+
+
+void MainWindow::actualizationQueue()
+{
+	for (int val = 0; val < serverList.length(); val++)
+	{
+		serverList[val]->checkTodayValues();
+	}
+
+	setTextColour(QColor(240, 218, 15));
+
+	textEdit->append("\nPolling queue's actualization");
+}
+
+
+void MainWindow::addDeviceFromMenu(QString any, QByteArray some)
+{
+	for (int count = 0; count < serverList.length(); count++)
+	{
+		if (serverList[count]->getPort() == any)
+		{
+			serverList[count]->addDeviceInArray(some);
+
+			setTextColour(QColor(240, 218, 15));
+			textEdit->append("\nIn polling was added " + some);
+
+			break;
+		}
+	}
+};

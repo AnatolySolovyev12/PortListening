@@ -13,34 +13,6 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 
 	connect(mTcpServer, &QTcpServer::newConnection, this, &MyTcpServer::slotNewConnection);
 
-	/*
-	if (port == 49500) // 1 под
-	{
-		serialBuff = { "75206", "75209", "74985", "75020", "74987", "74991", "74988", "74982", "74989", "74990" };
-		threeFazeBuff.push_back("75209"); // ВРУ
-	}
-
-	if (port == 6000) // 2 под
-	{
-		serialBuff = { "75024", "75001", "74986", "74981", "74995", "74998", "75008", "74980", "75000", "74992" };
-
-	}
-
-	if (port == 49501) // 3 под
-	{
-		serialBuff = { "87696", "87698", "75204", "75205", "74993", "74984", "74996", "75002", "74983", "75014", "74997", "74994" };
-		threeFazeBuff += { "87696", "87698" }; // ВРУ
-		threeFazeBuffTwoZero += { "75204", "75205" };
-	}
-
-	if (port == 49502) // НЭСКО
-	{
-		serialBuff = { "75346", "75342", "87694", "87695" }; // ВРУ
-		threeFazeBuff += { "75346", "75342", "87694", "87695" };
-	}
-	*/
-
-
 	todayDate = QDate::currentDate().toString("dd-MM-yyyy");
 
 	dateTImer->start(600000);
@@ -51,17 +23,18 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 
 		if (!mTcpServer->listen(QHostAddress::Any, port))
 		{
-			emit messegeLog("server with port " + QString::number(port) + " is not started\n", QColor(240, 14, 14));
+			emit messegeLog("\nserver with port " + QString::number(port) + " is not started", QColor(240, 14, 14));
 		}
 		else
 		{
-			emit messegeLog("server with port " + QString::number(port) + " is started\n", QColor(255, 128, 0));
+			emit messegeLog("\nserver with port " + QString::number(port) + " is started", QColor(255, 128, 0));
 		}
 
 		readDeviceFile();
 
 		fullSerialBuffConstant = serialBuff;
 
+		checkTodayValues();
 		});
 }
 
@@ -69,26 +42,26 @@ void MyTcpServer::slotNewConnection()
 {
 	mTcpSocket = mTcpServer->nextPendingConnection();
 
-	if (!mTcpSocket) // ïðîâåðêà íà íåêîððåêòíîå èñïîëüçîâàíèå
+	if (!mTcpSocket)
 	{
-		emit messegeLog("No pending connection\n", QColor(240, 14, 14));
-		return; // Âûõîä èç ôóíêöèè, åñëè íåò ñîåäèíåíèÿ
+		emit messegeLog("\nNo pending connection", QColor(240, 14, 14));
+		return; 
 	}
 
-	connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); // åñëè åñòü ÷òî ÷èòàòü (áèáëèîòå÷íûé ñèãíàë) ñðàáîòàåò ñëîò
-	connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected); // åñëè ñîêåò îòñîåäèíèëñÿ (áèáëèîòå÷íûé ñèãíàë) ñðàáîòàåò ñëîò
+	connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); 
+	connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected); 
 
 	QDate curDate = QDate::currentDate();
 	QTime curTime = QTime::currentTime();
 
-	QString temp = "\nConnect from host " + mTcpSocket->peerAddress().toString().sliced(7) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString(); // äëÿ àíàëèçà âõîäÿùèõ ïîäêëþ÷åíèé
+	QString temp = "\nConnect from host " + mTcpSocket->peerAddress().toString().sliced(7) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString(); 
 	emit messegeLog(temp, QColor(255, 128, 0));
 }
 
 void MyTcpServer::slotServerRead()
 {
 	if (!mTcpSocket) {
-		emit messegeLog("Socket is null in start slotServerRead\n", QColor(240, 14, 14));
+		emit messegeLog("\nSocket is null in start slotServerRead", QColor(240, 14, 14));
 		return;
 	}
 
@@ -100,8 +73,6 @@ void MyTcpServer::slotServerRead()
 		QTime curTime = QTime::currentTime();
 
 		emit messegeLog('\n' + QString::number(port) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString(), QColor(240, 218, 15));
-
-		//  mTcpSocket->write(array); // Ýõî ýôôåêò ñ îòïðàâêîé ïðèíÿòîãî îáðàòíî ñîêåòó
 
 		QString str = array.toHex();
 
@@ -146,14 +117,12 @@ void MyTcpServer::slotServerRead()
 
 		counter = 0;
 
-
 		/*
 		if (array == "35" && listen)
 		{
 			counter--;
 		}
 		*/
-
 
 		if ((str.size() == 4) || (str.size() == 16 && listen) || (str.size() == 26 && listen))
 		{
@@ -202,7 +171,6 @@ void MyTcpServer::slotServerRead()
 				countMessege++;
 				recall = 0;
 			}
-
 
 			QByteArray data1;
 
@@ -456,7 +424,7 @@ void MyTcpServer::slotClientDisconnected()
 {
 	if (mTcpSocket == nullptr)
 	{
-		emit messegeLog("Was disconnect but mTcpSocket was nullptr\n", QColor(240, 14, 14));
+		emit messegeLog("\nWas disconnect but mTcpSocket was nullptr", QColor(240, 14, 14));
 		return;
 	}
 
@@ -465,6 +433,7 @@ void MyTcpServer::slotClientDisconnected()
 	delete mTcpSocket;
 	mTcpSocket = nullptr;
 }
+
 
 SQLiteDB* MyTcpServer::returnPtrDb()
 {
@@ -531,7 +500,7 @@ QString MyTcpServer::converFuncString(QString& any)
 }
 
 
-QString MyTcpServer::crc16Modbus(const QByteArray& data) // CRC16MODBUS äëÿ îïðåäåëåíèÿ êîíòðîëüíîé ñóììû â êîíöå ïàêåòîâ äëÿ Ìèëóð107
+QString MyTcpServer::crc16Modbus(const QByteArray& data)
 {
 	quint16 crc = 0xFFFF;
 	for (auto byte : data) {
@@ -591,7 +560,7 @@ void MyTcpServer::newDayBuffer()
 	{
 		todayDate = QDate::currentDate().toString("dd-MM-yyyy");
 		serialBuff = fullSerialBuffConstant;
-		emit messegeLog("Polling queue restored\n", QColor(240, 218, 15));
+		emit messegeLog("\nPolling queue's restored", QColor(240, 218, 15));
 	}
 }
 
@@ -602,7 +571,7 @@ void MyTcpServer::readDeviceFile()
 
 	if (!file.open(QIODevice::ReadOnly))
 	{
-		emit messegeLog("Don't find file for port " + QString::number(port) + " with devices.\n", QColor(240, 14, 14));
+		emit messegeLog("\nDon't find file for port " + QString::number(port) + " with devices.", QColor(240, 14, 14));
 
 		return;
 	}
@@ -615,7 +584,7 @@ void MyTcpServer::readDeviceFile()
 	bool digitErr = false;
 	bool threeFazeInFunc = false;
 	bool twoZeroInFunc = false;
-	
+
 	while (out.readLineInto(myLine, 0))
 	{
 		if (*myLine == "@")
@@ -633,37 +602,37 @@ void MyTcpServer::readDeviceFile()
 
 		if (myLine->length() > 5 || myLine->length() < 4)
 		{
-			emit messegeLog("The device on line " + QString::number(counter + counterErr) + " is incorrect\n", QColor(240, 14, 14));
+			emit messegeLog("\nThe device on line " + QString::number(counter + counterErr) + " is incorrect", QColor(240, 14, 14));
 			counterErr++;
 			continue;
 		}
-		
+
 		for (auto& val : *myLine)
 		{
-			
+
 			if (!val.isDigit())
 			{
-				emit messegeLog("The device on line " + QString::number(counter + counterErr) + " is incorrect\n", QColor(240, 14, 14));
+				emit messegeLog("\nThe device on line " + QString::number(counter + counterErr) + " is incorrect", QColor(240, 14, 14));
 				counterErr++;
 				digitErr = true;
 				continue;
 			}
-			
+
 		}
-		
+
 		if (digitErr)
 		{
 			digitErr = false;
 			continue;
 		}
-		
+
 		if (!threeFazeInFunc && !twoZeroInFunc)
-		serialBuff.push_back(myLine->toUtf8());
-		
-		if(threeFazeInFunc)
+			serialBuff.push_back(myLine->toUtf8());
+
+		if (threeFazeInFunc)
 			threeFazeBuff.push_back(myLine->toUtf8());
 
-		if(twoZeroInFunc)
+		if (twoZeroInFunc)
 			threeFazeBuffTwoZero.push_back(myLine->toUtf8());
 
 		++counter;
@@ -675,5 +644,54 @@ void MyTcpServer::readDeviceFile()
 
 QString MyTcpServer::getQueueInfo()
 {
-	return QString(QString::number(port) + " - queue polling = " + QString::number(serialBuff.length()) + "\n");
+	return QString("\n" + QString::number(port) + " - queue polling = " + QString::number(serialBuff.length()));
+}
+
+
+void MyTcpServer::checkTodayValues()
+{
+	QDate curDate = QDate::currentDate();
+
+	QString timeInQuery = curDate.toString("yyyy-MM-dd"); // Разворачиваем формат даты так как в БД.
+
+	for (int counter = 0; counter < serialBuff.length(); counter++)
+	{
+		QString temp = dataWrite->readData(serialBuff[counter]);
+
+		if (temp != "")
+		{
+			if (dataWrite->readData(serialBuff[counter]) == timeInQuery)
+			{
+				serialBuff.remove(counter); // удаляем из очереди опроса то что опрошено
+				if (serialBuff.length() != 0)
+				{
+					counter--;
+				}
+			}
+		}
+	}
+}
+
+
+void MyTcpServer::queueRefresh()
+{
+	serialBuff = fullSerialBuffConstant;
+}
+
+
+QString MyTcpServer::getPort()
+{
+	return QString::number(port);
+}
+
+
+QList<QByteArray> MyTcpServer::getfullSerialBuffConstant()
+{
+	return fullSerialBuffConstant;
+}
+
+
+void MyTcpServer::addDeviceInArray(QByteArray any)
+{
+	serialBuff.push_back(any);
 }
