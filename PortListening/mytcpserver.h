@@ -4,9 +4,7 @@
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
-
 #include "SQLiteDB.h"
-
 #include "qtimer.h"
 
 class MyTcpServer : public QObject
@@ -17,21 +15,15 @@ public:
 
     SQLiteDB* returnPtrDb();
     QString converFuncString(QString& any);
-
     QString crc16Modbus(const QByteArray& data);
     QByteArray serialArrayRotate(QByteArray testNumber);
     void newDayBuffer();
     void readDeviceFile();
     QString getQueueInfo();
-
     void checkTodayValues();
-
     void queueRefresh();
-
     QString getPort();
-
     QList<QByteArray> getfullSerialBuffConstant();
-
     void addDeviceInArray(QByteArray any);
 
 public slots:
@@ -42,20 +34,15 @@ public slots:
 signals:
     void messegeLog(const QString&, QColor col);
 
-
 private:
     QTcpServer* mTcpServer = nullptr;
     QTcpSocket* mTcpSocket = nullptr;
     SQLiteDB* dataWrite = nullptr;
+    
     int port;
-
-
     QByteArray testArray;
-
     int counter = 0;
-
     int recall = 0;
-
     bool listen = false;
     int countMessege = 0;
     int serialBuffPosition = 0;
@@ -69,14 +56,12 @@ private:
     QList<QByteArray>fullSerialBuffConstant;
     QList<QByteArray>threeFazeBuff;
     QList<QByteArray>threeFazeBuffTwoZero;
-    bool TwoZero = false;
 
+    bool TwoZero = false;
     bool treeFazeBool = false;
 
     QString pattern = "3335";
-
     QString todayDate;
-
     QTimer* dateTImer = nullptr;;
 };
 

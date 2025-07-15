@@ -26,17 +26,13 @@ public:
 
 	~MainWindow();
 
-	//void outputMessage();
-
 	void clearWindow();
 	void readPropertiesFile();
 	void checkClear();
 	void setTextColour(QColor any);
 	void queuePrint();
-
 	void queueRefreshInPorts();
 	void actualizationQueue();
-
 	void addDeviceFromMenu(QString any, QByteArray some);
 
 private slots:
@@ -70,7 +66,6 @@ private slots:
 		setTextColour(any);
 		textEdit->append(some);
 	}
-
 
 private:
 	MyTcpServer* TcpServer = nullptr;

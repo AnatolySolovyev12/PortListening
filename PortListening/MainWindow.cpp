@@ -82,7 +82,6 @@ MainWindow::MainWindow(QWidget* parent)
 
 			for (auto& val : serverList[val]->getfullSerialBuffConstant())
 			{
-				//newPort->addAction(val, this, &MainWindow::addDeviceFromMenu);
 				newPort->addAction(val, this, [newPort, val, this]() {
 
 					addDeviceFromMenu(newPort->title(), val);
@@ -164,7 +163,7 @@ void MainWindow::readPropertiesFile()
 
 	if (!file.open(QIODevice::ReadOnly))
 	{
-		textEdit->append("Don't find browse file. Used default parameters\n");
+		textEdit->append("\nDon't find browse file. Used default parameters");
 
 		port = 49000;
 
@@ -190,7 +189,7 @@ void MainWindow::readPropertiesFile()
 	{
 		if (myLine->length() > 5 || myLine->length() < 4)
 		{
-			textEdit->append("The port on line " + QString::number(counter + counterErr) + " is incorrect\n");
+			textEdit->append("\nThe port on line " + QString::number(counter + counterErr) + " is incorrect");
 			counterErr++;
 			continue;
 		}
@@ -199,7 +198,7 @@ void MainWindow::readPropertiesFile()
 		{
 			if (!val.isDigit())
 			{
-				textEdit->append("The port on line " + QString::number(counter + counterErr) + " is incorrect\n");
+				textEdit->append("\nThe port on line " + QString::number(counter + counterErr) + " is incorrect");
 				counterErr++;
 				digitErr = true;
 				continue;
@@ -251,8 +250,6 @@ void MainWindow::setTextColour(QColor any)
 
 void MainWindow::queuePrint()
 {
-	textEdit->append("\n");
-
 	setTextColour(QColor(255, 128, 0));
 
 	for (int val = 0; val < serverList.length(); val++)
@@ -287,6 +284,7 @@ void MainWindow::actualizationQueue()
 	textEdit->append("\nPolling queue's actualization");
 }
 
+
 void MainWindow::addDeviceFromMenu(QString any, QByteArray some)
 {
 	for (int count = 0; count < serverList.length(); count++)
@@ -296,7 +294,7 @@ void MainWindow::addDeviceFromMenu(QString any, QByteArray some)
 			serverList[count]->addDeviceInArray(some);
 
 			setTextColour(QColor(240, 218, 15));
-			textEdit->append("In polling was added " + some + "\n");
+			textEdit->append("\nIn polling was added " + some);
 
 			break;
 		}
