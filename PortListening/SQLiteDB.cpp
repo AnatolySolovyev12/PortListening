@@ -4,8 +4,6 @@
 SQLiteDB::SQLiteDB(QObject* parent)
 	: QObject(parent)
 {
-	//QTimer::singleShot(500, [this]() {
-
 		connectDB();
 
 		QSqlQuery query;
@@ -30,8 +28,6 @@ SQLiteDB::SQLiteDB(QObject* parent)
 		{
 			emit messegeLog("channelTable was create!\n");
 		}
-
-	//	});
 }
 
 SQLiteDB::~SQLiteDB()
@@ -76,7 +72,6 @@ QString SQLiteDB::readData(QString any)
 	QSqlQuery query;
 	
 	QString queryString = "select date from counterTable where number = " + any + " order by date desc";
-
 
 	/*
 	query.prepare("select date from counterTable where number = :MeterInfoPrep order by date desc"); // используем подготовленный запрос в начале как хорошую практику от инъекций
