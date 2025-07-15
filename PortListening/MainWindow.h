@@ -37,6 +37,8 @@ public:
 	void queueRefreshInPorts();
 	void actualizationQueue();
 
+	void addDeviceFromMenu(QString any, QByteArray some);
+
 private slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason reason)
 	{

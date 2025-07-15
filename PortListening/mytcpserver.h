@@ -32,6 +32,8 @@ public:
 
     QList<QByteArray> getfullSerialBuffConstant();
 
+    void addDeviceInArray(QByteArray any);
+
 public slots:
     void slotNewConnection();
     void slotServerRead();

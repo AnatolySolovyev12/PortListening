@@ -20,6 +20,23 @@ MainWindow::MainWindow(QWidget* parent)
 
 	connect(trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
 
+	QString appStyle = R"(
+    QMainWindow {
+        background-color: rgb(120,120,120);
+    }
+    QMenu {
+        background-color: rgb(120,120,120);
+        color: white;      /* Текстовые элементы */
+        border-radius: 6px;
+    }
+    QMenu::item:selected {
+        background-color: #2a9d8f; /* Цвет подсветки пункта */
+        color: white;
+    }
+)";
+
+	qApp->setStyleSheet(appStyle);
+
 	textEdit = new QTextEdit(this);
 	textEdit->setReadOnly(true);
 	textEdit->setStyleSheet(
@@ -27,7 +44,6 @@ MainWindow::MainWindow(QWidget* parent)
 		"    background-color: rgb(50, 50, 50);"
 		"}"
 	);
-
 
 	QPushButton* paramMenu = new QPushButton("QueueList", this);
 
@@ -60,28 +76,25 @@ MainWindow::MainWindow(QWidget* parent)
 
 		for (int val = 0; val < serverList.length(); val++)
 		{
-
 			QMenu* newPort = new QMenu(serverList[val]->getPort());
 
 			ports->addMenu(newPort);
-			
+
 			for (auto& val : serverList[val]->getfullSerialBuffConstant())
 			{
-				newPort->addAction(val, this, &MainWindow::queuePrint);
-				
+				//newPort->addAction(val, this, &MainWindow::addDeviceFromMenu);
+				newPort->addAction(val, this, [newPort, val, this]() {
+
+					addDeviceFromMenu(newPort->title(), val);
+
+					});
 			}
-			
 		}
 
 		paramMenu->setMenu(pm);
 
 		}
 	);
-
-
-
-
-
 
 	QPushButton* clear = new QPushButton("Clear", this);
 	clear->setMaximumWidth(80);
@@ -97,7 +110,6 @@ MainWindow::MainWindow(QWidget* parent)
 		"}"
 	);
 
-
 	QCheckBox* checkClear = new QCheckBox("  AutoClear", this);
 	checkClear->setMaximumWidth(100);
 	checkClear->setStyleSheet(
@@ -105,8 +117,6 @@ MainWindow::MainWindow(QWidget* parent)
 		"    background-color: rgb(50, 50, 50);"
 		"    color: white;"
 		"    border-radius: 5px;"
-
-
 		"}"
 		"QCheckBox:checked {"
 		"    background-color: #2a9d8f;" // в HEX #3cbaa2. Допустимо background-color: #3cbaa2;
@@ -276,3 +286,19 @@ void MainWindow::actualizationQueue()
 
 	textEdit->append("\nPolling queue's actualization");
 }
+
+void MainWindow::addDeviceFromMenu(QString any, QByteArray some)
+{
+	for (int count = 0; count < serverList.length(); count++)
+	{
+		if (serverList[count]->getPort() == any)
+		{
+			serverList[count]->addDeviceInArray(some);
+
+			setTextColour(QColor(240, 218, 15));
+			textEdit->append("In polling was added " + some + "\n");
+
+			break;
+		}
+	}
+};

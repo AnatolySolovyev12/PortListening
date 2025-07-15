@@ -693,3 +693,8 @@ QList<QByteArray> MyTcpServer::getfullSerialBuffConstant()
 {
 	return fullSerialBuffConstant;
 }
+
+void MyTcpServer::addDeviceInArray(QByteArray any)
+{
+	serialBuff.push_back(any);
+}
