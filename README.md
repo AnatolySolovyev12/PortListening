@@ -8,7 +8,8 @@ What can:
 5) Add individual devices to the current port poll.
 6) Create a SQLite file and write received data to it.
 7) Outputs a log with some information about the received packets to the widget.
-8) Folding in and out of trey.
+8) Log auto-report once a day.
+9) Folding in and out of trey.
 
 ![Анимация 3](https://github.com/user-attachments/assets/bb548a2f-cb06-4c43-af9a-2ad0b457c593)
 
