@@ -24,6 +24,7 @@ public:
     void writeData(QString some);
 
     QString readData(QString any);
+    QString readValues(QString any);
 
 signals:
     void messegeLog(const QString&);

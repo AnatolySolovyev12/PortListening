@@ -87,3 +87,25 @@ QString SQLiteDB::readData(QString any)
 	else
 		return query.value(0).toString();
 }
+
+
+QString SQLiteDB::readValues(QString any)
+{
+	QSqlQuery query;
+
+	QString queryString = "select date, channelFirst, channelSecond from counterTable where number = " + any + " order by date desc";
+
+	/*
+	query.prepare("select date from counterTable where number = :MeterInfoPrep order by date desc"); // используем подготовленный запрос в начале как хорошую практику от инъекций
+	query.bindValue(":MeterInfoPrep", any);
+	*/
+
+	if (!query.exec(queryString) || !query.next())
+	{
+		qDebug() << "Query failed or no results in current DB: " << query.lastError();
+
+		return "1984-01-01";
+	}
+	else
+		return query.value(1).toString() + " " + query.value(2).toString();
+}

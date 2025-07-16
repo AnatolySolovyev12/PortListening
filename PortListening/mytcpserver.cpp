@@ -45,16 +45,16 @@ void MyTcpServer::slotNewConnection()
 	if (!mTcpSocket)
 	{
 		emit messegeLog("\nNo pending connection", QColor(240, 14, 14));
-		return; 
+		return;
 	}
 
-	connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); 
-	connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected); 
+	connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead);
+	connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected);
 
 	QDate curDate = QDate::currentDate();
 	QTime curTime = QTime::currentTime();
 
-	QString temp = "\nConnect from host " + mTcpSocket->peerAddress().toString().sliced(7) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString(); 
+	QString temp = "\nConnect from host " + mTcpSocket->peerAddress().toString().sliced(7) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString();
 	emit messegeLog(temp, QColor(255, 128, 0));
 }
 
@@ -414,7 +414,21 @@ void MyTcpServer::slotServerRead()
 				.arg(three)
 				.arg(four);
 
-			dataWrite->writeData(str_t);
+			if (first.toInt() <= two.toInt()) // валидация по несоответствию дня и ночи по отношению друг к другу
+			{
+				emit messegeLog("Wrong values from device. Need repeat poll for " + QString::number(numberStr.toUInt(&ok, 16)).toUtf8(), QColor(240, 14, 14));
+				serialBuff.push_back(QString::number(numberStr.toUInt(&ok, 16)).toUtf8());
+				continue;
+			}
+
+			if (validateFuncYesterdayToday(QString::number(numberStr.toUInt(&ok, 16)), first, two)) // валидация по несоответствию сегодняшних показаний по отношению ко вчерашним
+			{
+				emit messegeLog("Wrong values from device. Need repeat poll for " + QString::number(numberStr.toUInt(&ok, 16)).toUtf8(), QColor(240, 14, 14));
+				serialBuff.push_back(QString::number(numberStr.toUInt(&ok, 16)).toUtf8());
+				continue;
+			}
+			else
+				dataWrite->writeData(str_t);
 		}
 	}
 }
@@ -694,4 +708,30 @@ QList<QByteArray> MyTcpServer::getfullSerialBuffConstant()
 void MyTcpServer::addDeviceInArray(QByteArray any)
 {
 	serialBuff.push_back(any);
+}
+
+
+bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QString p_two)
+{
+	QString tempValidateValuesString = dataWrite->readData(any);
+
+	bool nightBoolForValidate = false;
+
+	QString day;
+	QString night;
+
+	for (auto& val : tempValidateValuesString)
+	{
+		if (val.isSpace()) nightBoolForValidate = true;
+
+		if (nightBoolForValidate)
+		{
+			night += val;
+			continue;
+		}
+
+		day += val;
+	}
+
+	return day.toDouble() < p_first.toDouble() || night.toDouble() < p_two.toDouble();
 }
