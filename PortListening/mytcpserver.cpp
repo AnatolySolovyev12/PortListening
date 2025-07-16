@@ -735,5 +735,5 @@ bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QStri
 
 	qDebug() << "In validateFuncYesterdayToday" + day + " " + night;
 
-	return day.toDouble() < p_first.toDouble() || night.toDouble() < p_two.toDouble();
+	return day.toDouble() > p_first.toDouble() || night.toDouble() > p_two.toDouble();
 }
