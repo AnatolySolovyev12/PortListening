@@ -22,11 +22,11 @@ SQLiteDB::SQLiteDB(QObject* parent)
 			{
 			}
 			else
-				emit messegeLog("Unable to create a channelTable. " + query.lastError().text() + '\n');
+				emit messegeLog("Unable to create a channelTable. " + query.lastError().text() + '\n', QColor(240, 14, 14));
 		}
 		else
 		{
-			emit messegeLog("channelTable was create!\n");
+			emit messegeLog("channelTable was create!\n", QColor(255, 128, 0));
 		}
 }
 
@@ -34,7 +34,7 @@ SQLiteDB::~SQLiteDB()
 {
 	mw_db.removeDatabase("DataBaseMilanRF");
 
-	emit messegeLog("\nObject DB was destroyed");
+	emit messegeLog("\nObject DB was destroyed", QColor(240, 14, 14));
 
 	exit(0);
 }
@@ -46,7 +46,7 @@ bool SQLiteDB::connectDB()
 
 	if (!mw_db.open())
 	{
-		emit messegeLog("Cannot open database: " + mw_db.lastError().text() + '\n');
+		emit messegeLog("Cannot open database: " + mw_db.lastError().text() + '\n', QColor(240, 14, 14));
 
 		return false;
 	}
@@ -62,7 +62,7 @@ void SQLiteDB::writeData(QString some)
 
 	if (!query.exec(db_input))
 	{
-		emit messegeLog("Unable to insert data" + query.lastError().text() + query.lastQuery() + '\n');
+		emit messegeLog("Unable to insert data" + query.lastError().text() + query.lastQuery() + '\n', QColor(240, 14, 14));
 	}
 }
 

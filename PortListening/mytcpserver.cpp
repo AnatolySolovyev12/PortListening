@@ -713,7 +713,7 @@ void MyTcpServer::addDeviceInArray(QByteArray any)
 
 bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QString p_two)
 {
-	QString tempValidateValuesString = dataWrite->readData(any);
+	QString tempValidateValuesString = dataWrite->readValues(any);
 
 	bool nightBoolForValidate = false;
 

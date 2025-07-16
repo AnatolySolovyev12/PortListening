@@ -27,7 +27,7 @@ public:
     QString readValues(QString any);
 
 signals:
-    void messegeLog(const QString&);
+    void messegeLog(const QString&, QColor col);
 
 private:
 
