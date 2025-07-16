@@ -104,8 +104,11 @@ QString SQLiteDB::readValues(QString any)
 	{
 		qDebug() << "Query failed or no results in current DB: " << query.lastError();
 
-		return "1984-01-01";
+		return "0 0";
 	}
 	else
+	{
+		qDebug() << query.value(1).toString() + " " + query.value(2).toString();
 		return query.value(1).toString() + " " + query.value(2).toString();
+	}
 }
