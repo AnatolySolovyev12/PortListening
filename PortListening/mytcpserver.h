@@ -35,6 +35,7 @@ public slots:
 
 signals:
     void messegeLog(const QString&, QColor col);
+    void warningLog(const QString&);
 
 private:
     QTcpServer* mTcpServer = nullptr;

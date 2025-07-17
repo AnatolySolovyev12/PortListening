@@ -442,7 +442,7 @@ void MyTcpServer::slotClientDisconnected()
 		return;
 	}
 
-	mTcpSocket->close(); // ñîçäëà¸ò ñèãíàë void QIODevice::aboutToClose() à çàòåì óñòàíàâëèâàåò äëÿ OpenMode ñîñòîÿíèå NotOpen.
+	mTcpSocket->close(); 
 	emit messegeLog("\n" + QString::number(port) + " - " + "socket close", QColor(255, 128, 0));
 	delete mTcpSocket;
 	mTcpSocket = nullptr;
@@ -733,9 +733,11 @@ bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QStri
 		day += val;
 	}
 
-	qDebug() << "From DB - " + day + " " + night;
+	if(day.toDouble() > p_first.toDouble() || night.toDouble() > p_two.toDouble())
+		emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + "Wrong values from device in Yesterday/Today. Need repeat poll for " + any));
 
-	qDebug() << "From Port - " + p_first + " " + p_two + "\n";
+	if ((p_first.toDouble() - day.toDouble() >= 100) || (p_two.toDouble() - night.toDouble() >= 100) )
+		emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + "Many kVt between Yesterday/Today. Need verification of values for " + any));
 
 	return day.toDouble() > p_first.toDouble() || night.toDouble() > p_two.toDouble();
 }
