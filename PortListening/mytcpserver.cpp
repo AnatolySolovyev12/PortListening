@@ -737,7 +737,7 @@ bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QStri
 		emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Wrong values from device in Yesterday/Today. Need repeat poll for " + any));
 
 	if ((p_first.toDouble() - day.toDouble() >= 100) || (p_two.toDouble() - night.toDouble() >= 100) )
-		emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Many kVt between Yesterday/Today. Need verification of values for " + any));
+		emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Many kWt between Yesterday/Today. Need verification of values for " + any));
 
 	return day.toDouble() > p_first.toDouble() || night.toDouble() > p_two.toDouble();
 }
