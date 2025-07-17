@@ -332,14 +332,14 @@ void MainWindow::addDeviceFromMenu(QString any, QByteArray some)
 
 void MainWindow::warningPrint()
 {
+	textEdit->append("\n");
+
 	setTextColour(QColor(240, 218, 15));
 
 	for (int val = 0; val < warningList.length(); val++)
 	{
 		textEdit->append(warningList[val]);
 	}
-
-	textEdit->append("\n");
 }
 
 
@@ -354,4 +354,6 @@ void MainWindow::warningArrayClear()
 	textEdit->append("\nWarning array was clear.");
 
 	warningButton->setStyleSheet(warningButtonStyleGrey);
+
+	warningButton->setText("Warning (" + QString::number(warningCounter) + ')');
 }

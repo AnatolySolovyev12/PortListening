@@ -74,6 +74,7 @@ private slots:
 		warningButton->setStyleSheet(warningButtonStyleYellow);
 		warningCounter++;
 		warningList.push_back(some);
+		warningButton->setText("Warning (" + QString::number(warningCounter) + ')');
 	}
 
 private:
@@ -112,7 +113,7 @@ private:
 	QString warningButtonStyleGrey = R"(
 		QPushButton {
 		   background-color: rgb(50, 50, 50);
-		    color: white;
+		    color: blue;
 		  border-radius: 5px;
 		}
     )";
