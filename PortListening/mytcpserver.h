@@ -25,6 +25,8 @@ public:
     QString getPort();
     QList<QByteArray> getfullSerialBuffConstant();
     void addDeviceInArray(QByteArray any);
+    
+    bool validateFuncYesterdayToday(QString any, QString p_first, QString p_two);
 
 public slots:
     void slotNewConnection();
@@ -33,6 +35,7 @@ public slots:
 
 signals:
     void messegeLog(const QString&, QColor col);
+    void warningLog(const QString&);
 
 private:
     QTcpServer* mTcpServer = nullptr;

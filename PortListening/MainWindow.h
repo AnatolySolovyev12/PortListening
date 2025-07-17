@@ -34,6 +34,8 @@ public:
 	void queueRefreshInPorts();
 	void actualizationQueue();
 	void addDeviceFromMenu(QString any, QByteArray some);
+	void warningPrint();
+	void warningArrayClear();
 
 private slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason reason)
@@ -42,7 +44,7 @@ private slots:
 		{
 			if (!windowShow)
 			{
-				this->show(); 
+				this->show();
 				windowShow = true;
 				//trayIcon->setVisible(false); // 
 			}
@@ -54,17 +56,25 @@ private slots:
 			}
 		}
 		/*
-		if (reason == QSystemTrayIcon::Context) // 
+		if (reason == QSystemTrayIcon::Context) //
 		{
-			trayIcon->showMessage("CONTEX MENU", "WHATS THAT?", QSystemTrayIcon::Information, 5000); // 
+			trayIcon->showMessage("CONTEX MENU", "WHATS THAT?", QSystemTrayIcon::Information, 5000); //
 		}
 		*/
 	}
 
-	void outputMessage(const QString some, QColor any) 
+	void outputMessage(const QString some, QColor any)
 	{
 		setTextColour(any);
 		textEdit->append(some);
+	}
+
+	void getWarningMessege(const QString some)
+	{
+		warningButton->setStyleSheet(warningButtonStyleYellow);
+		warningCounter++;
+		warningList.push_back(some);
+		warningButton->setText("Warning (" + QString::number(warningCounter) + ')');
 	}
 
 private:
@@ -87,4 +97,24 @@ private:
 	QTimer* clearTimer = nullptr;
 
 	QString todayDate;
+
+	int warningCounter = 0;
+	QList<QString>warningList;
+	QPushButton* warningButton = nullptr;
+	
+	QString warningButtonStyleYellow = R"(
+		QPushButton {
+		   background-color: rgb(240, 218, 15);
+		    color: blue;
+		  border-radius: 5px;
+		}
+    )";
+
+	QString warningButtonStyleGrey = R"(
+		QPushButton {
+		   background-color: rgb(50, 50, 50);
+		    color: white;
+		  border-radius: 5px;
+		}
+    )";
 };

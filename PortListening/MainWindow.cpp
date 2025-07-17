@@ -45,6 +45,31 @@ MainWindow::MainWindow(QWidget* parent)
 		"}"
 	);
 
+
+
+
+	warningButton = new QPushButton("Warning (" + QString::number(warningCounter) + ')', this);
+
+	QMenu* warningMenu = new QMenu(warningButton); // Инициализируем выпадающую кнопку
+
+	warningMenu->addAction("&Show", this, &MainWindow::warningPrint);
+	warningMenu->addAction("&Clear", this, &MainWindow::warningArrayClear);
+
+	warningButton->setMaximumWidth(80);
+	warningButton->setStyleSheet(
+		"QPushButton {"
+		"    background-color: rgb(50, 50, 50);"
+		"    color: white;"
+		"    border-radius: 5px;"
+		"}"
+	);
+
+	warningButton->setMenu(warningMenu);
+
+
+
+
+
 	QPushButton* paramMenu = new QPushButton("QueueList", this);
 
 	QMenu* pm = new QMenu(paramMenu); // Инициализируем выпадающую кнопку
@@ -125,6 +150,7 @@ MainWindow::MainWindow(QWidget* parent)
 
 	QHBoxLayout* Hlayout = new QHBoxLayout;
 
+	Hlayout->addWidget(warningButton);
 	Hlayout->addWidget(paramMenu);
 	Hlayout->addWidget(clear);
 	Hlayout->addWidget(checkClear);
@@ -168,10 +194,11 @@ void MainWindow::readPropertiesFile()
 		port = 49000;
 
 		serverList.push_back(new MyTcpServer(port));
-		connect(serverList[0], SIGNAL(messegeLog(QString)), this, SLOT(outputMessage(QString)));
+		connect(serverList[0], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
+		connect(serverList[0], SIGNAL(warningLog(QString)), this, SLOT(getWarningMessege(QString)));
 
 		dbList.push_back(serverList[0]->returnPtrDb());
-		connect(dbList[0], SIGNAL(messegeLog(QString)), this, SLOT(outputMessage(QString)));
+		connect(dbList[0], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
 
 		return;
 	}
@@ -215,6 +242,7 @@ void MainWindow::readPropertiesFile()
 
 		serverList.push_back(new MyTcpServer(port));
 		connect(serverList[counter], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
+		connect(serverList[counter], SIGNAL(warningLog(QString)), this, SLOT(getWarningMessege(QString)));
 		dbList.push_back(serverList[counter]->returnPtrDb());
 		connect(dbList[counter], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
 
@@ -300,3 +328,38 @@ void MainWindow::addDeviceFromMenu(QString any, QByteArray some)
 		}
 	}
 };
+
+
+void MainWindow::warningPrint()
+{
+	setTextColour(QColor(240, 218, 15));
+
+	if (warningList.isEmpty())
+	{
+		textEdit->append("\nWarning array is empty.");
+		return;
+	}
+
+	textEdit->append("");
+
+	for (int val = 0; val < warningList.length(); val++)
+	{
+		textEdit->append(warningList[val]);
+	}
+}
+
+
+void MainWindow::warningArrayClear()
+{
+	warningList.clear();
+
+	warningCounter = 0;
+
+	setTextColour(QColor(240, 218, 15));
+
+	textEdit->append("\nWarning array was clear.");
+
+	warningButton->setStyleSheet(warningButtonStyleGrey);
+
+	warningButton->setText("Warning (" + QString::number(warningCounter) + ')');
+}

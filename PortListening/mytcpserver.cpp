@@ -45,16 +45,16 @@ void MyTcpServer::slotNewConnection()
 	if (!mTcpSocket)
 	{
 		emit messegeLog("\nNo pending connection", QColor(240, 14, 14));
-		return; 
+		return;
 	}
 
-	connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead); 
-	connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected); 
+	connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead);
+	connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected);
 
 	QDate curDate = QDate::currentDate();
 	QTime curTime = QTime::currentTime();
 
-	QString temp = "\nConnect from host " + mTcpSocket->peerAddress().toString().sliced(7) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString(); 
+	QString temp = "\nConnect from host " + mTcpSocket->peerAddress().toString().sliced(7) + " - " + curDate.toString("dd-MM-yyyy") + " " + curTime.toString();
 	emit messegeLog(temp, QColor(255, 128, 0));
 }
 
@@ -268,9 +268,11 @@ void MyTcpServer::slotServerRead()
 			str.remove(202, 404);
 		}
 
-		if (str.size() == 286) str = str.sliced(84);
+		if (str.size() == 286) str = str.sliced(84); //front sliced
 
-		if (str.size() == 244) str = str.sliced(42); //front sliced
+		if (str.size() == 244) str = str.sliced(42); 
+
+		if (str.size() == 234) str = str.sliced(32); 
 
 		if (str.size() == 312 || str.size() == 202) // out-of-array warning
 		{
@@ -414,7 +416,21 @@ void MyTcpServer::slotServerRead()
 				.arg(three)
 				.arg(four);
 
-			dataWrite->writeData(str_t);
+			if (first.toDouble() <= two.toDouble()) // валидация по несоответствию дня и ночи по отношению друг к другу
+			{
+				emit messegeLog("Wrong values from device in Day/Night. Need repeat poll for " + QString::number(numberStr.toUInt(&ok, 16)).toUtf8(), QColor(240, 14, 14));
+				serialBuff.push_back(QString::number(numberStr.toUInt(&ok, 16)).toUtf8());
+				continue;
+			}
+
+			if (validateFuncYesterdayToday(QString::number(numberStr.toUInt(&ok, 16)), first, two)) // валидация по несоответствию сегодняшних показаний по отношению ко вчерашним
+			{
+				emit messegeLog("Wrong values from device in Yesterday/Today. Need repeat poll for " + QString::number(numberStr.toUInt(&ok, 16)).toUtf8(), QColor(240, 14, 14));
+				serialBuff.push_back(QString::number(numberStr.toUInt(&ok, 16)).toUtf8());
+				continue;
+			}
+			else
+				dataWrite->writeData(str_t);
 		}
 	}
 }
@@ -428,7 +444,7 @@ void MyTcpServer::slotClientDisconnected()
 		return;
 	}
 
-	mTcpSocket->close(); // ñîçäëà¸ò ñèãíàë void QIODevice::aboutToClose() à çàòåì óñòàíàâëèâàåò äëÿ OpenMode ñîñòîÿíèå NotOpen.
+	mTcpSocket->close(); 
 	emit messegeLog("\n" + QString::number(port) + " - " + "socket close", QColor(255, 128, 0));
 	delete mTcpSocket;
 	mTcpSocket = nullptr;
@@ -694,4 +710,36 @@ QList<QByteArray> MyTcpServer::getfullSerialBuffConstant()
 void MyTcpServer::addDeviceInArray(QByteArray any)
 {
 	serialBuff.push_back(any);
+}
+
+
+bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QString p_two)
+{
+	QString tempValidateValuesString = dataWrite->readValues(any);
+
+	bool nightBoolForValidate = false;
+
+	QString day;
+	QString night;
+
+	for (auto& val : tempValidateValuesString)
+	{
+		if (val.isSpace()) nightBoolForValidate = true;
+
+		if (nightBoolForValidate)
+		{
+			night += val;
+			continue;
+		}
+
+		day += val;
+	}
+
+	if(day.toDouble() > p_first.toDouble() || night.toDouble() > p_two.toDouble())
+		emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Wrong values from device in Yesterday/Today. Need repeat poll for " + any));
+
+	if ((p_first.toDouble() - day.toDouble() >= 100) || (p_two.toDouble() - night.toDouble() >= 100) )
+		emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Many kWt between Yesterday/Today. Need verification of values for " + any));
+
+	return day.toDouble() > p_first.toDouble() || night.toDouble() > p_two.toDouble();
 }

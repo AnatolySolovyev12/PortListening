@@ -22,11 +22,11 @@ SQLiteDB::SQLiteDB(QObject* parent)
 			{
 			}
 			else
-				emit messegeLog("Unable to create a channelTable. " + query.lastError().text() + '\n');
+				emit messegeLog("Unable to create a channelTable. " + query.lastError().text() + '\n', QColor(240, 14, 14));
 		}
 		else
 		{
-			emit messegeLog("channelTable was create!\n");
+			emit messegeLog("channelTable was create!\n", QColor(255, 128, 0));
 		}
 }
 
@@ -34,7 +34,7 @@ SQLiteDB::~SQLiteDB()
 {
 	mw_db.removeDatabase("DataBaseMilanRF");
 
-	emit messegeLog("\nObject DB was destroyed");
+	emit messegeLog("\nObject DB was destroyed", QColor(240, 14, 14));
 
 	exit(0);
 }
@@ -46,7 +46,7 @@ bool SQLiteDB::connectDB()
 
 	if (!mw_db.open())
 	{
-		emit messegeLog("Cannot open database: " + mw_db.lastError().text() + '\n');
+		emit messegeLog("Cannot open database: " + mw_db.lastError().text() + '\n', QColor(240, 14, 14));
 
 		return false;
 	}
@@ -62,7 +62,7 @@ void SQLiteDB::writeData(QString some)
 
 	if (!query.exec(db_input))
 	{
-		emit messegeLog("Unable to insert data" + query.lastError().text() + query.lastQuery() + '\n');
+		emit messegeLog("Unable to insert data" + query.lastError().text() + query.lastQuery() + '\n', QColor(240, 14, 14));
 	}
 }
 
@@ -86,4 +86,28 @@ QString SQLiteDB::readData(QString any)
 	}
 	else
 		return query.value(0).toString();
+}
+
+
+QString SQLiteDB::readValues(QString any)
+{
+	QSqlQuery query;
+
+	QString queryString = "select date, channelFirst, channelSecond from counterTable where number = " + any + " order by date desc";
+
+	/*
+	query.prepare("select date from counterTable where number = :MeterInfoPrep order by date desc"); // используем подготовленный запрос в начале как хорошую практику от инъекций
+	query.bindValue(":MeterInfoPrep", any);
+	*/
+
+	if (!query.exec(queryString) || !query.next())
+	{
+		qDebug() << "Query failed or no results in current DB: " << query.lastError();
+
+		return "0 0";
+	}
+	else
+	{
+		return query.value(1).toString() + " " + query.value(2).toString();
+	}
 }
