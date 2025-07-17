@@ -272,6 +272,8 @@ void MyTcpServer::slotServerRead()
 
 		if (str.size() == 244) str = str.sliced(42); //front sliced
 
+		if (str.size() == 234) str = str.sliced(32); //front sliced
+
 		if (str.size() == 312 || str.size() == 202) // out-of-array warning
 		{
 		}
