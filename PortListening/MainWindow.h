@@ -105,7 +105,7 @@ private:
 	QString warningButtonStyleYellow = R"(
 		QPushButton {
 		   background-color: rgb(240, 218, 15);
-		    color: white;
+		    color: blue;
 		  border-radius: 5px;
 		}
     )";
@@ -113,7 +113,7 @@ private:
 	QString warningButtonStyleGrey = R"(
 		QPushButton {
 		   background-color: rgb(50, 50, 50);
-		    color: blue;
+		    color: white;
 		  border-radius: 5px;
 		}
     )";

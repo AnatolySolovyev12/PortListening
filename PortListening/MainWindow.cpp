@@ -336,6 +336,12 @@ void MainWindow::warningPrint()
 
 	setTextColour(QColor(240, 218, 15));
 
+	if (warningList.isEmpty())
+	{
+		textEdit->append("\nWarning array is empty.");
+		return;
+	}
+
 	for (int val = 0; val < warningList.length(); val++)
 	{
 		textEdit->append(warningList[val]);
