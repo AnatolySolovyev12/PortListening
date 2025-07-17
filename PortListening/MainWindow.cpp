@@ -347,6 +347,8 @@ void MainWindow::warningArrayClear()
 {
 	warningList.clear();
 
+	warningCounter = 0;
+
 	setTextColour(QColor(240, 218, 15));
 
 	textEdit->append("\nWarning array was clear.");
