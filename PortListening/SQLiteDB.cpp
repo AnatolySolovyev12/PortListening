@@ -108,7 +108,6 @@ QString SQLiteDB::readValues(QString any)
 	}
 	else
 	{
-		qDebug() << query.value(1).toString() + " " + query.value(2).toString();
 		return query.value(1).toString() + " " + query.value(2).toString();
 	}
 }
