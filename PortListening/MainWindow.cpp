@@ -332,8 +332,6 @@ void MainWindow::addDeviceFromMenu(QString any, QByteArray some)
 
 void MainWindow::warningPrint()
 {
-	textEdit->append("\n");
-
 	setTextColour(QColor(240, 218, 15));
 
 	if (warningList.isEmpty())
@@ -341,6 +339,8 @@ void MainWindow::warningPrint()
 		textEdit->append("\nWarning array is empty.");
 		return;
 	}
+
+	textEdit->append("\n");
 
 	for (int val = 0; val < warningList.length(); val++)
 	{
