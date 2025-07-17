@@ -340,7 +340,7 @@ void MainWindow::warningPrint()
 		return;
 	}
 
-	textEdit->append("\n");
+	textEdit->append("");
 
 	for (int val = 0; val < warningList.length(); val++)
 	{
