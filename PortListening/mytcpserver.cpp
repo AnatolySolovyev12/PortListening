@@ -408,7 +408,7 @@ void MyTcpServer::slotServerRead()
 
 			TwoZero = false;
 
-			QString str_t = QString("INSERT INTO counterTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - îïðåäåëÿåò òå çíà÷åíèÿ êîòîðûå áóäóò çàïèñàíèû â ñòðîêó
+			QString str_t = QString("INSERT INTO counterTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')")
 				.arg(numberStr.toUInt(&ok, 16))
 				.arg(curDate.toString("yyyy-MM-dd"))
 				.arg(first)
