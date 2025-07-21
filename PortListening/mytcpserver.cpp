@@ -408,7 +408,7 @@ void MyTcpServer::slotServerRead()
 
 			TwoZero = false;
 
-			QString str_t = QString("INSERT INTO counterTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - îïðåäåëÿåò òå çíà÷åíèÿ êîòîðûå áóäóò çàïèñàíèû â ñòðîêó
+			QString str_t = QString("INSERT INTO counterTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')")
 				.arg(numberStr.toUInt(&ok, 16))
 				.arg(curDate.toString("yyyy-MM-dd"))
 				.arg(first)
@@ -418,6 +418,7 @@ void MyTcpServer::slotServerRead()
 
 			if (first.toDouble() <= two.toDouble()) // валидация по несоответствию дня и ночи по отношению друг к другу
 			{
+				emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Wrong values from device in Yesterday/Today. Need repeat poll for " + QString::number(numberStr.toUInt(&ok, 16))));
 				emit messegeLog("Wrong values from device in Day/Night. Need repeat poll for " + QString::number(numberStr.toUInt(&ok, 16)).toUtf8(), QColor(240, 14, 14));
 				serialBuff.push_back(QString::number(numberStr.toUInt(&ok, 16)).toUtf8());
 				continue;
@@ -738,8 +739,13 @@ bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QStri
 	if(day.toDouble() > p_first.toDouble() || night.toDouble() > p_two.toDouble())
 		emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Wrong values from device in Yesterday/Today. Need repeat poll for " + any));
 
-	if ((p_first.toDouble() - day.toDouble() >= 100) || (p_two.toDouble() - night.toDouble() >= 100) )
+	if ((p_first.toDouble() - day.toDouble() >= 100) || (p_two.toDouble() - night.toDouble() >= 100))
+	{
 		emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Many kWt between Yesterday/Today. Need verification of values for " + any));
+		emit messegeLog("Many kWt between Yesterday/Today. Need verification of values for " + any, QColor(240, 218, 15));
+	}
 
 	return day.toDouble() > p_first.toDouble() || night.toDouble() > p_two.toDouble();
 }
+
+
