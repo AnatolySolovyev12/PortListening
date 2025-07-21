@@ -418,6 +418,7 @@ void MyTcpServer::slotServerRead()
 
 			if (first.toDouble() <= two.toDouble()) // валидация по несоответствию дня и ночи по отношению друг к другу
 			{
+				emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Wrong values from device in Yesterday/Today. Need repeat poll for " + QString::number(numberStr.toUInt(&ok, 16))));
 				emit messegeLog("Wrong values from device in Day/Night. Need repeat poll for " + QString::number(numberStr.toUInt(&ok, 16)).toUtf8(), QColor(240, 14, 14));
 				serialBuff.push_back(QString::number(numberStr.toUInt(&ok, 16)).toUtf8());
 				continue;
