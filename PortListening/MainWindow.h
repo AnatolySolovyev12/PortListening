@@ -75,6 +75,22 @@ private slots:
 		warningCounter++;
 		warningList.push_back(some);
 		warningButton->setText("Warning (" + QString::number(warningCounter) + ')');
+
+		QString filename = QCoreApplication::applicationDirPath() + "\\warnings.txt";
+		QFile file(filename);
+
+		// Открываем файл в режиме "Только для записи и дополнения без перезаписи"
+		if (file.open(QIODevice::WriteOnly | QIODevice::Append)) 
+		{
+			QTextStream out(&file); // поток записываемых данных направляем в файл
+			out << some << Qt::endl;
+		}
+		else
+		{
+			qWarning("Could not open file");
+		}
+
+		file.close();
 	}
 
 private:
