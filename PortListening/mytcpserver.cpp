@@ -742,18 +742,21 @@ bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QStri
 	if(day.toDouble() > p_first.toDouble() || night.toDouble() > p_two.toDouble())
 		emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Wrong values from device in Yesterday/Today. Need repeat poll for " + any));
 
-	if ((p_first.toDouble() - day.toDouble() >= 40) || (p_two.toDouble() - night.toDouble() >= 40))
+	if (any.length() == 5)
 	{
-		if ((p_first.toDouble() - day.toDouble() <= 70) || (p_two.toDouble() - night.toDouble() <= 70))
+		if ((p_first.toDouble() - day.toDouble() >= 40) || (p_two.toDouble() - night.toDouble() >= 40))
 		{
-			emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Many kWt between Yesterday/Today. Need verification of values for " + any));
-			emit messegeLog("Many kWt between Yesterday/Today. Need verification of values for " + any, QColor(240, 218, 15));
-		}
-		else
-		{
-			emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " -  Too many kilowatts between Yesterday/Today. Need repeat poll for " + any));
-			day = QString::number(p_first.toDouble() + 10);
-			night = QString::number(p_two.toDouble() + 10);
+			if ((p_first.toDouble() - day.toDouble() <= 70) || (p_two.toDouble() - night.toDouble() <= 70))
+			{
+				emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Many kWt between Yesterday/Today. Need verification of values for " + any));
+				emit messegeLog("Many kWt between Yesterday/Today. Need verification of values for " + any, QColor(240, 218, 15));
+			}
+			else
+			{
+				emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " -  Too many kilowatts between Yesterday/Today. Need repeat poll for " + any));
+				day = QString::number(p_first.toDouble() + 10);
+				night = QString::number(p_two.toDouble() + 10);
+			}
 		}
 	}
 
