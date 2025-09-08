@@ -751,7 +751,7 @@ bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QStri
 			if ((p_first.toDouble() - day.toDouble() >= 100) || (p_two.toDouble() - night.toDouble() >= 100))
 			{
 				emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " -  Too many kilowatts between Yesterday/Today. Need repeat poll for " + any));
-				emit messegeLog("Too many kilowatts between Yesterday/Today. Need repeat poll for " + any, QColor(240, 218, 15));
+				emit messegeLog("Too many kilowatts between Yesterday/Today. Need repeat poll for " + any, QColor(240, 14, 14));
 				day = QString::number(p_first.toDouble() + 10);
 				night = QString::number(p_two.toDouble() + 10);
 			}
