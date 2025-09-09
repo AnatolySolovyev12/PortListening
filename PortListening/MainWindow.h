@@ -28,7 +28,7 @@ public:
 
 	void clearWindow();
 	void readPropertiesFile();
-	void checkClear();
+	void checkDateAndClear();
 	void setTextColour(QColor any);
 	void queuePrint();
 	void queueRefreshInPorts();
@@ -133,4 +133,6 @@ private:
 		  border-radius: 5px;
 		}
     )";
+
+	QCheckBox* checkClear = nullptr;
 };

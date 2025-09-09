@@ -45,9 +45,6 @@ MainWindow::MainWindow(QWidget* parent)
 		"}"
 	);
 
-
-
-
 	warningButton = new QPushButton("Warning (" + QString::number(warningCounter) + ')', this);
 
 	QMenu* warningMenu = new QMenu(warningButton); // Инициализируем выпадающую кнопку
@@ -65,10 +62,6 @@ MainWindow::MainWindow(QWidget* parent)
 	);
 
 	warningButton->setMenu(warningMenu);
-
-
-
-
 
 	QPushButton* paramMenu = new QPushButton("QueueList", this);
 
@@ -134,7 +127,7 @@ MainWindow::MainWindow(QWidget* parent)
 		"}"
 	);
 
-	QCheckBox* checkClear = new QCheckBox("  AutoClear", this);
+	checkClear = new QCheckBox("  AutoClear", this);
 	checkClear->setMaximumWidth(100);
 	checkClear->setStyleSheet(
 		"QCheckBox{"
@@ -169,7 +162,7 @@ MainWindow::MainWindow(QWidget* parent)
 	QTimer::singleShot(500, this, &MainWindow::readPropertiesFile);
 
 	clearTimer->start(600000);
-	connect(clearTimer, &QTimer::timeout, this, &MainWindow::checkClear);
+	connect(clearTimer, &QTimer::timeout, this, &MainWindow::checkDateAndClear);
 
 	todayDate = QDate::currentDate().toString("dd-MM-yyyy");
 }
@@ -259,13 +252,14 @@ void MainWindow::readPropertiesFile()
 }
 
 
-void MainWindow::checkClear()
+void MainWindow::checkDateAndClear()
 {
 	if (todayDate != QDate::currentDate().toString("dd-MM-yyyy"))
 	{
 		todayDate = QDate::currentDate().toString("dd-MM-yyyy");
 
-		clearWindow();
+		if (checkClear->isChecked())
+			clearWindow();
 	}
 }
 
