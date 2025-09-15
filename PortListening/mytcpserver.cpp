@@ -601,15 +601,15 @@ void MyTcpServer::readDeviceFile()
 	bool threeFazeInFunc = false;
 	bool twoZeroInFunc = false;
 
-	while (out.readLineInto(myLine, 0))
+	while (out.readLineInto(myLine, 0)) // до спецсимволов идёт общий список счётчиков однофазные + те что идут после спецсимволов
 	{
-		if (*myLine == "@")
+		if (*myLine == "@") // признак трёхфазных счётчиков косвенного включения с тремя знаками после запятой.
 		{
 			threeFazeInFunc = true;
 			continue;
 		}
 
-		if (*myLine == "$")
+		if (*myLine == "$") // признак трёхфазных счётчиков прямого включения с двумя знаками после запятой.
 		{
 			threeFazeInFunc = false;
 			twoZeroInFunc = true;
