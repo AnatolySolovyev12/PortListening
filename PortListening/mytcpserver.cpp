@@ -616,7 +616,7 @@ void MyTcpServer::readDeviceFile()
 			continue;
 		}
 
-		if (myLine->length() > 5 || myLine->length() < 4)
+		if (myLine->length() > 6 || myLine->length() < 4)
 		{
 			emit messegeLog("\nThe device on line " + QString::number(counter + counterErr) + " is incorrect", QColor(240, 14, 14));
 			counterErr++;
