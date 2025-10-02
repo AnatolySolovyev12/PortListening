@@ -744,7 +744,7 @@ bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QStri
 		emit messegeLog("Wrong values from device in Yesterday/Today. Need repeat poll for " + any, QColor(240, 14, 14));
 	}
 
-	if (any.length() == 5)
+	if (any.length() == 5 || any.length() == 6)
 	{
 		if ((p_first.toDouble() - day.toDouble() >= 40) || (p_two.toDouble() - night.toDouble() >= 40))
 		{
