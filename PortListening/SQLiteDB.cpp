@@ -16,7 +16,7 @@ CREATE TABLE channelTable (
   channelSecond TEXT,
   channelThird TEXT,
   channelFour TEXT,
-  repeatCounter, INTEGER
+  repeatCounter INTEGER DEFAULT 0 NOT NULL,
   UNIQUE(number, date)
 );
        )");
@@ -42,7 +42,7 @@ CREATE TABLE counterTable (
   channelSecond TEXT,
   channelThird TEXT,
   channelFour TEXT,
-  repeatCounter, INTEGER
+  repeatCounter INTEGER DEFAULT 0 NOT NULL,
   UNIQUE(number, date)
 );
        )");
