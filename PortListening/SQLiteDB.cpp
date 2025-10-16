@@ -8,13 +8,18 @@ SQLiteDB::SQLiteDB(QObject* parent)
 
 		QSqlQuery query;
 
-		db_input = "CREATE TABLE channelTable ( "
-			"number VARCHAR(20), "
-			"date VARCHAR(20), "
-			"channelFirst VARCHAR(20), "
-			"channelSecond VARCHAR(20), "
-			"channelThird VARCHAR(20), "
-			"channelFour VARCHAR(20));";
+		db_input = (R"(
+CREATE TABLE channelTable (
+  number TEXT,
+  date TEXT,
+  channelFirst TEXT,
+  channelSecond TEXT,
+  channelThird TEXT,
+  channelFour TEXT,
+  repeatCounter, INTEGER
+  UNIQUE(number, date)
+);
+       )");
 
 		if (!query.exec(db_input)) // Выполняем запрос. exec - вернёт true если успешно. Синтаксис должен отвечать запрашиваемой БД.
 		{
@@ -27,6 +32,32 @@ SQLiteDB::SQLiteDB(QObject* parent)
 		else
 		{
 			emit messegeLog("channelTable was create!\n", QColor(255, 128, 0));
+		}
+
+		db_input = (R"(
+CREATE TABLE counterTable (
+  number TEXT,
+  date TEXT,
+  channelFirst TEXT,
+  channelSecond TEXT,
+  channelThird TEXT,
+  channelFour TEXT,
+  repeatCounter, INTEGER
+  UNIQUE(number, date)
+);
+       )");
+
+		if (!query.exec(db_input)) // Выполняем запрос. exec - вернёт true если успешно. Синтаксис должен отвечать запрашиваемой БД.
+		{
+			if (query.lastError().text() != "table counterTable already exists Unable to execute statemen")
+			{
+			}
+			else
+				emit messegeLog("Unable to create a counterTable. " + query.lastError().text() + '\n', QColor(240, 14, 14));
+		}
+		else
+		{
+			emit messegeLog("counterTable was create!\n", QColor(255, 128, 0));
 		}
 }
 
