@@ -354,13 +354,22 @@ void MyTcpServer::slotServerRead()
 			//qDebug() << "four - " << valTrans << "\n";
 
 
-			QString str_t = QString("INSERT INTO channelTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')") // VALUES - îïðåäåëÿåò òå çíà÷åíèÿ êîòîðûå áóäóò çàïèñàíèû â ñòðîêó
+			QString str_t = QString(
+				"INSERT INTO channelTable (number, date, channelFirst, channelSecond, channelThird, channelFour) "
+				"VALUES ('%1', '%2', '%3', '%4', '%5', '%6') "
+				"ON CONFLICT(number, date) DO UPDATE SET "
+				"channelFirst = excluded.channelFirst, "
+				"channelSecond = excluded.channelSecond, "
+				"channelThird = excluded.channelThird, "
+				"channelFour = excluded.channelFour, "
+				"repeatCounter = repeatCounter + 1;")
+
 				.arg(numberStr.toUInt(&ok, 16))
 				.arg(curDate.toString("yyyy-MM-dd"))
-				.arg(first.toUInt(&ok, 16))
-				.arg(two.toUInt(&ok, 16))
-				.arg(three.toUInt(&ok, 16))
-				.arg(four.toUInt(&ok, 16));
+				.arg(first)
+				.arg(two)
+				.arg(three)
+				.arg(four);
 
 			dataWrite->writeData(str_t);
 		}
@@ -407,8 +416,17 @@ void MyTcpServer::slotServerRead()
 			//qDebug() << "four - " << valTrans << "\n";
 
 			TwoZero = false;
+			
+			QString str_t = QString(
+				"INSERT INTO counterTable (number, date, channelFirst, channelSecond, channelThird, channelFour) "
+				"VALUES ('%1', '%2', '%3', '%4', '%5', '%6') "
+				"ON CONFLICT(number, date) DO UPDATE SET "
+				"channelFirst = excluded.channelFirst, "
+				"channelSecond = excluded.channelSecond, "
+				"channelThird = excluded.channelThird, "
+				"channelFour = excluded.channelFour, "
+				"repeatCounter = repeatCounter + 1;")
 
-			QString str_t = QString("INSERT INTO counterTable(number, date, channelFirst, channelSecond, channelThird, channelFour) VALUES('%1', '%2', '%3', '%4', '%5', '%6')")
 				.arg(numberStr.toUInt(&ok, 16))
 				.arg(curDate.toString("yyyy-MM-dd"))
 				.arg(first)
