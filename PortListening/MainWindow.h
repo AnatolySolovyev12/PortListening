@@ -36,6 +36,7 @@ public:
 	void addDeviceFromMenu(QString any, QByteArray some);
 	void warningPrint();
 	void warningArrayClear();
+	void setStateValidationBool();
 
 private slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason reason)
@@ -135,4 +136,5 @@ private:
     )";
 
 	QCheckBox* checkClear = nullptr;
+	QAction* validationCheck = nullptr;
 };

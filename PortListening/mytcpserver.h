@@ -27,6 +27,7 @@ public:
     void addDeviceInArray(QByteArray any);
     
     bool validateFuncYesterdayToday(QString any, QString p_first, QString p_two);
+    void changeStateValidButton();
 
 public slots:
     void slotNewConnection();
@@ -65,7 +66,9 @@ private:
 
     QString pattern = "3335";
     QString todayDate;
-    QTimer* dateTImer = nullptr;;
+    QTimer* dateTImer = nullptr;
+
+    bool validationButton = true;
 };
 
 #endif // MYTCPSERVER_H

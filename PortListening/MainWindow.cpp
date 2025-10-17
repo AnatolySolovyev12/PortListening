@@ -51,6 +51,12 @@ MainWindow::MainWindow(QWidget* parent)
 
 	warningMenu->addAction("&Show", this, &MainWindow::warningPrint);
 	warningMenu->addAction("&Clear", this, &MainWindow::warningArrayClear);
+	validationCheck = warningMenu->addAction("&Validation");
+	//warningMenu->addAction("&Validation", this, &MainWindow::warningArrayClear);
+	validationCheck->setCheckable(true);
+	validationCheck->setChecked(true);
+
+	connect(validationCheck, &QAction::changed, this, &MainWindow::setStateValidationBool);
 
 	warningButton->setMaximumWidth(80);
 	warningButton->setStyleSheet(
@@ -356,4 +362,13 @@ void MainWindow::warningArrayClear()
 	warningButton->setStyleSheet(warningButtonStyleGrey);
 
 	warningButton->setText("Warning (" + QString::number(warningCounter) + ')');
+}
+
+
+void MainWindow::setStateValidationBool()
+{
+	for (auto& val : serverList)
+	{
+		val->changeStateValidButton();
+	}
 }

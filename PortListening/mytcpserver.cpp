@@ -434,7 +434,7 @@ void MyTcpServer::slotServerRead()
 				.arg(three)
 				.arg(four);
 
-			if (first.toDouble() <= two.toDouble()) // валидация по несоответствию дня и ночи по отношению друг к другу
+			if (first.toDouble() <= two.toDouble() && validationButton) // валидация по несоответствию дня и ночи по отношению друг к другу
 			{
 				emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Wrong values from device in Day/Night. Need repeat poll for " + QString::number(numberStr.toUInt(&ok, 16))));
 				emit messegeLog("Wrong values from device in Day/Night. Need repeat poll for " + QString::number(numberStr.toUInt(&ok, 16)).toUtf8(), QColor(240, 14, 14));
@@ -442,7 +442,7 @@ void MyTcpServer::slotServerRead()
 				continue;
 			}
 
-			if (validateFuncYesterdayToday(QString::number(numberStr.toUInt(&ok, 16)), first, two)) // валидация по несоответствию сегодняшних показаний по отношению ко вчерашним
+			if (validateFuncYesterdayToday(QString::number(numberStr.toUInt(&ok, 16)), first, two) && validationButton) // валидация по несоответствию сегодняшних показаний по отношению ко вчерашним
 			{
 				serialBuff.push_back(QString::number(numberStr.toUInt(&ok, 16)).toUtf8());
 				continue;
@@ -784,4 +784,10 @@ bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QStri
 	return day.toDouble() > p_first.toDouble() || night.toDouble() > p_two.toDouble();
 }
 
+
+void MyTcpServer::changeStateValidButton()
+{
+	validationButton = !validationButton;
+	//emit messegeLog(QString::number(validationButton), QColor(240, 14, 14));
+}
 
