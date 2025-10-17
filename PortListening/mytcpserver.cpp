@@ -366,10 +366,10 @@ void MyTcpServer::slotServerRead()
 
 				.arg(numberStr.toUInt(&ok, 16))
 				.arg(curDate.toString("yyyy-MM-dd"))
-				.arg(first)
-				.arg(two)
-				.arg(three)
-				.arg(four);
+				.arg(first.toUInt(&ok, 16))
+				.arg(two.toUInt(&ok, 16))
+				.arg(three.toUInt(&ok, 16))
+				.arg(four.toUInt(&ok, 16));
 
 			dataWrite->writeData(str_t);
 		}
