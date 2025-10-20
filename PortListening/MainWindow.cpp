@@ -46,16 +46,19 @@ MainWindow::MainWindow(QWidget* parent)
 	);
 
 	warningButton = new QPushButton("Warning (" + QString::number(warningCounter) + ')', this);
-
 	QMenu* warningMenu = new QMenu(warningButton); // Инициализируем выпадающую кнопку
-
 	warningMenu->addAction("&Show", this, &MainWindow::warningPrint);
 	warningMenu->addAction("&Clear", this, &MainWindow::warningArrayClear);
+
+	QMenu* criticalDots = new QMenu();
+	criticalDots->setTitle("Critical dots");
+	criticalDots->addAction("&Warining dot", this, &MainWindow::setWarningDot);
+	criticalDots->addAction("&Alarm dot", this, &MainWindow::setAlarmDot);
+	warningMenu->addMenu(criticalDots);
+
 	validationCheck = warningMenu->addAction("&Validation");
-	//warningMenu->addAction("&Validation", this, &MainWindow::warningArrayClear);
 	validationCheck->setCheckable(true);
 	validationCheck->setChecked(true);
-
 	connect(validationCheck, &QAction::changed, this, &MainWindow::setStateValidationBool);
 
 	warningButton->setMaximumWidth(80);
@@ -370,5 +373,36 @@ void MainWindow::setStateValidationBool()
 	for (auto& val : serverList)
 	{
 		val->changeStateValidButton();
+	}
+}
+
+
+void MainWindow::setWarningDot()
+{
+	bool ok = true;
+	QInputDialog inputDialog;
+	QString now = "Set Warning Dot. Now ";
+	now.append(QString::number(warningDot));
+	int whatFind = inputDialog.getInt(this, "Set value", now, warningDot, 0, 10000, 1, &ok);
+	warningDot = whatFind;
+
+	for (auto& val : serverList)
+	{
+		val->setWarningDotServer(warningDot);
+	}
+}
+
+void MainWindow::setAlarmDot()
+{
+	bool ok = true;
+	QInputDialog inputDialog;
+	QString now = "Set Alarm Dot. Now ";
+	now.append(QString::number(alarmDot));
+	int whatFind = inputDialog.getInt(this, "Set value", now, alarmDot, 0, 10000, 1, &ok);
+	alarmDot = whatFind;
+
+	for (auto& val : serverList)
+	{
+		val->setAlarmDotServer(alarmDot);
 	}
 }

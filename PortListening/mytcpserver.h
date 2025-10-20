@@ -28,6 +28,8 @@ public:
     
     bool validateFuncYesterdayToday(QString any, QString p_first, QString p_two);
     void changeStateValidButton();
+    void setWarningDotServer(int any);
+    void setAlarmDotServer(int any);
 
 public slots:
     void slotNewConnection();
@@ -69,6 +71,9 @@ private:
     QTimer* dateTImer = nullptr;
 
     bool validationButton = true;
+
+    int warningDotServer = 40;
+    int alarmDotServer = 100;
 };
 
 #endif // MYTCPSERVER_H

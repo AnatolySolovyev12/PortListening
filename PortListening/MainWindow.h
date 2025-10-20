@@ -16,6 +16,7 @@
 #include <QPushButton>
 #include <QCheckBox.h>
 #include "mytcpserver.h"
+#include "QInputDialog.h"
 
 class MainWindow : public QMainWindow
 {
@@ -37,6 +38,8 @@ public:
 	void warningPrint();
 	void warningArrayClear();
 	void setStateValidationBool();
+	void setWarningDot();
+	void setAlarmDot();
 
 private slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason reason)
@@ -137,4 +140,7 @@ private:
 
 	QCheckBox* checkClear = nullptr;
 	QAction* validationCheck = nullptr;
+
+	int warningDot = 40;
+	int alarmDot = 100;
 };

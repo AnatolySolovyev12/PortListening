@@ -764,9 +764,9 @@ bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QStri
 
 	if (any.length() == 5 || any.length() == 6)
 	{
-		if ((p_first.toDouble() - day.toDouble() >= 40) || (p_two.toDouble() - night.toDouble() >= 40))
+		if ((p_first.toDouble() - day.toDouble() >= warningDotServer) || (p_two.toDouble() - night.toDouble() >= warningDotServer))
 		{
-			if ((p_first.toDouble() - day.toDouble() >= 100) || (p_two.toDouble() - night.toDouble() >= 100))
+			if ((p_first.toDouble() - day.toDouble() >= alarmDotServer) || (p_two.toDouble() - night.toDouble() >= alarmDotServer))
 			{
 				emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " -  Too many kilowatts between Yesterday/Today. Need repeat poll for " + any));
 				emit messegeLog("Too many kilowatts between Yesterday/Today. Need repeat poll for " + any, QColor(240, 14, 14));
@@ -788,6 +788,17 @@ bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QStri
 void MyTcpServer::changeStateValidButton()
 {
 	validationButton = !validationButton;
-	//emit messegeLog(QString::number(validationButton), QColor(240, 14, 14));
+}
+
+
+void MyTcpServer::setWarningDotServer(int any)
+{
+	warningDotServer = any;
+}
+
+
+void MyTcpServer::setAlarmDotServer(int any)
+{
+	alarmDotServer = any;
 }
 
