@@ -270,9 +270,9 @@ void MyTcpServer::slotServerRead()
 
 		if (str.size() == 286) str = str.sliced(84); //front sliced
 
-		if (str.size() == 244) str = str.sliced(42); 
+		if (str.size() == 244) str = str.sliced(42);
 
-		if (str.size() == 234) str = str.sliced(32); 
+		if (str.size() == 234) str = str.sliced(32);
 
 		if (str.size() == 312 || str.size() == 202) // out-of-array warning
 		{
@@ -416,7 +416,7 @@ void MyTcpServer::slotServerRead()
 			//qDebug() << "four - " << valTrans << "\n";
 
 			TwoZero = false;
-			
+
 			QString str_t = QString(
 				"INSERT INTO counterTable (number, date, channelFirst, channelSecond, channelThird, channelFour) "
 				"VALUES ('%1', '%2', '%3', '%4', '%5', '%6') "
@@ -447,8 +447,8 @@ void MyTcpServer::slotServerRead()
 				serialBuff.push_back(QString::number(numberStr.toUInt(&ok, 16)).toUtf8());
 				continue;
 			}
-			else
-				dataWrite->writeData(str_t);
+
+			dataWrite->writeData(str_t);
 		}
 	}
 }
@@ -462,7 +462,7 @@ void MyTcpServer::slotClientDisconnected()
 		return;
 	}
 
-	mTcpSocket->close(); 
+	mTcpSocket->close();
 	emit messegeLog("\n" + QString::number(port) + " - " + "socket close", QColor(255, 128, 0));
 	delete mTcpSocket;
 	mTcpSocket = nullptr;
