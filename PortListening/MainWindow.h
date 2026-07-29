@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include <QApplication>
 #include <QSystemTrayIcon>
@@ -75,19 +75,23 @@ private slots:
 
 	void getWarningMessege(const QString some)
 	{
+		QString temp = some;
 		warningButton->setStyleSheet(warningButtonStyleYellow);
 		warningCounter++;
-		warningList.push_back(some);
+
+		while(warningList.contains(temp)) temp += " !"; // РґР»СЏ СЏРІРЅРѕСЃС‚Рё РѕС€РёР±РєРё Р±СѓРґРµРј РґРѕРїРёСЃС‹РІР°С‚СЊ РІ РєРѕРЅС†Рµ !
+
+		warningList.push_back(temp);
 		warningButton->setText("Warning (" + QString::number(warningCounter) + ')');
 
 		QString filename = QCoreApplication::applicationDirPath() + "\\warnings.txt";
 		QFile file(filename);
 
-		// Открываем файл в режиме "Только для записи и дополнения без перезаписи"
+		// РћС‚РєСЂС‹РІР°РµРј С„Р°Р№Р» РІ СЂРµР¶РёРјРµ "РўРѕР»СЊРєРѕ РґР»СЏ Р·Р°РїРёСЃРё Рё РґРѕРїРѕР»РЅРµРЅРёСЏ Р±РµР· РїРµСЂРµР·Р°РїРёСЃРё"
 		if (file.open(QIODevice::WriteOnly | QIODevice::Append)) 
 		{
-			QTextStream out(&file); // поток записываемых данных направляем в файл
-			out << some << Qt::endl;
+			QTextStream out(&file); // РїРѕС‚РѕРє Р·Р°РїРёСЃС‹РІР°РµРјС‹С… РґР°РЅРЅС‹С… РЅР°РїСЂР°РІР»СЏРµРј РІ С„Р°Р№Р»
+			out << temp << Qt::endl;
 		}
 		else
 		{

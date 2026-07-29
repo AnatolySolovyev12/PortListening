@@ -1,4 +1,4 @@
-#include "MainWindow.h"
+п»ї#include "MainWindow.h"
 
 MainWindow::MainWindow(QWidget* parent)
 	: QMainWindow(parent), clearTimer(new QTimer)
@@ -26,11 +26,11 @@ MainWindow::MainWindow(QWidget* parent)
     }
     QMenu {
         background-color: rgb(120,120,120);
-        color: white;      /* Текстовые элементы */
+        color: white;      /* РўРµРєСЃС‚РѕРІС‹Рµ СЌР»РµРјРµРЅС‚С‹ */
         border-radius: 6px;
     }
     QMenu::item:selected {
-        background-color: #2a9d8f; /* Цвет подсветки пункта */
+        background-color: #2a9d8f; /* Р¦РІРµС‚ РїРѕРґСЃРІРµС‚РєРё РїСѓРЅРєС‚Р° */
         color: white;
     }
 )";
@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget* parent)
 	);
 
 	warningButton = new QPushButton("Warning (" + QString::number(warningCounter) + ')', this);
-	QMenu* warningMenu = new QMenu(warningButton); // Инициализируем выпадающую кнопку
+	QMenu* warningMenu = new QMenu(warningButton); // РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РІС‹РїР°РґР°СЋС‰СѓСЋ РєРЅРѕРїРєСѓ
 	warningMenu->addAction("&Show", this, &MainWindow::warningPrint);
 	warningMenu->addAction("&Clear", this, &MainWindow::warningArrayClear);
 
@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget* parent)
 
 	QPushButton* paramMenu = new QPushButton("QueueList", this);
 
-	QMenu* pm = new QMenu(paramMenu); // Инициализируем выпадающую кнопку
+	QMenu* pm = new QMenu(paramMenu); // РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РІС‹РїР°РґР°СЋС‰СѓСЋ РєРЅРѕРїРєСѓ
 
 	pm->addAction("&Show", this, &MainWindow::queuePrint);
 	pm->addAction("&Reset", this, &MainWindow::queueRefreshInPorts);
@@ -88,7 +88,7 @@ MainWindow::MainWindow(QWidget* parent)
 		"    border-radius: 5px;"
 		"}"
 		"QPushButton:pressed {"
-		"    background-color: rgb(50, 50, 50);" // в HEX #3cbaa2. Допустимо background-color: #3cbaa2;
+		"    background-color: rgb(50, 50, 50);" // РІ HEX #3cbaa2. Р”РѕРїСѓСЃС‚РёРјРѕ background-color: #3cbaa2;
 
 		"}"
 	);
@@ -131,7 +131,7 @@ MainWindow::MainWindow(QWidget* parent)
 		"    border-radius: 5px;"
 		"}"
 		"QPushButton:pressed {"
-		"    background-color: rgb(50, 50, 50);" // в HEX #3cbaa2. Допустимо background-color: #3cbaa2;
+		"    background-color: rgb(50, 50, 50);" // РІ HEX #3cbaa2. Р”РѕРїСѓСЃС‚РёРјРѕ background-color: #3cbaa2;
 
 		"}"
 	);
@@ -145,7 +145,7 @@ MainWindow::MainWindow(QWidget* parent)
 		"    border-radius: 5px;"
 		"}"
 		"QCheckBox:checked {"
-		"    background-color: #2a9d8f;" // в HEX #3cbaa2. Допустимо background-color: #3cbaa2;
+		"    background-color: #2a9d8f;" // РІ HEX #3cbaa2. Р”РѕРїСѓСЃС‚РёРјРѕ background-color: #3cbaa2;
 
 		"}"
 	);
