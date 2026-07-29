@@ -1,4 +1,4 @@
-#include "mytcpserver.h"
+﻿#include "mytcpserver.h"
 #include <QDebug>
 #include <QCoreApplication>
 #include <QTime>
@@ -442,10 +442,13 @@ void MyTcpServer::slotServerRead()
 				continue;
 			}
 
-			if (validateFuncYesterdayToday(QString::number(numberStr.toUInt(&ok, 16)), first, two) && validationButton) // валидация по несоответствию сегодняшних показаний по отношению ко вчерашним
+			if (validationButton)
 			{
-				serialBuff.push_back(QString::number(numberStr.toUInt(&ok, 16)).toUtf8());
-				continue;
+				if (validateFuncYesterdayToday(QString::number(numberStr.toUInt(&ok, 16)), first, two)) // валидация по несоответствию сегодняшних показаний по отношению ко вчерашним
+				{
+					serialBuff.push_back(QString::number(numberStr.toUInt(&ok, 16)).toUtf8());
+					continue;
+				}
 			}
 
 			dataWrite->writeData(str_t);
