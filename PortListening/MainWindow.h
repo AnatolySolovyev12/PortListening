@@ -7,8 +7,6 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QObject>
-
-
 #include <QTimer.h>
 #include <QTextEdit>
 #include <QVBoxLayout>
