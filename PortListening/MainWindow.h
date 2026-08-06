@@ -75,13 +75,30 @@ private slots:
 
 	void getWarningMessege(const QString some)
 	{
+		QString mainTemp = some;
 		QString temp = some;
+
 		warningButton->setStyleSheet(warningButtonStyleYellow);
 		warningCounter++;
 
-		while(warningList.contains(temp)) temp += " !"; // для явности ошибки будем дописывать в конце !
+		QRegularExpression dateTimePattern(QString(R"([0-9]{2,5} - [0-9]{2}-[0-9]{2}-[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} - )"));
+		QRegularExpression dayNightPattern(QString(R"(\s*\(.*?\))"));
 
-		warningList.push_back(temp);
+		QRegularExpressionMatch matchReg = dateTimePattern.match(temp);
+
+		if (matchReg.hasMatch())
+			temp.remove(matchReg.captured());
+
+		matchReg = dayNightPattern.match(temp);
+
+		if (matchReg.hasMatch())
+			temp.remove(matchReg.captured());
+
+		for (auto& val : warningList)
+			if (val.contains(temp))
+				mainTemp += " !";
+
+		warningList.push_back(mainTemp);
 		warningButton->setText("Warning (" + QString::number(warningCounter) + ')');
 
 		QString filename = QCoreApplication::applicationDirPath() + "\\warnings.txt";
@@ -91,7 +108,7 @@ private slots:
 		if (file.open(QIODevice::WriteOnly | QIODevice::Append)) 
 		{
 			QTextStream out(&file); // поток записываемых данных направляем в файл
-			out << temp << Qt::endl;
+			out << mainTemp << Qt::endl;
 		}
 		else
 		{
