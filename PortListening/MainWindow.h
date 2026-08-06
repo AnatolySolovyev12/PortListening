@@ -111,9 +111,7 @@ private slots:
 			out << mainTemp << Qt::endl;
 		}
 		else
-		{
 			qWarning("Could not open file");
-		}
 
 		file.close();
 	}
