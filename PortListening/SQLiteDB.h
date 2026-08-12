@@ -14,15 +14,10 @@ public:
     ~SQLiteDB();
 
     bool connectDB();
-
     QString db_input; 
-
     QSqlDatabase mw_db;
-
     int myTest = 0;
-
     void writeData(QString some);
-
     QString readData(QString any);
     QString readValues(QString any);
 

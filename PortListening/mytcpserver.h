@@ -25,11 +25,11 @@ public:
     QString getPort();
     QList<QByteArray> getfullSerialBuffConstant();
     void addDeviceInArray(QByteArray any);
-    
     bool validateFuncYesterdayToday(QString any, QString p_first, QString p_two);
     void changeStateValidButton();
     void setWarningDotServer(int any);
     void setAlarmDotServer(int any);
+    void writeWarningLogInDb(const QString& p_port, const QString& p_date, const QString& p_time, const QString& p_message);
 
 public slots:
     void slotNewConnection();
@@ -37,8 +37,9 @@ public slots:
     void slotClientDisconnected();
 
 signals:
-    void messegeLog(const QString&, QColor col);
-    void warningLog(const QString&);
+    void messegeLog(const QString&, QColor col); // вывод в Widget
+    void warningLog(const QString&); // запись в .txt
+    void warningLogSQLite(const QString& bd_port, const QString& bd_date, const QString& bd_time, const QString& bd_text); // запись в .txt
 
 private:
     QTcpServer* mTcpServer = nullptr;

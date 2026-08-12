@@ -59,6 +59,28 @@ CREATE TABLE counterTable (
 		{
 			emit messegeLog("counterTable was create!\n", QColor(255, 128, 0));
 		}
+
+		db_input = (R"(
+CREATE TABLE warningTable (
+  port TEXT,
+  date TEXT,
+  time TEXT,
+  message TEXT
+);
+       )");
+
+		if (!query.exec(db_input)) // Выполняем запрос. exec - вернёт true если успешно. Синтаксис должен отвечать запрашиваемой БД.
+		{
+			if (query.lastError().text() != "table warningTable already exists Unable to execute statemen")
+			{
+			}
+			else
+				emit messegeLog("Unable to create a warningTable. " + query.lastError().text() + '\n', QColor(240, 14, 14));
+		}
+		else
+		{
+			emit messegeLog("warningTable was create!\n", QColor(255, 128, 0));
+		}
 }
 
 SQLiteDB::~SQLiteDB()
