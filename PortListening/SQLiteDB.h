@@ -2,7 +2,6 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QString>
-//#include <QSqlDatabase>
 #include <QtSql/QtSql>
 
 class SQLiteDB : public QObject
@@ -20,9 +19,12 @@ public:
     void writeData(QString some);
     QString readData(QString any);
     QString readValues(QString any);
+    void readWarningTable();
+    void clearTableWarning();
 
 signals:
     void messegeLog(const QString&, QColor col);
+    void warningLogFromDb(const QString&, bool file);
 
 private:
 

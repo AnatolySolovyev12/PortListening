@@ -71,7 +71,7 @@ private slots:
 		textEdit->append(some);
 	}
 
-	void getWarningMessege(const QString some)
+	void getWarningMessege(const QString some, bool writeInfile)
 	{
 		QString mainTemp = some;
 		QString temp = some;
@@ -99,26 +99,27 @@ private slots:
 		warningList.push_back(mainTemp);
 		warningButton->setText("Warning (" + QString::number(warningCounter) + ')');
 
-		QString filename = QCoreApplication::applicationDirPath() + "\\warnings.txt";
-		QFile file(filename);
-
-		// Открываем файл в режиме "Только для записи и дополнения без перезаписи"
-		if (file.open(QIODevice::WriteOnly | QIODevice::Append)) 
+		if (writeInfile)
 		{
-			QTextStream out(&file); // поток записываемых данных направляем в файл
-			out << mainTemp << Qt::endl;
-		}
-		else
-			qWarning("Could not open file");
+			QString filename = QCoreApplication::applicationDirPath() + "\\warnings.txt";
+			QFile file(filename);
 
-		file.close();
+			// Открываем файл в режиме "Только для записи и дополнения без перезаписи"
+			if (file.open(QIODevice::WriteOnly | QIODevice::Append))
+			{
+				QTextStream out(&file); // поток записываемых данных направляем в файл
+				out << mainTemp << Qt::endl;
+			}
+			else
+				qWarning("Could not open file");
+
+			file.close();
+		}
 	}
 
 private:
 	MyTcpServer* TcpServer = nullptr;
 	MyTcpServer* TcpServerNext = nullptr;
-	SQLiteDB* dbForEmit = nullptr;
-	SQLiteDB* dbForEmitNext = nullptr;
 
 	QList <MyTcpServer*> serverList;
 	QList <SQLiteDB*> dbList;

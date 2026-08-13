@@ -191,16 +191,19 @@ void MainWindow::readPropertiesFile()
 
 	if (!file.open(QIODevice::ReadOnly))
 	{
-		textEdit->append("\nDon't find browse file. Used default parameters");
+		outputMessage("Don't find browse file. Used default parameters\n", QColor(240, 14, 14));
 
 		port = 49000;
 
 		serverList.push_back(new MyTcpServer(port));
 		connect(serverList[0], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
-		connect(serverList[0], SIGNAL(warningLog(QString)), this, SLOT(getWarningMessege(QString)));
+		connect(serverList[0], SIGNAL(warningLog(QString, bool)), this, SLOT(getWarningMessege(QString, bool)));
 
 		dbList.push_back(serverList[0]->returnPtrDb());
 		connect(dbList[0], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
+
+		connect(dbList[0], &SQLiteDB::warningLogFromDb, this, &MainWindow::getWarningMessege);
+		dbList[0]->readWarningTable();
 
 		return;
 	}
@@ -244,7 +247,7 @@ void MainWindow::readPropertiesFile()
 
 		serverList.push_back(new MyTcpServer(port));
 		connect(serverList[counter], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
-		connect(serverList[counter], SIGNAL(warningLog(QString)), this, SLOT(getWarningMessege(QString)));
+		connect(serverList[counter], SIGNAL(warningLog(QString, bool)), this, SLOT(getWarningMessege(QString, bool)));
 		dbList.push_back(serverList[counter]->returnPtrDb());
 		connect(dbList[counter], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
 
@@ -258,6 +261,9 @@ void MainWindow::readPropertiesFile()
 	}
 
 	file.close();
+
+	connect(dbList[0], &SQLiteDB::warningLogFromDb, this, &MainWindow::getWarningMessege);
+	dbList[0]->readWarningTable();
 }
 
 
@@ -360,11 +366,13 @@ void MainWindow::warningArrayClear()
 
 	setTextColour(QColor(240, 218, 15));
 
-	textEdit->append("\nWarning array was clear.");
+	textEdit->append("\nWarning array was clear.\n");
 
 	warningButton->setStyleSheet(warningButtonStyleGrey);
 
 	warningButton->setText("Warning (" + QString::number(warningCounter) + ')');
+
+	dbList[0]->clearTableWarning();
 }
 
 

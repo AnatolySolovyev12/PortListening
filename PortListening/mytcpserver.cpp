@@ -438,7 +438,8 @@ void MyTcpServer::slotServerRead()
 
 			if (first.toDouble() <= two.toDouble() && validationButton) // валидация по несоответствию дня и ночи по отношению друг к другу
 			{
-				emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Wrong values from device in Day/Night. Need repeat poll for " + QString::number(numberStr.toUInt(&ok, 16))));
+				emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Wrong values from device in Day/Night. Need repeat poll for " + QString::number(numberStr.toUInt(&ok, 16))), true);
+				emit warningLogSQLite(QString::number(port), QDate::currentDate().toString("dd-MM-yyyy"), QTime::currentTime().toString("HH.mm.ss"), ("Wrong values from device in Day/Night. Need repeat poll for " + QString::number(numberStr.toUInt(&ok, 16))));
 				emit messegeLog("Wrong values from device in Day/Night. Need repeat poll for " + QString::number(numberStr.toUInt(&ok, 16)).toUtf8(), QColor(240, 14, 14));
 				serialBuff.push_back(QString::number(numberStr.toUInt(&ok, 16)).toUtf8());
 				continue;
@@ -764,7 +765,7 @@ bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QStri
 
 	if (day.toDouble() > p_first.toDouble() || night.toDouble() > p_two.toDouble())
 	{
-		emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Wrong values from device in Yesterday/Today. Need repeat poll for " + any + " (day = " + QString::number(p_first.toDouble()) + " night = " + QString::number(p_two.toDouble()) + ')'));
+		emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Wrong values from device in Yesterday/Today. Need repeat poll for " + any + " (day = " + QString::number(p_first.toDouble()) + " night = " + QString::number(p_two.toDouble()) + ')'), true);
 		emit warningLogSQLite(QString::number(port), QDate::currentDate().toString("dd-MM-yyyy"), QTime::currentTime().toString("HH.mm.ss"), ("Wrong values from device in Yesterday/Today. Need repeat poll for " + any + " (day = " + QString::number(p_first.toDouble()) + " night = " + QString::number(p_two.toDouble()) + ')')); 
 		emit messegeLog("Wrong values from device in Yesterday/Today. Need repeat poll for " + any, QColor(240, 14, 14));
 	}
@@ -776,7 +777,7 @@ bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QStri
 		{
 			if ((p_first.toDouble() - day.toDouble() >= alarmDotServer) || (p_two.toDouble() - night.toDouble() >= alarmDotServer))
 			{
-				emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " -  Too many kilowatts between Yesterday/Today. Need repeat poll for " + any + " (day = " + QString::number(p_first.toDouble()) + " night = " + QString::number(p_two.toDouble()) + ')'));
+				emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " -  Too many kilowatts between Yesterday/Today. Need repeat poll for " + any + " (day = " + QString::number(p_first.toDouble()) + " night = " + QString::number(p_two.toDouble()) + ')'), true);
 				emit warningLogSQLite(QString::number(port), QDate::currentDate().toString("dd-MM-yyyy"), QTime::currentTime().toString("HH.mm.ss"), ("Too many kilowatts between Yesterday/Today. Need repeat poll for " + any + " (day = " + QString::number(p_first.toDouble()) + " night = " + QString::number(p_two.toDouble()) + ')'));
 				emit messegeLog("Too many kilowatts between Yesterday/Today. Need repeat poll for " + any, QColor(240, 14, 14));
 				day = QString::number(p_first.toDouble() + 10);
@@ -784,7 +785,7 @@ bool MyTcpServer::validateFuncYesterdayToday(QString any, QString p_first, QStri
 			}
 			else
 			{
-				emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Many kWt between Yesterday/Today. Need verification of values for " + any + " (day = " + QString::number(p_first.toDouble()) + " night = " + QString::number(p_two.toDouble()) + ')'));
+				emit warningLog(QString(QString::number(port) + " - " + QDate::currentDate().toString("dd-MM-yyyy") + " " + QTime::currentTime().toString() + " - Many kWt between Yesterday/Today. Need verification of values for " + any + " (day = " + QString::number(p_first.toDouble()) + " night = " + QString::number(p_two.toDouble()) + ')'), true);
 				emit warningLogSQLite(QString::number(port), QDate::currentDate().toString("dd-MM-yyyy"), QTime::currentTime().toString("HH.mm.ss"), ("Many kWt between Yesterday/Today. Need verification of values for " + any + " (day = " + QString::number(p_first.toDouble()) + " night = " + QString::number(p_two.toDouble()) + ')'));
 				emit messegeLog("Many kWt between Yesterday/Today. Need verification of values for " + any, QColor(240, 218, 15));
 			}

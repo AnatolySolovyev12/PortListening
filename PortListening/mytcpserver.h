@@ -38,7 +38,7 @@ public slots:
 
 signals:
     void messegeLog(const QString&, QColor col); // вывод в Widget
-    void warningLog(const QString&); // запись в .txt
+    void warningLog(const QString&, bool file); // запись в .txt
     void warningLogSQLite(const QString& bd_port, const QString& bd_date, const QString& bd_time, const QString& bd_text); // запись в .txt
 
 private:

@@ -4,11 +4,11 @@
 SQLiteDB::SQLiteDB(QObject* parent)
 	: QObject(parent)
 {
-		connectDB();
+	connectDB();
 
-		QSqlQuery query;
+	QSqlQuery query;
 
-		db_input = (R"(
+	db_input = (R"(
 CREATE TABLE channelTable (
   number TEXT,
   date TEXT,
@@ -21,20 +21,20 @@ CREATE TABLE channelTable (
 );
        )");
 
-		if (!query.exec(db_input)) // Выполняем запрос. exec - вернёт true если успешно. Синтаксис должен отвечать запрашиваемой БД.
+	if (!query.exec(db_input)) // Выполняем запрос. exec - вернёт true если успешно. Синтаксис должен отвечать запрашиваемой БД.
+	{
+		if (query.lastError().text() != "table channelTable already exists Unable to execute statemen")
 		{
-			if (query.lastError().text() != "table channelTable already exists Unable to execute statemen")
-			{
-			}
-			else
-				emit messegeLog("Unable to create a channelTable. " + query.lastError().text() + '\n', QColor(240, 14, 14));
 		}
 		else
-		{
-			emit messegeLog("channelTable was create!\n", QColor(255, 128, 0));
-		}
+			emit messegeLog("Unable to create a channelTable. " + query.lastError().text() + '\n', QColor(240, 14, 14));
+	}
+	else
+	{
+		emit messegeLog("channelTable was create!\n", QColor(255, 128, 0));
+	}
 
-		db_input = (R"(
+	db_input = (R"(
 CREATE TABLE counterTable (
   number TEXT,
   date TEXT,
@@ -47,20 +47,20 @@ CREATE TABLE counterTable (
 );
        )");
 
-		if (!query.exec(db_input)) // Выполняем запрос. exec - вернёт true если успешно. Синтаксис должен отвечать запрашиваемой БД.
+	if (!query.exec(db_input)) // Выполняем запрос. exec - вернёт true если успешно. Синтаксис должен отвечать запрашиваемой БД.
+	{
+		if (query.lastError().text() != "table counterTable already exists Unable to execute statemen")
 		{
-			if (query.lastError().text() != "table counterTable already exists Unable to execute statemen")
-			{
-			}
-			else
-				emit messegeLog("Unable to create a counterTable. " + query.lastError().text() + '\n', QColor(240, 14, 14));
 		}
 		else
-		{
-			emit messegeLog("counterTable was create!\n", QColor(255, 128, 0));
-		}
+			emit messegeLog("Unable to create a counterTable. " + query.lastError().text() + '\n', QColor(240, 14, 14));
+	}
+	else
+	{
+		emit messegeLog("counterTable was create!\n", QColor(255, 128, 0));
+	}
 
-		db_input = (R"(
+	db_input = (R"(
 CREATE TABLE warningTable (
   port TEXT,
   date TEXT,
@@ -69,18 +69,18 @@ CREATE TABLE warningTable (
 );
        )");
 
-		if (!query.exec(db_input)) // Выполняем запрос. exec - вернёт true если успешно. Синтаксис должен отвечать запрашиваемой БД.
+	if (!query.exec(db_input)) // Выполняем запрос. exec - вернёт true если успешно. Синтаксис должен отвечать запрашиваемой БД.
+	{
+		if (query.lastError().text() != "table warningTable already exists Unable to execute statemen")
 		{
-			if (query.lastError().text() != "table warningTable already exists Unable to execute statemen")
-			{
-			}
-			else
-				emit messegeLog("Unable to create a warningTable. " + query.lastError().text() + '\n', QColor(240, 14, 14));
 		}
 		else
-		{
-			emit messegeLog("warningTable was create!\n", QColor(255, 128, 0));
-		}
+			emit messegeLog("Unable to create a warningTable. " + query.lastError().text() + '\n', QColor(240, 14, 14));
+	}
+	else
+	{
+		emit messegeLog("warningTable was create!\n", QColor(255, 128, 0));
+	}
 }
 
 SQLiteDB::~SQLiteDB()
@@ -123,7 +123,7 @@ void SQLiteDB::writeData(QString some)
 QString SQLiteDB::readData(QString any)
 {
 	QSqlQuery query;
-	
+
 	QString queryString = "select date from counterTable where number = " + any + " order by date desc";
 
 	/*
@@ -163,4 +163,41 @@ QString SQLiteDB::readValues(QString any)
 	{
 		return query.value(1).toString() + " " + query.value(2).toString();
 	}
+}
+
+
+void SQLiteDB::readWarningTable()
+{
+	QSqlQuery query;
+	QString queryString = "select * from warningTable;";
+
+	if (!query.exec(queryString) || !query.next())
+	{
+		if (query.lastError().isValid())
+			emit messegeLog("Error in SQLiteDb::readWarningTable() when try to get all warning messages. Error: " + query.lastError().text() + '\n', QColor(255, 128, 0));
+		else
+			emit messegeLog("warningTable is empty\n", QColor(255, 128, 0));
+	}
+	else
+	{
+		do {
+			emit warningLogFromDb(query.value(0).toString() + " - " + query.value(1).toString() + " " + query.value(2).toString() + " - " + query.value(3).toString(), false);
+		} while (query.next());
+	}
+}
+
+
+
+void SQLiteDB::clearTableWarning()
+{
+	QSqlQuery query;
+	QString queryString = "DELETE FROM warningTable;";
+
+	if (!query.exec(queryString))
+	{
+		if (query.lastError().isValid())
+			emit messegeLog("Error in SQLiteDb::clearTableWarning() when try to clear table. Error: " + query.lastError().text() + '\n', QColor(255, 128, 0));
+	}
+	else
+		emit messegeLog("warningTable is clear", QColor(240, 218, 15));
 }
