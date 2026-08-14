@@ -61,6 +61,14 @@ MainWindow::MainWindow(QWidget* parent)
 	validationCheck->setChecked(true);
 	connect(validationCheck, &QAction::changed, this, &MainWindow::setStateValidationBool);
 
+	clearWarningDb = warningMenu->addAction("&Clear with DB");
+	clearWarningDb->setCheckable(true);
+	clearWarningDb->setChecked(false);
+
+	clearWarningAuto = warningMenu->addAction("&AutoClear");
+	clearWarningAuto->setCheckable(true);
+	clearWarningAuto->setChecked(false);
+
 	warningButton->setMaximumWidth(80);
 	warningButton->setStyleSheet(
 		"QPushButton {"
@@ -275,6 +283,9 @@ void MainWindow::checkDateAndClear()
 
 		if (checkClear->isChecked())
 			clearWindow();
+
+		if (clearWarningAuto->isChecked())
+			warningArrayClear();
 	}
 }
 
@@ -372,7 +383,8 @@ void MainWindow::warningArrayClear()
 
 	warningButton->setText("Warning (" + QString::number(warningCounter) + ')');
 
-	dbList[0]->clearTableWarning();
+	if (clearWarningDb->isChecked())
+		dbList[0]->clearTableWarning();
 }
 
 

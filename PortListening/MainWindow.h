@@ -158,6 +158,8 @@ private:
 
 	QCheckBox* checkClear = nullptr;
 	QAction* validationCheck = nullptr;
+	QAction* clearWarningDb = nullptr;
+	QAction* clearWarningAuto = nullptr;
 
 	int warningDot = 40;
 	int alarmDot = 100;
