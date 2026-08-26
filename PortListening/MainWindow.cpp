@@ -264,7 +264,7 @@ void MainWindow::readPropertiesFile()
 		++counter;
 	}
 
-	//connect(this, &MainWindow::warningLogSQLite, serverList[0], &MyTcpServer::writeWarningLogInDb); // пишем со всех в SQLite  за счёт первого mytcpserver
+	connect(this, &MainWindow::warningLogSQLite, serverList[0], &MyTcpServer::writeWarningLogInDb); // пишем со всех в SQLite  за счёт первого mytcpserver
 
 	if (myLine != nullptr)
 	{
