@@ -207,6 +207,8 @@ void MainWindow::readPropertiesFile()
 		connect(serverList[0], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
 		connect(serverList[0], SIGNAL(warningLog(QString, bool)), this, SLOT(getWarningMessege(QString, bool)));
 
+		connect(this, &MainWindow::warningLogSQLite, serverList[0], &MyTcpServer::writeWarningLogInDb); // пишем со всех в SQLite  за счёт первого mytcpserver
+
 		dbList.push_back(serverList[0]->returnPtrDb());
 		connect(dbList[0], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
 
@@ -261,6 +263,8 @@ void MainWindow::readPropertiesFile()
 
 		++counter;
 	}
+
+	connect(this, &MainWindow::warningLogSQLite, serverList[0], &MyTcpServer::writeWarningLogInDb); // пишем со всех в SQLite  за счёт первого mytcpserver
 
 	if (myLine != nullptr)
 	{

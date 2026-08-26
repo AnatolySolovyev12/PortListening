@@ -39,6 +39,9 @@ public:
 	void setWarningDot();
 	void setAlarmDot();
 
+signals:
+	void warningLogSQLite(const QString& bd_port, const QString& bd_date, const QString& bd_time, const QString& bd_text);
+
 private slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason reason)
 	{
@@ -48,21 +51,13 @@ private slots:
 			{
 				this->show();
 				windowShow = true;
-				//trayIcon->setVisible(false); // 
 			}
 			else
 			{
 				this->hide();
 				windowShow = false;
-				//trayIcon->setVisible(true); // 
 			}
 		}
-		/*
-		if (reason == QSystemTrayIcon::Context) //
-		{
-			trayIcon->showMessage("CONTEX MENU", "WHATS THAT?", QSystemTrayIcon::Information, 5000); //
-		}
-		*/
 	}
 
 	void outputMessage(const QString some, QColor any)
@@ -71,10 +66,13 @@ private slots:
 		textEdit->append(some);
 	}
 
-	void getWarningMessege(const QString some, bool writeInfile)
+	void getWarningMessege(const QString& bd_port, const QString& bd_date, const QString& bd_time, const QString& bd_text, bool file)
 	{
-		QString mainTemp = some;
-		QString temp = some;
+		QString mainTemp = bd_port + " - " + bd_date + " " + bd_time + " - " + bd_text;
+
+		QString temp = mainTemp;
+
+		QString bd_text_temp = bd_text;
 
 		warningButton->setStyleSheet(warningButtonStyleYellow);
 		warningCounter++;
@@ -94,12 +92,17 @@ private slots:
 
 		for (auto& val : warningList)
 			if (val.contains(temp))
+			{
 				mainTemp += " !";
+				bd_text_temp += " !";
+			}
 
 		warningList.push_back(mainTemp);
 		warningButton->setText("Warning (" + QString::number(warningCounter) + ')');
 
-		if (writeInfile)
+		emit warningLogSQLite(bd_port, bd_date, bd_time, bd_text_temp);
+
+		if (file)
 		{
 			QString filename = QCoreApplication::applicationDirPath() + "\\warnings.txt";
 			QFile file(filename);
