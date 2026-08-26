@@ -181,7 +181,7 @@ void SQLiteDB::readWarningTable()
 	else
 	{
 		do {
-			emit warningLogFromDb(query.value(0).toString() + " - " + query.value(1).toString() + " " + query.value(2).toString() + " - " + query.value(3).toString(), false);
+			emit warningLogFromDb(query.value(0).toString(), query.value(1).toString(), query.value(2).toString(), query.value(3).toString(), false);
 		} while (query.next());
 	}
 }

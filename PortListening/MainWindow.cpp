@@ -205,7 +205,7 @@ void MainWindow::readPropertiesFile()
 
 		serverList.push_back(new MyTcpServer(port));
 		connect(serverList[0], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
-		connect(serverList[0], SIGNAL(warningLog(QString, bool)), this, SLOT(getWarningMessege(QString, bool)));
+		connect(serverList[0], SIGNAL(warningLog(QString, QString, QString, QString, bool)), this, SLOT(getWarningMessege(QString, QString, QString, QString, bool)));
 
 		connect(this, &MainWindow::warningLogSQLite, serverList[0], &MyTcpServer::writeWarningLogInDb); // пишем со всех в SQLite  за счёт первого mytcpserver
 
@@ -257,14 +257,14 @@ void MainWindow::readPropertiesFile()
 
 		serverList.push_back(new MyTcpServer(port));
 		connect(serverList[counter], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
-		connect(serverList[counter], SIGNAL(warningLog(QString, bool)), this, SLOT(getWarningMessege(QString, bool)));
+		connect(serverList[counter], SIGNAL(warningLog(QString, QString, QString, QString, bool)), this, SLOT(getWarningMessege(QString, QString, QString, QString, bool)));
 		dbList.push_back(serverList[counter]->returnPtrDb());
 		connect(dbList[counter], SIGNAL(messegeLog(QString, QColor)), this, SLOT(outputMessage(QString, QColor)));
 
 		++counter;
 	}
 
-	connect(this, &MainWindow::warningLogSQLite, serverList[0], &MyTcpServer::writeWarningLogInDb); // пишем со всех в SQLite  за счёт первого mytcpserver
+	//connect(this, &MainWindow::warningLogSQLite, serverList[0], &MyTcpServer::writeWarningLogInDb); // пишем со всех в SQLite  за счёт первого mytcpserver
 
 	if (myLine != nullptr)
 	{

@@ -24,7 +24,7 @@ public:
 
 signals:
     void messegeLog(const QString&, QColor col);
-    void warningLogFromDb(const QString&, bool file);
+    void warningLogFromDb(const QString& bd_port, const QString& bd_date, const QString& bd_time, const QString& bd_text, bool file);
 
 private:
 
