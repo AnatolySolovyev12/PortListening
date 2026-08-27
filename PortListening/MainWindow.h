@@ -100,9 +100,10 @@ private slots:
 		warningList.push_back(mainTemp);
 		warningButton->setText("Warning (" + QString::number(warningCounter) + ')');
 
-		emit warningLogSQLite(bd_port, bd_date, bd_time, bd_text_temp);
+		if (file) // усраняем рекурсивную запись и чтение из БД
+			emit warningLogSQLite(bd_port, bd_date, bd_time, bd_text_temp);
 
-		if (file)
+		if (file) // усраняем повторную запись в .txt
 		{
 			QString filename = QCoreApplication::applicationDirPath() + "\\warnings.txt";
 			QFile file(filename);
@@ -142,7 +143,7 @@ private:
 	int warningCounter = 0;
 	QList<QString>warningList;
 	QPushButton* warningButton = nullptr;
-	
+
 	QString warningButtonStyleYellow = R"(
 		QPushButton {
 		   background-color: rgb(240, 218, 15);
