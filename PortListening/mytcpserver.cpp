@@ -277,7 +277,7 @@ void MyTcpServer::slotServerRead()
 
 		if (str.size() == 234) str = str.sliced(32);
 
-		if (str.size() == 312 || str.size() == 202) // out-of-array warning
+		if (str.size() == 312 || str.size() == 202 || str.size() == 326) // out-of-array warning
 		{
 		}
 		else
@@ -292,9 +292,7 @@ void MyTcpServer::slotServerRead()
 
 		for (int counter = 3; counter >= 0; counter--)
 		{
-
 			numberStr += myList[counter];
-
 		}
 
 		uint valTrans = numberStr.toUInt(&ok, 16); // поулчаем число фрагмента серийного номера из первых 4-х байт пришедшего пакета. Формируем в обратном порядке.
