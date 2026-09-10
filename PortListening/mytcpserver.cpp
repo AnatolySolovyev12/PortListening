@@ -37,6 +37,7 @@ MyTcpServer::MyTcpServer(int any, QObject* parent) : QObject(parent), port(any),
 		checkTodayValues();
 		
 		//connect(this, &MyTcpServer::warningLogSQLite, this, &MyTcpServer::writeWarningLogInDb);
+
 		});
 }
 
@@ -310,8 +311,15 @@ void MyTcpServer::slotServerRead()
 		QString three;
 		QString four;
 
-		if (str.size() == 312)
+		if (str.size() == 312 || (str.size() == 326 && myList[4] == "05")) // 5-ый байт 04 и 5-ый байт 05
 		{
+			if (str.size() == 326)
+			{
+				myList.remove(4);
+				myList.remove(5);
+				myList.remove(6);
+			}
+
 			for (int counter = 94; counter >= 79; --counter)
 			{
 				if (counter >= 91)
